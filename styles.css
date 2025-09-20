@@ -29,17 +29,17 @@
 
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
-    /* Game mode - smaller card */
+    /* Game mode - much smaller card for real devices */
     #cardContainer.game-mode {
         width: 85vw !important;
-        height: 50vh !important;
+        height: 35vh !important;
         max-width: none !important;
-        max-height: none !important;
+        max-height: 300px !important;
         flex: none !important;
     }
     
     #cardContent {
-        font-size: 10rem !important; /* Smaller to fit better */
+        font-size: 8rem !important; /* Even smaller for real devices */
     }
     
     .card-back .text-2xl {
@@ -59,6 +59,16 @@
     }
     
     #tapHint {
+        margin-top: 0.5rem;
+    }
+    
+    /* Additional mobile game mode adjustments */
+    main:has(#cardContainer.game-mode) {
+        padding: 1rem 0.5rem;
+        space-y: 0.5rem;
+    }
+    
+    #cardContainer.game-mode + #gameControls {
         margin-top: 0.5rem;
     }
 }
