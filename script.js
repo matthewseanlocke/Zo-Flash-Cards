@@ -1,4 +1,5 @@
 // Flash Card App JavaScript
+// Version: 1.2.0 - Mobile Optimization Update
 
 class FlashCardApp {
     constructor() {
@@ -6,7 +7,7 @@ class FlashCardApp {
         this.cards = [];
         this.shuffledCards = [];
         this.isSequential = true;
-        this.contentType = 'letters'; // 'letters' or 'numbers'
+        this.contentType = 'letters'; // 'letters', 'numbers', or 'colors'
         this.letterCase = 'both'; // 'both', 'uppercase', 'lowercase'
         this.gameStarted = false;
         this.scores = {
@@ -34,6 +35,7 @@ class FlashCardApp {
         // Settings elements
         this.lettersBtn = document.getElementById('lettersBtn');
         this.numbersBtn = document.getElementById('numbersBtn');
+        this.colorsBtn = document.getElementById('colorsBtn');
         this.letterCaseSection = document.getElementById('letterCaseSection');
         this.sequentialBtn = document.getElementById('sequentialBtn');
         this.randomBtn = document.getElementById('randomBtn');
@@ -91,6 +93,7 @@ class FlashCardApp {
         // Content type selection
         this.lettersBtn.addEventListener('click', () => this.selectContentType('letters'));
         this.numbersBtn.addEventListener('click', () => this.selectContentType('numbers'));
+        this.colorsBtn.addEventListener('click', () => this.selectContentType('colors'));
         
         // Order selection
         this.sequentialBtn.addEventListener('click', () => this.selectOrder(true));
@@ -178,11 +181,18 @@ class FlashCardApp {
                     this.cards.push(letter.toLowerCase());
                 }
             });
-        } else {
+        } else if (this.contentType === 'numbers') {
             // Numbers 0-9
             for (let i = 0; i <= 9; i++) {
                 this.cards.push(i.toString());
             }
+        } else if (this.contentType === 'colors') {
+            // Basic colors
+            const colors = [
+                'Red', 'Blue', 'Yellow', 'Green', 'Orange', 
+                'Purple', 'Pink', 'Brown', 'Black', 'White'
+            ];
+            this.cards = [...colors];
         }
         
         // Create shuffled version for random mode
@@ -200,14 +210,20 @@ class FlashCardApp {
     selectContentType(type) {
         this.contentType = type;
         
-        // Update button states
+        // Reset all buttons to default state
+        this.lettersBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
+        this.numbersBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
+        this.colorsBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
+        
+        // Update selected button and show/hide letter case section
         if (type === 'letters') {
-            this.lettersBtn.className = 'flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium';
-            this.numbersBtn.className = 'flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            this.lettersBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
             this.letterCaseSection.classList.remove('hidden');
-        } else {
-            this.numbersBtn.className = 'flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium';
-            this.lettersBtn.className = 'flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium';
+        } else if (type === 'numbers') {
+            this.numbersBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
+            this.letterCaseSection.classList.add('hidden');
+        } else if (type === 'colors') {
+            this.colorsBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
             this.letterCaseSection.classList.add('hidden');
         }
     }
@@ -264,7 +280,21 @@ class FlashCardApp {
         const cards = this.isSequential ? this.cards : this.shuffledCards;
         const card = cards[this.currentIndex];
         
-        this.cardContent.textContent = card;
+        // Handle color display differently
+        if (this.contentType === 'colors') {
+            this.cardContent.textContent = '';
+            this.cardContent.className = '';
+            // Apply color to the entire card face
+            const cardFront = document.querySelector('.card-front');
+            cardFront.className = `card-face card-front absolute inset-0 rounded-2xl shadow-2xl flex items-center justify-center backface-hidden color-${card.toLowerCase()} color-card`;
+        } else {
+            this.cardContent.textContent = card;
+            this.cardContent.className = '';
+            // Reset card face to default white background
+            const cardFront = document.querySelector('.card-front');
+            cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
+        }
+        
         this.updateProgress();
         this.updateNavigationButtons();
         
@@ -343,10 +373,25 @@ class FlashCardApp {
 
     flashFeedback(color) {
         const card = document.querySelector('.card-front');
+        const cardContent = this.cardContent;
+        
+        // Store original content
+        const originalText = cardContent.textContent;
+        const originalClassName = cardContent.className;
+        
+        // Add pulse effect to card
         card.classList.add(`pulse-${color}`);
         
+        // Show just the symbol, much smaller
+        const feedbackText = color === 'green' ? '✓' : '✗';
+        cardContent.textContent = feedbackText;
+        cardContent.className = 'feedback-text';
+        
         setTimeout(() => {
+            // Remove pulse effect and restore original content
             card.classList.remove(`pulse-${color}`);
+            cardContent.textContent = originalText;
+            cardContent.className = originalClassName;
         }, 300);
     }
 
@@ -482,10 +527,15 @@ class FlashCardApp {
                 day: 'numeric'
             });
             
-            const contentTypeDisplay = score.contentType === 'letters' ? 
-                (score.letterCase === 'both' ? 'Letters (Aa)' : 
-                 score.letterCase === 'uppercase' ? 'Letters (A)' : 'Letters (a)') : 
-                'Numbers';
+            let contentTypeDisplay;
+            if (score.contentType === 'letters') {
+                contentTypeDisplay = score.letterCase === 'both' ? 'Letters (Aa)' : 
+                                   score.letterCase === 'uppercase' ? 'Letters (A)' : 'Letters (a)';
+            } else if (score.contentType === 'numbers') {
+                contentTypeDisplay = 'Numbers';
+            } else if (score.contentType === 'colors') {
+                contentTypeDisplay = 'Colors';
+            }
             
             const accuracyColor = score.accuracy >= 80 ? 'text-emerald-600' : 
                                  score.accuracy >= 60 ? 'text-amber-600' : 'text-red-500';
@@ -497,7 +547,8 @@ class FlashCardApp {
                 <div class="flex items-center justify-between p-3 ${bgColor} border rounded-xl">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center text-lg">
-                            ${score.contentType === 'letters' ? '🔤' : '🔢'}
+                            ${score.contentType === 'letters' ? '🔤' : 
+                              score.contentType === 'numbers' ? '🔢' : '🎨'}
                         </div>
                         <div>
                             <div class="font-medium text-gray-900 text-sm">${contentTypeDisplay}</div>
@@ -556,14 +607,23 @@ class FlashCardApp {
                         return letter.toLowerCase();
                     }
                 });
-            } else {
+            } else if (scoreData.contentType === 'numbers') {
                 allCards = Array.from({length: 10}, (_, i) => i.toString());
+            } else if (scoreData.contentType === 'colors') {
+                allCards = ['Red', 'Blue', 'Yellow', 'Green', 'Orange', 'Purple', 'Pink', 'Brown', 'Black', 'White'];
             }
             
             allCards.forEach(card => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
-                resultItem.textContent = card;
+                
+                // Handle color display differently
+                if (scoreData.contentType === 'colors') {
+                    resultItem.textContent = '';
+                    resultItem.classList.add(`color-${card.toLowerCase()}`);
+                } else {
+                    resultItem.textContent = card;
+                }
                 
                 if (scoreData.cardResults[card] !== undefined) {
                     const isCorrect = scoreData.cardResults[card];
@@ -711,6 +771,27 @@ class FlashCardApp {
 // Initialize the app when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
+    
+    // Add version info to console and window
+    const version = '1.2.0';
+    const buildDate = new Date().toISOString().split('T')[0];
+    
+    console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
+    console.log(`%cBuild: ${buildDate} - Mobile Optimization Update`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
+    
+    // Global version function
+    window.version = () => {
+        console.log(`%c🎴 Zo Flash Cards`, 'color: #10b981; font-size: 14px; font-weight: bold;');
+        console.log(`Version: ${version}`);
+        console.log(`Build Date: ${buildDate}`);
+        console.log(`Features: Mobile Optimization, Smart Card Sizing, Session History`);
+        return `v${version} (${buildDate})`;
+    };
+    
+    // Store version info
+    window.APP_VERSION = version;
+    window.BUILD_DATE = buildDate;
 });
 
 // Handle page visibility change to pause/resume if needed

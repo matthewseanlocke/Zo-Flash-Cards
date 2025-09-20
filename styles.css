@@ -32,14 +32,14 @@
     /* Game mode - much smaller card for real devices */
     #cardContainer.game-mode {
         width: 85vw !important;
-        height: 35vh !important;
+        height: 45vh !important;
         max-width: none !important;
-        max-height: 300px !important;
+        max-height: 400px !important;
         flex: none !important;
     }
     
     #cardContent {
-        font-size: 8rem !important; /* Even smaller for real devices */
+        font-size: 14rem !important; /* Much bigger for small mobile devices */
     }
     
     .card-back .text-2xl {
@@ -76,17 +76,17 @@
 @media (min-width: 481px) and (max-width: 768px) {
     #cardContainer {
         width: 320px;
-        height: 400px;
+        height: 480px;
     }
     
     #cardContent {
-        font-size: 14rem !important; /* Large on medium screens */
+        font-size: 20rem !important; /* Much larger on medium screens */
     }
 }
 
 @media (min-width: 769px) {
     #cardContent {
-        font-size: 17rem !important; /* Large on bigger screens */
+        font-size: 24rem !important; /* Massive on bigger screens */
     }
 }
 
@@ -116,12 +116,12 @@
 /* Landscape mode adjustments */
 @media (orientation: landscape) and (max-height: 600px) {
     #cardContainer {
-        height: 50vh;
+        height: 60vh;
         margin-bottom: 1rem;
     }
     
     #cardContent {
-        font-size: 10rem !important; /* Large even in landscape mode */
+        font-size: 16rem !important; /* Much larger even in landscape mode */
     }
     
     main {
@@ -197,13 +197,17 @@ button:active {
 
 /* Card content styling for better readability */
 #cardContent {
-    font-size: 15rem; /* Large but fits on screen */
+    font-size: 22rem; /* Much larger for better visibility */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 /* Progress bar styling */
@@ -377,10 +381,25 @@ body {
     color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
+    position: relative;
 }
 
 .result-item:hover {
     transform: scale(1.1);
+}
+
+/* Color result items need special handling for status indicators */
+.result-item.color-red,
+.result-item.color-blue,
+.result-item.color-yellow,
+.result-item.color-green,
+.result-item.color-orange,
+.result-item.color-purple,
+.result-item.color-pink,
+.result-item.color-brown,
+.result-item.color-black,
+.result-item.color-white {
+    border: 3px solid transparent;
 }
 
 .result-correct {
@@ -394,6 +413,49 @@ body {
 .result-not-attempted {
     background: linear-gradient(135deg, #9ca3af, #6b7280);
     color: #374151;
+}
+
+/* Color result status indicators */
+.result-item.result-correct.color-red,
+.result-item.result-correct.color-blue,
+.result-item.result-correct.color-yellow,
+.result-item.result-correct.color-green,
+.result-item.result-correct.color-orange,
+.result-item.result-correct.color-purple,
+.result-item.result-correct.color-pink,
+.result-item.result-correct.color-brown,
+.result-item.result-correct.color-black,
+.result-item.result-correct.color-white {
+    border-color: #10b981;
+    box-shadow: 0 0 0 1px #10b981;
+}
+
+.result-item.result-wrong.color-red,
+.result-item.result-wrong.color-blue,
+.result-item.result-wrong.color-yellow,
+.result-item.result-wrong.color-green,
+.result-item.result-wrong.color-orange,
+.result-item.result-wrong.color-purple,
+.result-item.result-wrong.color-pink,
+.result-item.result-wrong.color-brown,
+.result-item.result-wrong.color-black,
+.result-item.result-wrong.color-white {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 1px #ef4444;
+}
+
+.result-item.result-not-attempted.color-red,
+.result-item.result-not-attempted.color-blue,
+.result-item.result-not-attempted.color-yellow,
+.result-item.result-not-attempted.color-green,
+.result-item.result-not-attempted.color-orange,
+.result-item.result-not-attempted.color-purple,
+.result-item.result-not-attempted.color-pink,
+.result-item.result-not-attempted.color-brown,
+.result-item.result-not-attempted.color-black,
+.result-item.result-not-attempted.color-white {
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 1px #9ca3af;
 }
 
 /* Welcome screen enhancements */
@@ -417,6 +479,54 @@ body {
 #previousScoresList::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
+}
+
+/* Color card backgrounds */
+.color-red { background-color: #ef4444; color: white; }
+.color-blue { background-color: #3b82f6; color: white; }
+.color-yellow { background-color: #eab308; color: black; }
+.color-green { background-color: #22c55e; color: white; }
+.color-orange { background-color: #f97316; color: white; }
+.color-purple { background-color: #a855f7; color: white; }
+.color-pink { background-color: #ec4899; color: white; }
+.color-brown { background-color: #a3663a; color: white; }
+.color-black { background-color: #1f2937; color: white; }
+.color-white { background-color: #f9fafb; color: black; border: 2px solid #e5e7eb; }
+
+/* Color cards get a white border for visual feedback */
+.color-card {
+    border: 8px solid white !important;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1), 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Special handling for white color card */
+.color-card.color-white {
+    border: 8px solid #374151 !important;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2), 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Feedback text styling - just a tiny symbol */
+.feedback-text {
+    font-size: 2rem !important;
+    font-weight: 900 !important;
+    color: white !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+    animation: feedbackPop 0.3s ease-out !important;
+}
+
+@keyframes feedbackPop {
+    0% { 
+        transform: scale(0.8); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: scale(1.1); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
 }
 
 /* Score modal responsive adjustments */
