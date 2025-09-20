@@ -29,11 +29,13 @@
 
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
-    #cardContainer {
-        width: 85vw;
-        height: 50vh;
-        max-width: none;
-        max-height: none;
+    /* Game mode - smaller card */
+    #cardContainer.game-mode {
+        width: 85vw !important;
+        height: 50vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        flex: none !important;
     }
     
     #cardContent {

@@ -254,6 +254,7 @@ class FlashCardApp {
         this.progressContainer.classList.remove('hidden');
         this.tapHint.classList.remove('hidden');
         this.exitBtn.classList.remove('hidden');
+        this.cardContainer.classList.add('game-mode');
         
         this.updateProgress();
         this.displayCurrentCard();
@@ -630,6 +631,7 @@ class FlashCardApp {
         this.progressContainer.classList.add('hidden');
         this.tapHint.classList.add('hidden');
         this.exitBtn.classList.add('hidden');
+        this.cardContainer.classList.remove('game-mode');
         
         this.hideSettings();
         this.hideScoreModal();
