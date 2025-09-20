@@ -1,0 +1,405 @@
+/* Custom CSS for Flash Card App */
+
+/* 3D Perspective and Card Flip Animation */
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+    transform-style: preserve-3d;
+}
+
+.backface-hidden {
+    backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+
+/* Card flip animation */
+.card-inner.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 480px) {
+    #cardContainer {
+        width: 85vw;
+        height: 60vh;
+        max-width: none;
+        max-height: none;
+    }
+    
+    #cardContent {
+        font-size: 12rem !important; /* Large but fits on small screens */
+    }
+    
+    .card-back .text-2xl {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    #cardContainer {
+        width: 320px;
+        height: 400px;
+    }
+    
+    #cardContent {
+        font-size: 14rem !important; /* Large on medium screens */
+    }
+}
+
+@media (min-width: 769px) {
+    #cardContent {
+        font-size: 17rem !important; /* Large on bigger screens */
+    }
+}
+
+/* Portrait mode optimization */
+@media (orientation: portrait) {
+    body {
+        height: 100vh;
+        overflow-x: hidden;
+    }
+    
+    main {
+        min-height: calc(100vh - 80px);
+        padding-bottom: 2rem;
+    }
+    
+    #cardContainer {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    #cardContainer {
+        height: 50vh;
+        margin-bottom: 1rem;
+    }
+    
+    #cardContent {
+        font-size: 10rem !important; /* Large even in landscape mode */
+    }
+    
+    main {
+        padding: 1rem;
+    }
+    
+    nav {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Touch-friendly button sizing */
+button {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Smooth transitions for all interactive elements */
+button, .card-inner, #progressBar {
+    transition: all 0.3s ease;
+}
+
+/* Active states for better touch feedback */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Settings panel animations */
+#settingsPanel {
+    transition: opacity 0.3s ease;
+}
+
+#settingsPanel > div {
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+#settingsPanel.show {
+    opacity: 1;
+}
+
+#settingsPanel.show > div {
+    transform: translateY(0);
+}
+
+/* Score modal animations */
+#scoreModal {
+    transition: opacity 0.3s ease;
+}
+
+#scoreModal > div {
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+#scoreModal.show > div {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Delete modal animations */
+#deleteModal {
+    transition: opacity 0.3s ease;
+}
+
+#deleteModal > div {
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+#deleteModal.show > div {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Card content styling for better readability */
+#cardContent {
+    font-size: 15rem; /* Large but fits on screen */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    line-height: 1;
+}
+
+/* Progress bar styling */
+#progressBar {
+    background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+}
+
+/* Prevent text selection on the entire app for better mobile experience */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow text selection only in input fields */
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Ensure proper spacing for radio buttons */
+input[type="radio"] {
+    min-width: 20px;
+    min-height: 20px;
+}
+
+/* Hover effects for desktop */
+@media (hover: hover) {
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    #flashCard:hover {
+        transform: scale(1.02);
+    }
+}
+
+/* Focus styles for accessibility */
+button:focus, input:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Loading animation for card transitions */
+@keyframes cardFlip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(180deg); }
+}
+
+.card-flipping {
+    animation: cardFlip 0.6s ease-in-out;
+}
+
+/* Pulse animation for correct/wrong feedback */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse-green {
+    animation: pulse 0.3s ease-in-out;
+    background-color: #10b981 !important;
+}
+
+.pulse-red {
+    animation: pulse 0.3s ease-in-out;
+    background-color: #ef4444 !important;
+}
+
+/* Ensure the gradient background covers the full viewport */
+body {
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Previous scores styling - Modern design */
+.score-card-modern {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.score-card-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.delete-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
+/* Modern delete button for new scorecard design */
+.delete-btn-modern {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.delete-btn-modern:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Detailed results grid styling */
+.result-item {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.result-item:hover {
+    transform: scale(1.1);
+}
+
+.result-correct {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.result-wrong {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.result-not-attempted {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+    color: #374151;
+}
+
+/* Welcome screen enhancements */
+#welcomeCard {
+    max-height: 90vh;
+}
+
+#previousScoresList {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+#previousScoresList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#previousScoresList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#previousScoresList::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+/* Score modal responsive adjustments */
+@media (max-width: 480px) {
+    #scoreModal .bg-white {
+        max-height: 95vh;
+        margin: 2.5vh auto;
+    }
+    
+    #detailedResults {
+        grid-template-columns: repeat(5, 1fr);
+        max-height: 200px;
+    }
+    
+    .result-item {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
