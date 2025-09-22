@@ -29,6 +29,14 @@
 
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
+    /* Welcome screen mobile optimizations */
+    #playNowBtn {
+        font-size: 1.5rem !important;
+        padding: 1rem 2rem !important;
+        min-height: 60px !important;
+        min-width: 200px !important;
+    }
+    
     /* Game mode - much smaller card for real devices */
     #cardContainer.game-mode {
         width: 85vw !important;
