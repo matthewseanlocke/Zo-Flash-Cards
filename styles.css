@@ -396,7 +396,58 @@ body {
     transform: scale(1.1);
 }
 
-/* Color result items need special handling for status indicators */
+/* New color result item styling - only applies to color results */
+.colors-grid .color-result-item {
+    width: auto !important;
+    height: auto !important;
+    min-height: 44px;
+    padding: 8px 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px;
+    border-radius: 8px;
+    background: white !important;
+    color: #374151 !important;
+    border: 2px solid #e5e7eb;
+    text-shadow: none !important;
+}
+
+.color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.color-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1;
+    color: inherit;
+}
+
+/* Color result status styling - only applies to color results */
+.colors-grid .color-result-item.result-correct {
+    border-color: #10b981 !important;
+    background: #f0fdf4 !important;
+}
+
+.colors-grid .color-result-item.result-wrong {
+    border-color: #ef4444 !important;
+    background: #fef2f2 !important;
+}
+
+.colors-grid .color-result-item.result-not-attempted {
+    border-color: #9ca3af !important;
+    background: #f9fafb !important;
+    color: #6b7280 !important;
+}
+
+/* Color result items need special handling for status indicators - LEGACY (keeping for backward compatibility) */
 .result-item.color-red,
 .result-item.color-blue,
 .result-item.color-yellow,
@@ -547,6 +598,25 @@ body {
     #detailedResults {
         grid-template-columns: repeat(5, 1fr);
         max-height: 200px;
+    }
+    
+    #detailedResults.colors-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        max-height: 250px !important;
+    }
+    
+    .colors-grid .color-result-item {
+        min-height: 40px !important;
+        padding: 6px 8px !important;
+    }
+    
+    .color-indicator {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    
+    .color-label {
+        font-size: 9px !important;
     }
     
     .result-item {

@@ -593,6 +593,9 @@ class FlashCardApp {
         // Display detailed results if available
         this.detailedResults.innerHTML = '';
         
+        // Add content type class for styling
+        this.detailedResults.className = `grid gap-2 p-3 bg-gray-50 rounded-lg ${scoreData.contentType === 'colors' ? 'grid-cols-4 gap-3 colors-grid' : 'grid-cols-6'}`;
+        
         if (scoreData.cardResults) {
             // Generate the full card set for this score's configuration
             let allCards = [];
@@ -619,8 +622,12 @@ class FlashCardApp {
                 
                 // Handle color display differently
                 if (scoreData.contentType === 'colors') {
-                    resultItem.textContent = '';
-                    resultItem.classList.add(`color-${card.toLowerCase()}`);
+                    // Create a better color display with both color indicator and text
+                    resultItem.innerHTML = `
+                        <div class="color-indicator color-${card.toLowerCase()}"></div>
+                        <span class="color-label">${card}</span>
+                    `;
+                    resultItem.classList.add('color-result-item');
                 } else {
                     resultItem.textContent = card;
                 }
