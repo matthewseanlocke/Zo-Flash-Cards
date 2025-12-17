@@ -786,15 +786,20 @@ class FlashCardApp {
         this.coloringCtx = this.coloringCanvas.getContext('2d');
         this.coloringCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        // Create the letter mask canvas at canvas center
-        await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
+        // Measure actual letter position relative to canvas
+        const contentRect = this.cardContent.getBoundingClientRect();
+        const letterCenterX = (contentRect.left + contentRect.width / 2 - parentRect.left) * dpr;
+        const letterCenterY = (contentRect.top + contentRect.height / 2 - parentRect.top) * dpr;
+
+        // Create the letter mask canvas at measured position
+        await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr, letterCenterX, letterCenterY);
         if (this.currentSetupId !== setupId) return;
 
         // Enable the canvas for interaction
         this.coloringCanvas.classList.add('active');
     }
 
-    async createLetterMaskCanvas(width, height, dpr) {
+    async createLetterMaskCanvas(width, height, dpr, centerX, centerY) {
         // Create mask canvas that will be used for clipping
         this.maskCanvas = document.createElement('canvas');
         this.maskCanvas.width = width;
@@ -819,16 +824,12 @@ class FlashCardApp {
             // Font may already be loaded
         }
 
-        // Draw letter at canvas center with slight vertical offset
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const yOffset = fontSizeActual * 0.15;
-
+        // Draw letter at the measured position (no manual offset needed)
         maskCtx.fillStyle = 'white';
         maskCtx.font = `700 ${fontSizeActual}px Andika, sans-serif`;
         maskCtx.textAlign = 'center';
         maskCtx.textBaseline = 'middle';
-        maskCtx.fillText(text, centerX, centerY + yOffset);
+        maskCtx.fillText(text, centerX, centerY);
     }
 
     getCanvasPos(e) {
@@ -1438,11 +1439,17 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.3.0';
+    const version = '1.4.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
+    // Update version display in nav
+    const versionDisplay = document.getElementById('versionDisplay');
+    if (versionDisplay) {
+        versionDisplay.textContent = `v${version}`;
+    }
+
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Added hint button for similar letters`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Added letter/number coloring feature`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
@@ -1450,7 +1457,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`%c🎴 Zo Flash Cards`, 'color: #10b981; font-size: 14px; font-weight: bold;');
         console.log(`Version: ${version}`);
         console.log(`Build Date: ${buildDate}`);
-        console.log(`Features: Mobile Optimization, Smart Card Sizing, Session History`);
+        console.log(`Features: Letter/Number Coloring, Hint Button, Session History`);
         return `v${version} (${buildDate})`;
     };
     
