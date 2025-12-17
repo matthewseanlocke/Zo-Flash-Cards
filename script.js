@@ -786,20 +786,15 @@ class FlashCardApp {
         this.coloringCtx = this.coloringCanvas.getContext('2d');
         this.coloringCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        // Measure actual letter position relative to canvas
-        const contentRect = this.cardContent.getBoundingClientRect();
-        const letterCenterX = (contentRect.left + contentRect.width / 2 - parentRect.left) * dpr;
-        const letterCenterY = (contentRect.top + contentRect.height / 2 - parentRect.top) * dpr;
-
-        // Create the letter mask canvas at measured position
-        await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr, letterCenterX, letterCenterY);
+        // Create the letter mask canvas at canvas center
+        await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
         if (this.currentSetupId !== setupId) return;
 
         // Enable the canvas for interaction
         this.coloringCanvas.classList.add('active');
     }
 
-    async createLetterMaskCanvas(width, height, dpr, centerX, centerY) {
+    async createLetterMaskCanvas(width, height, dpr) {
         // Create mask canvas that will be used for clipping
         this.maskCanvas = document.createElement('canvas');
         this.maskCanvas.width = width;
@@ -824,12 +819,21 @@ class FlashCardApp {
             // Font may already be loaded
         }
 
-        // Draw letter at the measured position (no manual offset needed)
-        maskCtx.fillStyle = 'white';
+        // Draw letter at canvas center
+        const centerX = width / 2;
+        const centerY = height / 2;
+
         maskCtx.font = `700 ${fontSizeActual}px Andika, sans-serif`;
+
+        // Use font metrics for accurate vertical centering
+        const metrics = maskCtx.measureText(text);
+        const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        const verticalOffset = (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
+
+        maskCtx.fillStyle = 'white';
         maskCtx.textAlign = 'center';
-        maskCtx.textBaseline = 'middle';
-        maskCtx.fillText(text, centerX, centerY);
+        maskCtx.textBaseline = 'alphabetic';
+        maskCtx.fillText(text, centerX, centerY + verticalOffset);
     }
 
     getCanvasPos(e) {
@@ -1439,7 +1443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.4.0';
+    const version = '1.4.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
