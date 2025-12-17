@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.1 - Mobile Header Visibility Fix
+// Version: 1.2.2 - Answer Required Before Navigation
 
 class FlashCardApp {
     constructor() {
@@ -296,11 +296,54 @@ class FlashCardApp {
         }
         
         this.updateProgress();
-        this.updateNavigationButtons();
-        
+
         // Reset card states
         this.cardInner.classList.remove('flipped');
-        this.cardAnswered = false;
+
+        // Check if this card was already answered
+        const cards = this.isSequential ? this.cards : this.shuffledCards;
+        const currentCard = cards[this.currentIndex];
+
+        if (this.cardResults.has(currentCard)) {
+            // Card was already answered - show which answer was given
+            this.cardAnswered = true;
+            const wasCorrect = this.cardResults.get(currentCard);
+            this.highlightPreviousAnswer(wasCorrect);
+        } else {
+            // Card not yet answered
+            this.cardAnswered = false;
+            this.resetAnswerButtons();
+        }
+
+        this.updateNavigationButtons();
+    }
+
+    highlightPreviousAnswer(wasCorrect) {
+        // Reset both buttons first
+        this.resetAnswerButtons();
+
+        // Highlight the button that was previously selected
+        if (wasCorrect) {
+            this.correctBtn.classList.add('ring-4', 'ring-white', 'ring-offset-2');
+            this.correctBtn.classList.remove('bg-green-500');
+            this.correctBtn.classList.add('bg-green-600');
+        } else {
+            this.wrongBtn.classList.add('ring-4', 'ring-white', 'ring-offset-2');
+            this.wrongBtn.classList.remove('bg-red-500');
+            this.wrongBtn.classList.add('bg-red-600');
+        }
+    }
+
+    resetAnswerButtons() {
+        // Reset correct button
+        this.correctBtn.classList.remove('ring-4', 'ring-white', 'ring-offset-2');
+        this.correctBtn.classList.remove('bg-green-600');
+        this.correctBtn.classList.add('bg-green-500');
+
+        // Reset wrong button
+        this.wrongBtn.classList.remove('ring-4', 'ring-white', 'ring-offset-2');
+        this.wrongBtn.classList.remove('bg-red-600');
+        this.wrongBtn.classList.add('bg-red-500');
     }
 
     nextCard() {
@@ -406,6 +449,8 @@ class FlashCardApp {
 
     updateNavigationButtons() {
         this.prevBtn.disabled = this.cardHistory.length === 0;
+        // Disable next button until card is answered
+        this.nextBtn.disabled = !this.cardAnswered;
     }
 
     endGame() {
@@ -780,11 +825,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.1';
+    const version = '1.2.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Mobile Header Visibility Fix`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Answer Required Before Navigation`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
