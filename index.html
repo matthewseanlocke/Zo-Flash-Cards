@@ -212,9 +212,12 @@
                 </div>
             </div>
             
-            <div class="flex gap-3">
-                <button id="playAgainBtn" class="flex-1 py-3 px-4 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors">Play Again</button>
-                <button id="closeScoreBtn" class="flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">Close</button>
+            <div class="flex flex-col gap-3">
+                <button id="replayWrongBtn" class="w-full py-3 px-4 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors hidden">Replay Wrong Cards</button>
+                <div class="flex gap-3">
+                    <button id="playAgainBtn" class="flex-1 py-3 px-4 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors">Play Again</button>
+                    <button id="closeScoreBtn" class="flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">Close</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.4 - Dim disabled next button
+// Version: 1.2.5 - Replay Wrong Cards feature
 
 class FlashCardApp {
     constructor() {
@@ -19,7 +19,9 @@ class FlashCardApp {
         this.cardResults = new Map(); // Track individual card results
         this.isFlipping = false; // Track if card is currently flipping
         this.cardAnswered = false; // Track if current card has been answered
-        
+        this.isReplayMode = false; // Track if replaying wrong cards
+        this.replayCards = []; // Cards to replay (wrong answers)
+
         this.initializeElements();
         this.setupEventListeners();
         this.loadSavedScores();
@@ -72,7 +74,8 @@ class FlashCardApp {
         this.detailedResults = document.getElementById('detailedResults');
         this.playAgainBtn = document.getElementById('playAgainBtn');
         this.closeScoreBtn = document.getElementById('closeScoreBtn');
-        
+        this.replayWrongBtn = document.getElementById('replayWrongBtn');
+
         // Previous scores
         this.previousScoresList = document.getElementById('previousScoresList');
         
@@ -117,7 +120,8 @@ class FlashCardApp {
         // Score modal
         this.playAgainBtn.addEventListener('click', () => this.restartGame());
         this.closeScoreBtn.addEventListener('click', () => this.returnToWelcome());
-        
+        this.replayWrongBtn.addEventListener('click', () => this.replayWrongCards());
+
         // Settings panel backdrop
         this.settingsPanel.addEventListener('click', (e) => {
             if (e.target === this.settingsPanel) {
@@ -277,9 +281,15 @@ class FlashCardApp {
     }
 
     displayCurrentCard() {
-        const cards = this.isSequential ? this.cards : this.shuffledCards;
-        const card = cards[this.currentIndex];
-        
+        // Get card from appropriate source based on mode
+        let card;
+        if (this.isReplayMode) {
+            card = this.replayCards[this.currentIndex];
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            card = cards[this.currentIndex];
+        }
+
         // Handle color display differently
         if (this.contentType === 'colors') {
             this.cardContent.textContent = '';
@@ -294,14 +304,17 @@ class FlashCardApp {
             const cardFront = document.querySelector('.card-front');
             cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
         }
-        
+
         this.updateProgress();
 
         // Reset card states
         this.cardInner.classList.remove('flipped');
 
-        // Check if this card was already answered
-        if (this.cardResults.has(card)) {
+        // In replay mode, always allow re-answering
+        if (this.isReplayMode) {
+            this.cardAnswered = false;
+            this.resetAnswerButtons();
+        } else if (this.cardResults.has(card)) {
             // Card was already answered - show which answer was given
             this.cardAnswered = true;
             const wasCorrect = this.cardResults.get(card);
@@ -345,17 +358,25 @@ class FlashCardApp {
 
     nextCard() {
         if (!this.gameStarted || this.isFlipping) return;
-        
-        const cards = this.isSequential ? this.cards : this.shuffledCards;
-        
+
+        let totalCards;
+        if (this.isReplayMode) {
+            totalCards = this.replayCards.length;
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            totalCards = cards.length;
+        }
+
         // Add current card to history for back navigation
         this.cardHistory.push(this.currentIndex);
-        
+
         // Animate card flip
         this.animateCardFlip(() => {
-            if (this.currentIndex < cards.length - 1) {
+            if (this.currentIndex < totalCards - 1) {
                 this.currentIndex++;
                 this.displayCurrentCard();
+            } else if (this.isReplayMode) {
+                this.endReplay();
             } else {
                 this.endGame();
             }
@@ -387,24 +408,44 @@ class FlashCardApp {
 
     markCard(isCorrect) {
         if (!this.gameStarted || this.isFlipping || this.cardAnswered) return;
-        
+
         // Mark this card as answered to prevent double-clicking
         this.cardAnswered = true;
-        
-        const cards = this.isSequential ? this.cards : this.shuffledCards;
-        const currentCard = cards[this.currentIndex];
-        
-        this.scores.total++;
-        this.cardResults.set(currentCard, isCorrect);
-        
-        if (isCorrect) {
-            this.scores.correct++;
-            this.flashFeedback('green');
+
+        // Get current card based on mode
+        let currentCard;
+        if (this.isReplayMode) {
+            currentCard = this.replayCards[this.currentIndex];
         } else {
-            this.scores.wrong++;
-            this.flashFeedback('red');
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            currentCard = cards[this.currentIndex];
         }
-        
+
+        if (this.isReplayMode) {
+            // In replay mode, only update if they got it correct (was wrong before)
+            if (isCorrect) {
+                this.scores.wrong--;
+                this.scores.correct++;
+                this.cardResults.set(currentCard, true);
+                this.flashFeedback('green');
+            } else {
+                // Still wrong, no score change
+                this.flashFeedback('red');
+            }
+        } else {
+            // Normal mode
+            this.scores.total++;
+            this.cardResults.set(currentCard, isCorrect);
+
+            if (isCorrect) {
+                this.scores.correct++;
+                this.flashFeedback('green');
+            } else {
+                this.scores.wrong++;
+                this.flashFeedback('red');
+            }
+        }
+
         // Auto-advance after a short delay
         setTimeout(() => {
             this.nextCard();
@@ -436,12 +477,19 @@ class FlashCardApp {
     }
 
     updateProgress() {
-        const cards = this.isSequential ? this.cards : this.shuffledCards;
-        const progress = ((this.currentIndex + 1) / cards.length) * 100;
-        
+        let totalCards;
+        if (this.isReplayMode) {
+            totalCards = this.replayCards.length;
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            totalCards = cards.length;
+        }
+
+        const progress = ((this.currentIndex + 1) / totalCards) * 100;
+
         this.progressBar.style.width = `${progress}%`;
         this.currentCard.textContent = this.currentIndex + 1;
-        this.totalCards.textContent = cards.length;
+        this.totalCards.textContent = totalCards;
     }
 
     updateNavigationButtons() {
@@ -452,21 +500,38 @@ class FlashCardApp {
 
     endGame() {
         this.gameStarted = false;
+        this.isReplayMode = false;
         this.saveScore();
         this.showScoreModal();
     }
 
+    endReplay() {
+        this.gameStarted = false;
+        this.isReplayMode = false;
+        this.replayCards = [];
+        this.updateSavedScore();
+        this.showScoreModal();
+    }
+
     showScoreModal() {
-        const accuracy = this.scores.total > 0 ? 
+        const accuracy = this.scores.total > 0 ?
             Math.round((this.scores.correct / this.scores.total) * 100) : 0;
-        
+
         this.totalCardsScore.textContent = this.scores.total;
         this.correctScore.textContent = this.scores.correct;
         this.wrongScore.textContent = this.scores.wrong;
         this.accuracyScore.textContent = `${accuracy}%`;
-        
+
         this.displayDetailedResults();
-        
+
+        // Show replay button only if there are wrong answers
+        if (this.scores.wrong > 0) {
+            this.replayWrongBtn.classList.remove('hidden');
+            this.replayWrongBtn.textContent = `Replay Wrong Cards (${this.scores.wrong})`;
+        } else {
+            this.replayWrongBtn.classList.add('hidden');
+        }
+
         this.scoreModal.classList.remove('hidden');
         setTimeout(() => {
             this.scoreModal.classList.add('show');
@@ -506,7 +571,39 @@ class FlashCardApp {
 
     restartGame() {
         this.hideScoreModal();
+        this.isReplayMode = false;
         this.startGame();
+    }
+
+    replayWrongCards() {
+        // Get all cards that were marked wrong
+        this.replayCards = [];
+        for (const [card, isCorrect] of this.cardResults) {
+            if (!isCorrect) {
+                this.replayCards.push(card);
+            }
+        }
+
+        if (this.replayCards.length === 0) return;
+
+        // Enter replay mode
+        this.isReplayMode = true;
+        this.currentIndex = 0;
+        this.cardHistory = [];
+        this.gameStarted = true;
+
+        // Hide score modal and show game UI
+        this.hideScoreModal();
+        this.welcomeCard.classList.add('hidden');
+        this.flashCard.classList.remove('hidden');
+        this.gameControls.classList.remove('hidden');
+        this.progressContainer.classList.remove('hidden');
+        this.tapHint.classList.remove('hidden');
+        this.exitBtn.classList.remove('hidden');
+        this.cardContainer.classList.add('game-mode');
+
+        this.updateProgress();
+        this.displayCurrentCard();
     }
 
     returnToWelcome() {
@@ -535,6 +632,22 @@ class FlashCardApp {
             savedScores = savedScores.slice(-50);
         }
         
+        localStorage.setItem('flashCardScores', JSON.stringify(savedScores));
+    }
+
+    updateSavedScore() {
+        // Update the most recent saved score with new results after replay
+        let savedScores = JSON.parse(localStorage.getItem('flashCardScores') || '[]');
+
+        if (savedScores.length === 0) return;
+
+        // Update the last saved score (most recent session)
+        const lastIndex = savedScores.length - 1;
+        savedScores[lastIndex].scores = { ...this.scores };
+        savedScores[lastIndex].accuracy = this.scores.total > 0 ?
+            Math.round((this.scores.correct / this.scores.total) * 100) : 0;
+        savedScores[lastIndex].cardResults = Object.fromEntries(this.cardResults);
+
         localStorage.setItem('flashCardScores', JSON.stringify(savedScores));
     }
 
@@ -703,8 +816,9 @@ class FlashCardApp {
         });
         modalTitle.textContent = formattedDate;
         
-        // Hide play again button for previous scores
+        // Hide play again and replay buttons for previous scores
         this.playAgainBtn.style.display = 'none';
+        this.replayWrongBtn.classList.add('hidden');
         this.closeScoreBtn.textContent = 'Close';
         this.closeScoreBtn.className = 'w-full py-3 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors';
         
@@ -721,6 +835,7 @@ class FlashCardApp {
             // Reset modal for regular game sessions
             this.scoreModal.querySelector('h2').textContent = 'Session Complete! 🎉';
             this.playAgainBtn.style.display = 'block';
+            this.replayWrongBtn.classList.add('hidden');
             this.closeScoreBtn.textContent = 'Close';
             this.closeScoreBtn.className = 'flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors';
         }, 300);
@@ -729,6 +844,8 @@ class FlashCardApp {
     // Reset app to initial state
     resetApp() {
         this.gameStarted = false;
+        this.isReplayMode = false;
+        this.replayCards = [];
         this.currentIndex = 0;
         this.cardHistory = [];
         this.cardResults = new Map();
@@ -822,11 +939,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.4';
+    const version = '1.2.5';
     const buildDate = new Date().toISOString().split('T')[0];
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Dim disabled next button`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Replay Wrong Cards feature`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
