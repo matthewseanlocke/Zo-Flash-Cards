@@ -108,6 +108,20 @@
 
             <!-- Flash Card -->
             <div id="flashCard" class="absolute inset-0 hidden">
+                <!-- Hint Popup (appears above card) -->
+                <div id="hintOverlay" class="hint-overlay hidden">
+                    <div class="hint-content">
+                        <div class="hint-letter" id="hintCurrentLetter"></div>
+                        <div class="hint-divider"></div>
+                        <div class="hint-letter" id="hintSimilarLetter"></div>
+                    </div>
+                </div>
+                <!-- Hint Button Overlay -->
+                <button id="hintBtn" class="hint-btn hidden" title="Hold to show similar letter">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </button>
                 <div class="card-inner relative w-full h-full transition-transform duration-700 transform-style-preserve-3d">
                     <!-- Front of Card -->
                     <div class="card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden">
@@ -128,15 +142,15 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
             </button>
-            
+
             <button id="correctBtn" class="bg-green-500 text-white px-6 py-3 rounded-full shadow-lg font-medium">
                 ✓ Correct
             </button>
-            
+
             <button id="wrongBtn" class="bg-red-500 text-white px-6 py-3 rounded-full shadow-lg font-medium">
                 ✗ Wrong
             </button>
-            
+
             <button id="nextBtn" class="bg-white/20 backdrop-blur-sm text-white p-3 rounded-full shadow-lg disabled:opacity-50">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

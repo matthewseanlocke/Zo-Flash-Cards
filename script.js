@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.8 - Fresh buttons in replay mode
+// Version: 1.3.0 - Added hint button for similar letters
 
 class FlashCardApp {
     constructor() {
@@ -22,6 +22,20 @@ class FlashCardApp {
         this.isReplayMode = false; // Track if replaying wrong cards
         this.replayCards = []; // Cards to replay (wrong answers)
         this.replayCount = 0; // Track number of replay attempts
+
+        // Similar letter mappings for hints (case-specific)
+        this.similarLetters = {
+            // Lowercase only
+            'i': 'j', 'j': 'i',  // lowercase i and j look similar
+            'p': 'q', 'q': 'p',  // lowercase p and q are mirror images
+            'b': 'd', 'd': 'b',  // lowercase b and d are mirror images
+            // Uppercase only
+            'E': 'F', 'F': 'E',  // uppercase E and F look similar
+            'B': 'P', 'P': 'B',  // uppercase B and P look similar
+            // Both cases
+            'M': 'N', 'N': 'M',  // M and N look similar
+            'm': 'n', 'n': 'm',  // m and n look similar
+        };
 
         this.initializeElements();
         this.setupEventListeners();
@@ -58,7 +72,13 @@ class FlashCardApp {
         this.nextBtn = document.getElementById('nextBtn');
         this.correctBtn = document.getElementById('correctBtn');
         this.wrongBtn = document.getElementById('wrongBtn');
+        this.hintBtn = document.getElementById('hintBtn');
         this.tapHint = document.getElementById('tapHint');
+
+        // Hint overlay elements
+        this.hintOverlay = document.getElementById('hintOverlay');
+        this.hintCurrentLetter = document.getElementById('hintCurrentLetter');
+        this.hintSimilarLetter = document.getElementById('hintSimilarLetter');
         
         // Progress
         this.progressContainer = document.getElementById('progressContainer');
@@ -117,6 +137,16 @@ class FlashCardApp {
         this.nextBtn.addEventListener('click', () => this.nextCard());
         this.correctBtn.addEventListener('click', () => this.markCard(true));
         this.wrongBtn.addEventListener('click', () => this.markCard(false));
+        // Hint button - hold to show, release to hide
+        this.hintBtn.addEventListener('mousedown', () => this.showHint());
+        this.hintBtn.addEventListener('mouseup', () => this.hideHint());
+        this.hintBtn.addEventListener('mouseleave', () => this.hideHint());
+        this.hintBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.showHint();
+        });
+        this.hintBtn.addEventListener('touchend', () => this.hideHint());
+        this.hintBtn.addEventListener('touchcancel', () => this.hideHint());
         
         // Card tap functionality removed - users must use Correct/Wrong buttons
         
@@ -168,6 +198,13 @@ class FlashCardApp {
                 case 'C':
                 case ' ':
                     this.markCard(true); // Correct (spacebar now marks correct)
+                    break;
+                case 'h':
+                case 'H':
+                    this.toggleHint(); // Toggle hint for similar letters
+                    break;
+                case 'Escape':
+                    this.hideHint(); // Hide hint popup
                     break;
             }
         });
@@ -332,6 +369,7 @@ class FlashCardApp {
         }
 
         this.updateNavigationButtons();
+        this.updateHintButton();
     }
 
     highlightPreviousAnswer(wasCorrect) {
@@ -501,6 +539,131 @@ class FlashCardApp {
             cardContent.textContent = originalText;
             cardContent.className = originalClassName;
         }, 300);
+    }
+
+    // Get the similar letter for the current card (if any)
+    // Returns { current, similar } with just the case-specific letters
+    getSimilarLetter(card) {
+        if (this.contentType !== 'letters') return null;
+
+        if (this.letterCase === 'uppercase') {
+            // Check uppercase mapping only
+            const upper = card.charAt(0);
+            if (this.similarLetters[upper]) {
+                return { current: upper, similar: this.similarLetters[upper] };
+            }
+        } else if (this.letterCase === 'lowercase') {
+            // Check lowercase mapping only
+            const lower = card.charAt(0);
+            if (this.similarLetters[lower]) {
+                return { current: lower, similar: this.similarLetters[lower] };
+            }
+        } else {
+            // Both mode (e.g., "Bb") - show only the similar case
+            const upper = card.charAt(0);
+            const lower = card.charAt(1);
+
+            // Check if both cases are similar (Mm/Nn)
+            if (this.similarLetters[lower] && this.similarLetters[upper]) {
+                const similarLower = this.similarLetters[lower];
+                const similarUpper = this.similarLetters[upper];
+                // If both map to the same letter (M→N and m→n), show both cases
+                if (similarLower.toUpperCase() === similarUpper) {
+                    return { current: card, similar: `${similarUpper}${similarLower}` };
+                }
+            }
+
+            // Otherwise show just the specific case that's similar
+            if (this.similarLetters[lower]) {
+                // Lowercase similarity (e.g., b→d)
+                return { current: lower, similar: this.similarLetters[lower] };
+            } else if (this.similarLetters[upper]) {
+                // Uppercase similarity (e.g., E→F)
+                return { current: upper, similar: this.similarLetters[upper] };
+            }
+        }
+
+        return null;
+    }
+
+    // Update hint button visibility based on current card
+    updateHintButton() {
+        // Clear any pending hint button timeout
+        if (this.hintBtnTimeout) {
+            clearTimeout(this.hintBtnTimeout);
+            this.hintBtnTimeout = null;
+        }
+
+        // Always hide immediately first
+        this.hintBtn.classList.add('hidden');
+        this.hintBtn.classList.remove('hint-btn-appear');
+
+        if (this.contentType !== 'letters') {
+            return;
+        }
+
+        // Get current card
+        let card;
+        if (this.isReplayMode) {
+            card = this.replayCards[this.currentIndex];
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            card = cards[this.currentIndex];
+        }
+
+        const similarLetter = this.getSimilarLetter(card);
+        if (similarLetter) {
+            // Delay showing the button until after the card flip completes
+            this.hintBtnTimeout = setTimeout(() => {
+                this.hintBtn.classList.remove('hidden');
+                // Trigger reflow to restart animation
+                void this.hintBtn.offsetWidth;
+                this.hintBtn.classList.add('hint-btn-appear');
+            }, 450);
+        }
+    }
+
+    showHint() {
+        // Only show hint for letters with similar counterparts
+        if (this.contentType !== 'letters') return;
+
+        // Get current card
+        let card;
+        if (this.isReplayMode) {
+            card = this.replayCards[this.currentIndex];
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            card = cards[this.currentIndex];
+        }
+
+        const hint = this.getSimilarLetter(card);
+        if (!hint) return;
+
+        // Sort alphabetically so order is always consistent (b|d not d|b)
+        const letters = [hint.current, hint.similar].sort((a, b) =>
+            a.toLowerCase().localeCompare(b.toLowerCase())
+        );
+
+        // Populate the hint overlay
+        this.hintCurrentLetter.textContent = letters[0];
+        this.hintSimilarLetter.textContent = letters[1];
+
+        // Show the popup
+        this.hintOverlay.classList.remove('hidden');
+        this.hintOverlay.classList.add('show');
+    }
+
+    hideHint() {
+        this.hintOverlay.classList.remove('show');
+        this.hintOverlay.classList.add('hidden');
+    }
+
+    toggleHint() {
+        if (this.hintOverlay.classList.contains('show')) {
+            this.hideHint();
+        } else {
+            this.showHint();
+        }
     }
 
     updateProgress() {
@@ -998,11 +1161,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.8';
+    const version = '1.3.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Fresh buttons in replay mode`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Added hint button for similar letters`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
