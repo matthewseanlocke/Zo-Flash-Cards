@@ -37,6 +37,14 @@ class FlashCardApp {
             'm': 'n', 'n': 'm',  // m and n look similar
         };
 
+        // Icon hints - associate letters with memorable images
+        this.letterIcons = {
+            'S': '🐍',  // Snake
+            's': '🐍',
+            'U': '☂️',  // Umbrella
+            'u': '☂️',
+        };
+
         this.initializeElements();
         this.setupEventListeners();
         this.loadSavedScores();
@@ -75,10 +83,8 @@ class FlashCardApp {
         this.hintBtn = document.getElementById('hintBtn');
         this.tapHint = document.getElementById('tapHint');
 
-        // Hint overlay elements
+        // Hint overlay element
         this.hintOverlay = document.getElementById('hintOverlay');
-        this.hintCurrentLetter = document.getElementById('hintCurrentLetter');
-        this.hintSimilarLetter = document.getElementById('hintSimilarLetter');
         
         // Progress
         this.progressContainer = document.getElementById('progressContainer');
@@ -341,7 +347,8 @@ class FlashCardApp {
             cardFront.className = `card-face card-front absolute inset-0 rounded-2xl shadow-2xl flex items-center justify-center backface-hidden color-${card.toLowerCase()} color-card`;
         } else {
             this.cardContent.textContent = card;
-            this.cardContent.className = '';
+            // Scale down in "both" mode since showing two letters (e.g., "Ww")
+            this.cardContent.className = this.letterCase === 'both' ? 'both-mode' : '';
             // Reset card face to default white background
             const cardFront = document.querySelector('.card-front');
             cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
@@ -541,25 +548,39 @@ class FlashCardApp {
         }, 300);
     }
 
-    // Get the similar letter for the current card (if any)
-    // Returns { current, similar } with just the case-specific letters
-    getSimilarLetter(card) {
+    // Get hint data for the current card (if any)
+    // Returns { type: 'letters', letters: [...] } or { type: 'icon', letter: '...', icon: '...' }
+    getHintData(card) {
         if (this.contentType !== 'letters') return null;
 
+        // Helper to build the full group from a letter and its similar letters
+        const buildGroup = (letter, similar) => {
+            const similarArray = Array.isArray(similar) ? similar : [similar];
+            return { type: 'letters', letters: [letter, ...similarArray] };
+        };
+
+        // Helper to check for icon hint
+        const getIconHint = (letter, displayLetter) => {
+            if (this.letterIcons[letter]) {
+                return { type: 'icon', letter: displayLetter, icon: this.letterIcons[letter] };
+            }
+            return null;
+        };
+
         if (this.letterCase === 'uppercase') {
-            // Check uppercase mapping only
             const upper = card.charAt(0);
             if (this.similarLetters[upper]) {
-                return { current: upper, similar: this.similarLetters[upper] };
+                return buildGroup(upper, this.similarLetters[upper]);
             }
+            return getIconHint(upper, upper);
         } else if (this.letterCase === 'lowercase') {
-            // Check lowercase mapping only
             const lower = card.charAt(0);
             if (this.similarLetters[lower]) {
-                return { current: lower, similar: this.similarLetters[lower] };
+                return buildGroup(lower, this.similarLetters[lower]);
             }
+            return getIconHint(lower, lower);
         } else {
-            // Both mode (e.g., "Bb") - show only the similar case
+            // Both mode (e.g., "Bb") - check similar letters first
             const upper = card.charAt(0);
             const lower = card.charAt(1);
 
@@ -567,20 +588,22 @@ class FlashCardApp {
             if (this.similarLetters[lower] && this.similarLetters[upper]) {
                 const similarLower = this.similarLetters[lower];
                 const similarUpper = this.similarLetters[upper];
-                // If both map to the same letter (M→N and m→n), show both cases
-                if (similarLower.toUpperCase() === similarUpper) {
-                    return { current: card, similar: `${similarUpper}${similarLower}` };
+                if (!Array.isArray(similarLower) && !Array.isArray(similarUpper) &&
+                    similarLower.toUpperCase() === similarUpper) {
+                    return { type: 'letters', letters: [card, `${similarUpper}${similarLower}`] };
                 }
             }
 
-            // Otherwise show just the specific case that's similar
+            // Check lowercase similarity
             if (this.similarLetters[lower]) {
-                // Lowercase similarity (e.g., b→d)
-                return { current: lower, similar: this.similarLetters[lower] };
-            } else if (this.similarLetters[upper]) {
-                // Uppercase similarity (e.g., E→F)
-                return { current: upper, similar: this.similarLetters[upper] };
+                return buildGroup(lower, this.similarLetters[lower]);
             }
+            // Check uppercase similarity
+            if (this.similarLetters[upper]) {
+                return buildGroup(upper, this.similarLetters[upper]);
+            }
+            // Check for icon hint (use uppercase version for display)
+            return getIconHint(upper, card);
         }
 
         return null;
@@ -611,8 +634,8 @@ class FlashCardApp {
             card = cards[this.currentIndex];
         }
 
-        const similarLetter = this.getSimilarLetter(card);
-        if (similarLetter) {
+        const hintData = this.getHintData(card);
+        if (hintData) {
             // Delay showing the button until after the card flip completes
             this.hintBtnTimeout = setTimeout(() => {
                 this.hintBtn.classList.remove('hidden');
@@ -624,7 +647,7 @@ class FlashCardApp {
     }
 
     showHint() {
-        // Only show hint for letters with similar counterparts
+        // Only show hint for letters
         if (this.contentType !== 'letters') return;
 
         // Get current card
@@ -636,17 +659,43 @@ class FlashCardApp {
             card = cards[this.currentIndex];
         }
 
-        const hint = this.getSimilarLetter(card);
-        if (!hint) return;
+        const hintData = this.getHintData(card);
+        if (!hintData) return;
 
-        // Sort alphabetically so order is always consistent (b|d not d|b)
-        const letters = [hint.current, hint.similar].sort((a, b) =>
-            a.toLowerCase().localeCompare(b.toLowerCase())
-        );
+        // Build the hint content dynamically
+        const hintContent = this.hintOverlay.querySelector('.hint-content');
+        hintContent.innerHTML = '';
 
-        // Populate the hint overlay
-        this.hintCurrentLetter.textContent = letters[0];
-        this.hintSimilarLetter.textContent = letters[1];
+        if (hintData.type === 'letters') {
+            // Sort alphabetically so order is always consistent (B|P not P|B)
+            hintData.letters.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+            hintData.letters.forEach((letter, index) => {
+                // Add letter
+                const letterDiv = document.createElement('div');
+                letterDiv.className = 'hint-letter';
+                letterDiv.textContent = letter;
+                hintContent.appendChild(letterDiv);
+
+                // Add divider between letters (not after the last one)
+                if (index < hintData.letters.length - 1) {
+                    const divider = document.createElement('div');
+                    divider.className = 'hint-divider';
+                    hintContent.appendChild(divider);
+                }
+            });
+        } else if (hintData.type === 'icon') {
+            // Show letter and icon side by side
+            const letterDiv = document.createElement('div');
+            letterDiv.className = 'hint-letter';
+            letterDiv.textContent = hintData.letter;
+            hintContent.appendChild(letterDiv);
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'hint-icon';
+            iconDiv.textContent = hintData.icon;
+            hintContent.appendChild(iconDiv);
+        }
 
         // Show the popup
         this.hintOverlay.classList.remove('hidden');

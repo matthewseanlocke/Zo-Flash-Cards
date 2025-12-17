@@ -49,6 +49,10 @@
     #cardContent {
         font-size: 14rem !important; /* Much bigger for small mobile devices */
     }
+
+    #cardContent.both-mode {
+        font-size: 11rem !important;
+    }
     
     .card-back .text-2xl {
         font-size: 1.5rem;
@@ -86,15 +90,23 @@
         width: 320px;
         height: 480px;
     }
-    
+
     #cardContent {
         font-size: 20rem !important; /* Much larger on medium screens */
+    }
+
+    #cardContent.both-mode {
+        font-size: 16rem !important;
     }
 }
 
 @media (min-width: 769px) {
     #cardContent {
         font-size: 24rem !important; /* Massive on bigger screens */
+    }
+
+    #cardContent.both-mode {
+        font-size: 19rem !important;
     }
 }
 
@@ -207,6 +219,7 @@ button:active {
 
 /* Card content styling for better readability */
 #cardContent {
+    font-family: 'Andika', sans-serif;
     font-size: 22rem; /* Much larger for better visibility */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     user-select: none;
@@ -218,6 +231,11 @@ button:active {
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+/* Scale down letters in "both" mode (showing two letters like "Aa") */
+#cardContent.both-mode {
+    font-size: 18rem;
 }
 
 /* Progress bar styling */
@@ -646,7 +664,7 @@ body {
 /* Hint Popup Styles */
 .hint-overlay {
     position: absolute;
-    top: 15%;
+    top: 8%;
     left: 50%;
     transform: translateX(-50%) scale(0.9);
     z-index: 55;
@@ -677,6 +695,7 @@ body {
 }
 
 .hint-letter {
+    font-family: 'Andika', sans-serif;
     font-size: 3.5rem;
     font-weight: 700;
     color: #1f2937;
@@ -692,6 +711,12 @@ body {
     border-radius: 2px;
 }
 
+.hint-icon {
+    font-size: 3rem;
+    line-height: 1;
+    margin-left: 0.5rem;
+}
+
 .hint-label {
     display: none;
 }
@@ -699,7 +724,7 @@ body {
 /* Hint popup responsive adjustments */
 @media (max-width: 480px) {
     .hint-overlay {
-        top: 12%;
+        top: 5%;
     }
 
     .hint-content {
@@ -715,11 +740,15 @@ body {
     .hint-divider {
         height: 40px;
     }
+
+    .hint-icon {
+        font-size: 2.5rem;
+    }
 }
 
 @media (min-width: 769px) {
     .hint-overlay {
-        top: 18%;
+        top: 10%;
     }
 
     .hint-content {
@@ -734,6 +763,10 @@ body {
 
     .hint-divider {
         height: 65px;
+    }
+
+    .hint-icon {
+        font-size: 4rem;
     }
 }
 
