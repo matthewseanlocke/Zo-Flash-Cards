@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.6 - Change answers & track replay attempts
+// Version: 1.2.7 - Fix next button on already-answered cards
 
 class FlashCardApp {
     constructor() {
@@ -517,8 +517,19 @@ class FlashCardApp {
 
     updateNavigationButtons() {
         this.prevBtn.disabled = this.cardHistory.length === 0;
-        // Disable next button until card is answered
-        this.nextBtn.disabled = !this.cardAnswered;
+
+        // Get current card to check if already answered
+        let currentCard;
+        if (this.isReplayMode) {
+            currentCard = this.replayCards[this.currentIndex];
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            currentCard = cards[this.currentIndex];
+        }
+
+        // Enable next if card is answered OR was previously answered (can skip after viewing)
+        const wasAlreadyAnswered = this.cardResults.has(currentCard);
+        this.nextBtn.disabled = !this.cardAnswered && !wasAlreadyAnswered;
     }
 
     endGame() {
@@ -983,11 +994,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.6';
+    const version = '1.2.7';
     const buildDate = new Date().toISOString().split('T')[0];
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Change answers & track replay attempts`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Fix next button on already-answered cards`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
