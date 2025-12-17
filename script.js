@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.0 - Mobile Optimization Update
+// Version: 1.2.1 - Mobile Header Visibility Fix
 
 class FlashCardApp {
     constructor() {
@@ -780,11 +780,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.0';
+    const version = '1.2.1';
     const buildDate = new Date().toISOString().split('T')[0];
-    
+
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Mobile Optimization Update`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Mobile Header Visibility Fix`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
