@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.3 - Fix duplicate variable declaration
+// Version: 1.2.4 - Dim disabled next button
 
 class FlashCardApp {
     constructor() {
@@ -822,11 +822,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.3';
+    const version = '1.2.4';
     const buildDate = new Date().toISOString().split('T')[0];
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Fix duplicate variable declaration`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Dim disabled next button`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
