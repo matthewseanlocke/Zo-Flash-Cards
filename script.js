@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.2.2 - Answer Required Before Navigation
+// Version: 1.2.3 - Fix duplicate variable declaration
 
 class FlashCardApp {
     constructor() {
@@ -301,13 +301,10 @@ class FlashCardApp {
         this.cardInner.classList.remove('flipped');
 
         // Check if this card was already answered
-        const cards = this.isSequential ? this.cards : this.shuffledCards;
-        const currentCard = cards[this.currentIndex];
-
-        if (this.cardResults.has(currentCard)) {
+        if (this.cardResults.has(card)) {
             // Card was already answered - show which answer was given
             this.cardAnswered = true;
-            const wasCorrect = this.cardResults.get(currentCard);
+            const wasCorrect = this.cardResults.get(card);
             this.highlightPreviousAnswer(wasCorrect);
         } else {
             // Card not yet answered
@@ -825,11 +822,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.2.2';
+    const version = '1.2.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Answer Required Before Navigation`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Fix duplicate variable declaration`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
