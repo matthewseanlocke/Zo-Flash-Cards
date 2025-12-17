@@ -101,12 +101,14 @@
 /* Portrait mode optimization */
 @media (orientation: portrait) {
     body {
-        height: 100vh;
-        overflow: hidden;
+        min-height: 100dvh;
+        min-height: 100vh; /* Fallback for older browsers */
+        overflow-x: hidden;
     }
-    
+
     main {
-        height: calc(100vh - 60px);
+        min-height: calc(100dvh - 60px);
+        min-height: calc(100vh - 60px); /* Fallback for older browsers */
         padding: 0.5rem;
         padding-bottom: 1rem;
     }
