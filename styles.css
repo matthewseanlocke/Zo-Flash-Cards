@@ -238,6 +238,22 @@ button:active {
     font-size: 18rem;
 }
 
+/* Coloring canvas overlay */
+.coloring-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border-radius: 1rem;
+}
+
+.coloring-canvas.active {
+    pointer-events: auto;
+    cursor: crosshair;
+}
+
 /* Progress bar styling */
 #progressBar {
     background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);

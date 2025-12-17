@@ -85,6 +85,14 @@ class FlashCardApp {
 
         // Hint overlay element
         this.hintOverlay = document.getElementById('hintOverlay');
+
+        // Coloring canvas
+        this.coloringCanvas = document.getElementById('coloringCanvas');
+        this.coloringCtx = this.coloringCanvas.getContext('2d');
+        this.isDrawing = false;
+        this.lastX = 0;
+        this.lastY = 0;
+        this.letterMask = null; // Will store the letter shape mask
         
         // Progress
         this.progressContainer = document.getElementById('progressContainer');
@@ -153,6 +161,16 @@ class FlashCardApp {
         });
         this.hintBtn.addEventListener('touchend', () => this.hideHint());
         this.hintBtn.addEventListener('touchcancel', () => this.hideHint());
+
+        // Coloring canvas events
+        this.coloringCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+        this.coloringCanvas.addEventListener('mousemove', (e) => this.draw(e));
+        this.coloringCanvas.addEventListener('mouseup', () => this.stopDrawing());
+        this.coloringCanvas.addEventListener('mouseleave', () => this.stopDrawing());
+        this.coloringCanvas.addEventListener('touchstart', (e) => this.startDrawing(e));
+        this.coloringCanvas.addEventListener('touchmove', (e) => this.draw(e));
+        this.coloringCanvas.addEventListener('touchend', () => this.stopDrawing());
+        this.coloringCanvas.addEventListener('touchcancel', () => this.stopDrawing());
         
         // Card tap functionality removed - users must use Correct/Wrong buttons
         
@@ -377,6 +395,12 @@ class FlashCardApp {
 
         this.updateNavigationButtons();
         this.updateHintButton();
+
+        // Set up coloring canvas after a delay to ensure layout is fully settled
+        // Use requestAnimationFrame + setTimeout for more reliable timing
+        requestAnimationFrame(() => {
+            setTimeout(() => this.setupColoringCanvas(), 50);
+        });
     }
 
     highlightPreviousAnswer(wasCorrect) {
@@ -447,7 +471,10 @@ class FlashCardApp {
     animateCardFlip(callback) {
         this.isFlipping = true;
         this.cardInner.classList.add('flipped');
-        
+
+        // Clear coloring when flipping
+        this.clearColoringCanvas();
+
         setTimeout(() => {
             callback();
             setTimeout(() => {
@@ -527,11 +554,14 @@ class FlashCardApp {
     flashFeedback(color) {
         const card = document.querySelector('.card-front');
         const cardContent = this.cardContent;
-        
+
+        // Clear coloring before showing feedback
+        this.clearColoringCanvas();
+
         // Store original content
         const originalText = cardContent.textContent;
         const originalClassName = cardContent.className;
-        
+
         // Add pulse effect to card
         card.classList.add(`pulse-${color}`);
         
@@ -713,6 +743,201 @@ class FlashCardApp {
         } else {
             this.showHint();
         }
+    }
+
+    // Coloring functionality - uses canvas compositing for performance
+    async setupColoringCanvas() {
+        // Enable coloring for letters and numbers (not colors - they have colored backgrounds)
+        if (this.contentType !== 'letters' && this.contentType !== 'numbers') {
+            this.coloringCanvas.classList.remove('active');
+            return;
+        }
+
+        // Prevent race conditions with concurrent setup calls
+        const setupId = Date.now();
+        this.currentSetupId = setupId;
+
+        // Wait for card flip transition to fully complete
+        // The card-inner has transition: all 0.3s, and flip class is removed ~50ms after displayCurrentCard
+        // So we need to wait at least 350ms for the transition to finish
+        await new Promise(resolve => setTimeout(resolve, 400));
+        // Then wait for browser to paint final state
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        await new Promise(resolve => requestAnimationFrame(resolve)); // Double rAF for safety
+        if (this.currentSetupId !== setupId) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        this.canvasDpr = dpr;
+
+        // Get canvas parent dimensions (card-front)
+        const cardFront = this.coloringCanvas.parentElement;
+        const parentRect = cardFront.getBoundingClientRect();
+
+        const canvasWidth = Math.floor(parentRect.width * dpr);
+        const canvasHeight = Math.floor(parentRect.height * dpr);
+
+        // Set canvas internal size and CSS size explicitly
+        this.coloringCanvas.width = canvasWidth;
+        this.coloringCanvas.height = canvasHeight;
+        this.coloringCanvas.style.width = parentRect.width + 'px';
+        this.coloringCanvas.style.height = parentRect.height + 'px';
+
+        // Get fresh context reference after resize
+        this.coloringCtx = this.coloringCanvas.getContext('2d');
+        this.coloringCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        // Create the letter mask canvas at canvas center
+        await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
+        if (this.currentSetupId !== setupId) return;
+
+        // Enable the canvas for interaction
+        this.coloringCanvas.classList.add('active');
+    }
+
+    async createLetterMaskCanvas(width, height, dpr) {
+        // Create mask canvas that will be used for clipping
+        this.maskCanvas = document.createElement('canvas');
+        this.maskCanvas.width = width;
+        this.maskCanvas.height = height;
+        const maskCtx = this.maskCanvas.getContext('2d');
+
+        // Get the current letter text
+        const text = this.cardContent.textContent;
+        if (!text) return;
+
+        // Get computed styles from the card content
+        const computedStyle = window.getComputedStyle(this.cardContent);
+        const fontSizeCss = parseFloat(computedStyle.fontSize);
+
+        // Scale font size for device pixels
+        const fontSizeActual = fontSizeCss * dpr;
+
+        // Wait for Andika font to be loaded
+        try {
+            await document.fonts.load(`700 ${fontSizeActual}px Andika`);
+        } catch (e) {
+            // Font may already be loaded
+        }
+
+        // Draw letter at canvas center with slight vertical offset
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const yOffset = fontSizeActual * 0.15;
+
+        maskCtx.fillStyle = 'white';
+        maskCtx.font = `700 ${fontSizeActual}px Andika, sans-serif`;
+        maskCtx.textAlign = 'center';
+        maskCtx.textBaseline = 'middle';
+        maskCtx.fillText(text, centerX, centerY + yOffset);
+    }
+
+    getCanvasPos(e) {
+        const dpr = this.canvasDpr || 1;
+        const canvas = this.coloringCanvas;
+        const rect = canvas.getBoundingClientRect();
+
+        let clientX, clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        // Calculate position relative to canvas element
+        const cssX = clientX - rect.left;
+        const cssY = clientY - rect.top;
+
+        // Convert from CSS pixels to canvas pixels
+        // Using the ratio of canvas internal size to CSS size
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        return {
+            x: cssX * scaleX,
+            y: cssY * scaleY
+        };
+    }
+
+    startDrawing(e) {
+        if (!this.maskCanvas || (this.contentType !== 'letters' && this.contentType !== 'numbers')) return;
+
+        e.preventDefault();
+        this.isDrawing = true;
+        const pos = this.getCanvasPos(e);
+        this.lastX = pos.x;
+        this.lastY = pos.y;
+
+        // Draw a dot at the starting point
+        this.drawBrushStroke(pos.x, pos.y, pos.x, pos.y);
+    }
+
+    draw(e) {
+        if (!this.isDrawing || !this.maskCanvas) return;
+
+        e.preventDefault();
+        const pos = this.getCanvasPos(e);
+
+        // Draw stroke from last position to current
+        this.drawBrushStroke(this.lastX, this.lastY, pos.x, pos.y);
+
+        this.lastX = pos.x;
+        this.lastY = pos.y;
+    }
+
+    stopDrawing() {
+        this.isDrawing = false;
+    }
+
+    drawBrushStroke(x1, y1, x2, y2) {
+        if (!this.maskCanvas) return;
+
+        const ctx = this.coloringCtx;
+        const dpr = this.canvasDpr || 1;
+        const brushSize = 25 * dpr;
+
+        // Reuse temp canvas or create if needed
+        if (!this.tempCanvas || this.tempCanvas.width !== this.coloringCanvas.width) {
+            this.tempCanvas = document.createElement('canvas');
+            this.tempCanvas.width = this.coloringCanvas.width;
+            this.tempCanvas.height = this.coloringCanvas.height;
+            this.tempCtx = this.tempCanvas.getContext('2d');
+        }
+
+        const tempCtx = this.tempCtx;
+
+        // Clear temp canvas
+        tempCtx.clearRect(0, 0, this.tempCanvas.width, this.tempCanvas.height);
+
+        // Draw the stroke line on temp canvas
+        tempCtx.globalCompositeOperation = 'source-over';
+        tempCtx.strokeStyle = 'rgba(135, 206, 235, 0.9)';
+        tempCtx.lineWidth = brushSize;
+        tempCtx.lineCap = 'round';
+        tempCtx.lineJoin = 'round';
+        tempCtx.beginPath();
+        tempCtx.moveTo(x1, y1);
+        tempCtx.lineTo(x2, y2);
+        tempCtx.stroke();
+
+        // Use destination-in to keep only parts that overlap with mask
+        tempCtx.globalCompositeOperation = 'destination-in';
+        tempCtx.drawImage(this.maskCanvas, 0, 0);
+
+        // Draw the masked result onto main canvas
+        ctx.drawImage(this.tempCanvas, 0, 0);
+    }
+
+    clearColoringCanvas() {
+        if (this.coloringCanvas) {
+            this.coloringCtx = this.coloringCanvas.getContext('2d');
+            this.coloringCtx.clearRect(0, 0, this.coloringCanvas.width, this.coloringCanvas.height);
+        }
+        this.maskCanvas = null;
+        this.tempCanvas = null;
+        this.tempCtx = null;
+        this.coloringCanvas.classList.remove('active');
     }
 
     updateProgress() {
@@ -1121,6 +1346,9 @@ class FlashCardApp {
         this.cardHistory = [];
         this.cardResults = new Map();
         this.scores = { correct: 0, wrong: 0, total: 0 };
+
+        // Clear coloring canvas
+        this.clearColoringCanvas();
         
         this.flashCard.classList.add('hidden');
         this.welcomeCard.classList.remove('hidden');
