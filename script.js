@@ -830,7 +830,7 @@ class FlashCardApp {
         const verticalOffset = (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
 
         // Small additional offset to nudge mask down slightly
-        const finetuneOffset = fontSizeActual * 0.03;
+        const finetuneOffset = fontSizeActual * 0.04;
 
         maskCtx.fillStyle = 'white';
         maskCtx.textAlign = 'center';
@@ -1445,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.4.2';
+    const version = '1.4.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
