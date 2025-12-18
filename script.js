@@ -83,6 +83,7 @@ class FlashCardApp {
         this.lettersBtn = document.getElementById('lettersBtn');
         this.numbersBtn = document.getElementById('numbersBtn');
         this.colorsBtn = document.getElementById('colorsBtn');
+        this.shapesBtn = document.getElementById('shapesBtn');
         this.letterCaseSection = document.getElementById('letterCaseSection');
         this.sequentialBtn = document.getElementById('sequentialBtn');
         this.randomBtn = document.getElementById('randomBtn');
@@ -159,6 +160,7 @@ class FlashCardApp {
         this.lettersBtn.addEventListener('click', () => this.selectContentType('letters'));
         this.numbersBtn.addEventListener('click', () => this.selectContentType('numbers'));
         this.colorsBtn.addEventListener('click', () => this.selectContentType('colors'));
+        this.shapesBtn.addEventListener('click', () => this.selectContentType('shapes'));
         
         // Order selection
         this.sequentialBtn.addEventListener('click', () => this.selectOrder(true));
@@ -293,10 +295,17 @@ class FlashCardApp {
         } else if (this.contentType === 'colors') {
             // Basic colors
             const colors = [
-                'Red', 'Blue', 'Yellow', 'Green', 'Orange', 
+                'Red', 'Blue', 'Yellow', 'Green', 'Orange',
                 'Purple', 'Pink', 'Brown', 'Black', 'White'
             ];
             this.cards = [...colors];
+        } else if (this.contentType === 'shapes') {
+            // Basic shapes
+            const shapes = [
+                'Circle', 'Square', 'Triangle', 'Rectangle', 'Star',
+                'Heart', 'Oval', 'Diamond', 'Pentagon', 'Hexagon'
+            ];
+            this.cards = [...shapes];
         }
         
         // Create shuffled version for random mode
@@ -313,12 +322,13 @@ class FlashCardApp {
 
     selectContentType(type) {
         this.contentType = type;
-        
+
         // Reset all buttons to default state
         this.lettersBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
         this.numbersBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
         this.colorsBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
-        
+        this.shapesBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
+
         // Update selected button and show/hide letter case section
         if (type === 'letters') {
             this.lettersBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
@@ -328,6 +338,9 @@ class FlashCardApp {
             this.letterCaseSection.classList.add('hidden');
         } else if (type === 'colors') {
             this.colorsBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
+            this.letterCaseSection.classList.add('hidden');
+        } else if (type === 'shapes') {
+            this.shapesBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
             this.letterCaseSection.classList.add('hidden');
         }
     }
@@ -392,19 +405,25 @@ class FlashCardApp {
             card = cards[this.currentIndex];
         }
 
-        // Handle color display differently
+        // Handle different content types
+        const cardFront = document.querySelector('.card-front');
+
         if (this.contentType === 'colors') {
             this.cardContent.textContent = '';
             this.cardContent.className = '';
             // Apply color to the entire card face
-            const cardFront = document.querySelector('.card-front');
             cardFront.className = `card-face card-front absolute inset-0 rounded-2xl shadow-2xl flex items-center justify-center backface-hidden color-${card.toLowerCase()} color-card`;
+        } else if (this.contentType === 'shapes') {
+            // Display SVG shape
+            this.cardContent.innerHTML = this.getShapeSVG(card);
+            this.cardContent.className = 'shape-display';
+            // Reset card face to default white background
+            cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
         } else {
             this.cardContent.textContent = card;
             // Scale down in "both" mode since showing two letters (e.g., "Ww")
             this.cardContent.className = this.letterCase === 'both' ? 'both-mode' : '';
             // Reset card face to default white background
-            const cardFront = document.querySelector('.card-front');
             cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
         }
 
@@ -839,6 +858,43 @@ class FlashCardApp {
         this.iconHintOverlay.classList.add('hidden');
     }
 
+    // Get SVG markup for a shape
+    getShapeSVG(shapeName) {
+        const shapes = {
+            'Circle': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <circle cx="50" cy="50" r="45" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3"/>
+            </svg>`,
+            'Square': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <rect x="10" y="10" width="80" height="80" fill="#ef4444" stroke="#b91c1c" stroke-width="3"/>
+            </svg>`,
+            'Triangle': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <polygon points="50,5 95,95 5,95" fill="#22c55e" stroke="#15803d" stroke-width="3"/>
+            </svg>`,
+            'Rectangle': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <rect x="5" y="25" width="90" height="50" fill="#f97316" stroke="#c2410c" stroke-width="3"/>
+            </svg>`,
+            'Star': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="#eab308" stroke="#a16207" stroke-width="2"/>
+            </svg>`,
+            'Heart': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <path d="M50,88 C20,60 5,40 5,25 C5,10 20,5 35,5 C42,5 50,12 50,12 C50,12 58,5 65,5 C80,5 95,10 95,25 C95,40 80,60 50,88 Z" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+            </svg>`,
+            'Oval': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <ellipse cx="50" cy="50" rx="45" ry="30" fill="#a855f7" stroke="#7e22ce" stroke-width="3"/>
+            </svg>`,
+            'Diamond': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <polygon points="50,5 95,50 50,95 5,50" fill="#06b6d4" stroke="#0e7490" stroke-width="3"/>
+            </svg>`,
+            'Pentagon': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <polygon points="50,5 97,38 79,95 21,95 3,38" fill="#84cc16" stroke="#4d7c0f" stroke-width="3"/>
+            </svg>`,
+            'Hexagon': `<svg viewBox="0 0 100 100" class="shape-svg">
+                <polygon points="25,5 75,5 100,50 75,95 25,95 0,50" fill="#f43f5e" stroke="#be123c" stroke-width="3"/>
+            </svg>`
+        };
+        return shapes[shapeName] || '';
+    }
+
     // Animate hint buttons shrinking away
     animateHintButtonsHide() {
         // Only animate if buttons are visible
@@ -1149,15 +1205,31 @@ class FlashCardApp {
 
     displayDetailedResults() {
         this.detailedResults.innerHTML = '';
-        
+
+        // Set grid class based on content type
+        if (this.contentType === 'colors') {
+            this.detailedResults.className = 'grid grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg colors-grid';
+        } else if (this.contentType === 'shapes') {
+            this.detailedResults.className = 'grid grid-cols-5 gap-2 p-3 bg-gray-50 rounded-lg shapes-grid';
+        } else {
+            this.detailedResults.className = 'grid grid-cols-6 gap-2 p-3 bg-gray-50 rounded-lg';
+        }
+
         // Get all possible cards for this content type and case
         const allCards = [...this.cards];
-        
+
         allCards.forEach(card => {
             const resultItem = document.createElement('div');
             resultItem.className = 'result-item';
-            resultItem.textContent = card;
-            
+
+            // Handle shapes display
+            if (this.contentType === 'shapes') {
+                resultItem.innerHTML = this.getShapeResultIcon(card);
+                resultItem.classList.add('shape-result-item');
+            } else {
+                resultItem.textContent = card;
+            }
+
             if (this.cardResults.has(card)) {
                 const isCorrect = this.cardResults.get(card);
                 resultItem.classList.add(isCorrect ? 'result-correct' : 'result-wrong');
@@ -1166,9 +1238,26 @@ class FlashCardApp {
                 resultItem.classList.add('result-not-attempted');
                 resultItem.title = `${card}: Not attempted`;
             }
-            
+
             this.detailedResults.appendChild(resultItem);
         });
+    }
+
+    // Get small icon/symbol for shape in results
+    getShapeResultIcon(shapeName) {
+        const icons = {
+            'Circle': '●',
+            'Square': '■',
+            'Triangle': '▲',
+            'Rectangle': '▬',
+            'Star': '★',
+            'Heart': '♥',
+            'Oval': '⬭',
+            'Diamond': '◆',
+            'Pentagon': '⬠',
+            'Hexagon': '⬡'
+        };
+        return icons[shapeName] || shapeName;
     }
 
     hideScoreModal() {
@@ -1367,10 +1456,16 @@ class FlashCardApp {
 
         // Display detailed results if available
         this.detailedResults.innerHTML = '';
-        
+
         // Add content type class for styling
-        this.detailedResults.className = `grid gap-2 p-3 bg-gray-50 rounded-lg ${scoreData.contentType === 'colors' ? 'grid-cols-4 gap-3 colors-grid' : 'grid-cols-6'}`;
-        
+        let gridClass = 'grid-cols-6';
+        if (scoreData.contentType === 'colors') {
+            gridClass = 'grid-cols-4 gap-3 colors-grid';
+        } else if (scoreData.contentType === 'shapes') {
+            gridClass = 'grid-cols-5 gap-2 shapes-grid';
+        }
+        this.detailedResults.className = `grid gap-2 p-3 bg-gray-50 rounded-lg ${gridClass}`;
+
         if (scoreData.cardResults) {
             // Generate the full card set for this score's configuration
             let allCards = [];
@@ -1389,20 +1484,24 @@ class FlashCardApp {
                 allCards = Array.from({length: 10}, (_, i) => i.toString());
             } else if (scoreData.contentType === 'colors') {
                 allCards = ['Red', 'Blue', 'Yellow', 'Green', 'Orange', 'Purple', 'Pink', 'Brown', 'Black', 'White'];
+            } else if (scoreData.contentType === 'shapes') {
+                allCards = ['Circle', 'Square', 'Triangle', 'Rectangle', 'Star', 'Heart', 'Oval', 'Diamond', 'Pentagon', 'Hexagon'];
             }
-            
+
             allCards.forEach(card => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
-                
-                // Handle color display differently
+
+                // Handle special display for colors and shapes
                 if (scoreData.contentType === 'colors') {
-                    // Create a better color display with both color indicator and text
                     resultItem.innerHTML = `
                         <div class="color-indicator color-${card.toLowerCase()}"></div>
                         <span class="color-label">${card}</span>
                     `;
                     resultItem.classList.add('color-result-item');
+                } else if (scoreData.contentType === 'shapes') {
+                    resultItem.innerHTML = this.getShapeResultIcon(card);
+                    resultItem.classList.add('shape-result-item');
                 } else {
                     resultItem.textContent = card;
                 }
@@ -1564,7 +1663,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.6.8';
+    const version = '1.7.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
