@@ -135,23 +135,57 @@
     }
 }
 
-/* Landscape mode adjustments */
-@media (orientation: landscape) and (max-height: 600px) {
-    #cardContainer {
-        height: 60vh;
-        margin-bottom: 1rem;
+/* Landscape Mode Blocker - only show on mobile devices in landscape */
+.landscape-blocker {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    align-items: center;
+    justify-content: center;
+}
+
+.landscape-message {
+    text-align: center;
+    color: white;
+    padding: 2rem;
+}
+
+.rotate-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: rotatePhone 2s ease-in-out infinite;
+}
+
+@keyframes rotatePhone {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-30deg); }
+    75% { transform: rotate(30deg); }
+}
+
+.landscape-message h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.landscape-message p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Show landscape blocker on mobile devices in landscape orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    .landscape-blocker {
+        display: flex;
     }
-    
-    #cardContent {
-        font-size: 16rem !important; /* Much larger even in landscape mode */
-    }
-    
-    main {
-        padding: 1rem;
-    }
-    
-    nav {
-        padding: 0.75rem 1rem;
+}
+
+/* Also block on tablets in landscape if height is too small */
+@media (orientation: landscape) and (max-height: 600px) and (max-width: 1024px) {
+    .landscape-blocker {
+        display: flex;
     }
 }
 
@@ -266,6 +300,14 @@ body {
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    /* Disable pull-to-refresh */
+    overscroll-behavior: none;
+    overscroll-behavior-y: contain;
+}
+
+/* Disable double-tap to zoom */
+* {
+    touch-action: manipulation;
 }
 
 /* Allow text selection only in input fields */

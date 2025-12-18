@@ -989,7 +989,7 @@ class FlashCardApp {
     startDrawing(e) {
         if (!this.maskCanvas || (this.contentType !== 'letters' && this.contentType !== 'numbers')) return;
 
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         this.isDrawing = true;
         const pos = this.getCanvasPos(e);
         this.lastX = pos.x;
@@ -1002,7 +1002,7 @@ class FlashCardApp {
     draw(e) {
         if (!this.isDrawing || !this.maskCanvas) return;
 
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         const pos = this.getCanvasPos(e);
 
         // Draw stroke from last position to current
@@ -1564,7 +1564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.5.6';
+    const version = '1.6.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
