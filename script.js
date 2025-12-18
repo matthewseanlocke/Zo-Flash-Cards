@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.6.4 - Fixed landscape background and added hint button for similar letters
+// Version: 1.6.5 - Fixed landscape background and added hint button for similar letters
 
 class FlashCardApp {
     constructor() {
@@ -1564,7 +1564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.6.4';
+    const version = '1.6.5';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
@@ -1574,7 +1574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Fixed landscape background issue`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Fixed landscape background issue (again)`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
