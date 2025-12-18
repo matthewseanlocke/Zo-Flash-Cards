@@ -825,11 +825,12 @@ class FlashCardApp {
 
         maskCtx.font = `700 ${fontSizeActual}px Andika, sans-serif`;
 
-        // Use font metrics for accurate vertical centering
+        // Use font metrics for vertical centering
+        // Only use ascent to avoid descender letters (g, j, p, q, y) being offset differently
         const metrics = maskCtx.measureText(text);
-        const verticalOffset = (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
+        const verticalOffset = metrics.actualBoundingBoxAscent / 2;
 
-        // Small additional offset to nudge mask down slightly
+        // Fine-tune offset
         const finetuneOffset = fontSizeActual * 0.04;
 
         maskCtx.fillStyle = 'white';
@@ -1445,7 +1446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.4.3';
+    const version = '1.4.4';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
