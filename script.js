@@ -626,10 +626,10 @@ class FlashCardApp {
             }
         }
 
-        // Auto-advance after a short delay
+        // Auto-advance after feedback displays
         setTimeout(() => {
             this.nextCard();
-        }, 500);
+        }, 900);
     }
 
     flashFeedback(color) {
@@ -671,7 +671,7 @@ class FlashCardApp {
             card.classList.remove(`pulse-${color}`);
             cardContent.innerHTML = originalHTML;
             cardContent.className = originalClassName;
-        }, 300);
+        }, 700);
     }
 
     // Get similar letter hint data for the current card (if any)
@@ -1678,7 +1678,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.7.1';
+    const version = '1.7.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

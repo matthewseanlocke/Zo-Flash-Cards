@@ -738,12 +738,12 @@ body {
     box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2), 0 8px 32px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Feedback text styling - just a tiny symbol */
+/* Feedback text styling - symbol */
 .feedback-text {
-    font-size: 2rem !important;
+    font-size: 6rem !important;
     font-weight: 900 !important;
     color: white !important;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8) !important;
     animation: feedbackPop 0.3s ease-out !important;
 }
 
@@ -753,20 +753,24 @@ body {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0.5rem !important;
+    gap: 1rem !important;
 }
 
 .feedback-label {
-    font-size: 2rem !important;
+    font-size: 3.5rem !important;
     font-weight: 700 !important;
     color: white !important;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8) !important;
     font-family: 'Andika', sans-serif !important;
 }
 
 @media (max-width: 480px) {
+    .feedback-text {
+        font-size: 5rem !important;
+    }
+
     .feedback-label {
-        font-size: 1.5rem !important;
+        font-size: 2.5rem !important;
     }
 }
 
