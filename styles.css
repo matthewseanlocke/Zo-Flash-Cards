@@ -371,21 +371,23 @@ button:focus, input:focus {
 }
 
 /* Ensure the gradient background covers the full viewport */
-html, body {
+html {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    background: linear-gradient(to bottom right, #60a5fa, #a855f7, #ec4899);
 }
 
 body {
-    background-attachment: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    background: transparent;
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for mobile */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    /* Extend into safe areas on notched devices */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 /* Custom scrollbar for webkit browsers */
