@@ -827,13 +827,15 @@ class FlashCardApp {
 
         // Use font metrics for accurate vertical centering
         const metrics = maskCtx.measureText(text);
-        const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
         const verticalOffset = (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
+
+        // Small additional offset to nudge mask down slightly
+        const finetuneOffset = fontSizeActual * 0.03;
 
         maskCtx.fillStyle = 'white';
         maskCtx.textAlign = 'center';
         maskCtx.textBaseline = 'alphabetic';
-        maskCtx.fillText(text, centerX, centerY + verticalOffset);
+        maskCtx.fillText(text, centerX, centerY + verticalOffset + finetuneOffset);
     }
 
     getCanvasPos(e) {
@@ -1443,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.4.1';
+    const version = '1.4.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
