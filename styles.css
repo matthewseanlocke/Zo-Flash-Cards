@@ -371,9 +371,21 @@ button:focus, input:focus {
 }
 
 /* Ensure the gradient background covers the full viewport */
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 body {
     background-attachment: fixed;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* Custom scrollbar for webkit browsers */
