@@ -640,21 +640,36 @@ class FlashCardApp {
         this.clearColoringCanvas();
 
         // Store original content
-        const originalText = cardContent.textContent;
+        const originalHTML = cardContent.innerHTML;
         const originalClassName = cardContent.className;
 
         // Add pulse effect to card
         card.classList.add(`pulse-${color}`);
-        
-        // Show just the symbol, much smaller
-        const feedbackText = color === 'green' ? '✓' : '✗';
-        cardContent.textContent = feedbackText;
-        cardContent.className = 'feedback-text';
-        
+
+        // Show feedback symbol
+        const feedbackSymbol = color === 'green' ? '✓' : '✗';
+
+        // For shapes, also show the shape name
+        if (this.contentType === 'shapes') {
+            // Get current card name
+            let currentCard;
+            if (this.isReplayMode) {
+                currentCard = this.replayCards[this.currentIndex];
+            } else {
+                const cards = this.isSequential ? this.cards : this.shuffledCards;
+                currentCard = cards[this.currentIndex];
+            }
+            cardContent.innerHTML = `<div class="feedback-text">${feedbackSymbol}</div><div class="feedback-label">${currentCard}</div>`;
+            cardContent.className = 'feedback-container';
+        } else {
+            cardContent.textContent = feedbackSymbol;
+            cardContent.className = 'feedback-text';
+        }
+
         setTimeout(() => {
             // Remove pulse effect and restore original content
             card.classList.remove(`pulse-${color}`);
-            cardContent.textContent = originalText;
+            cardContent.innerHTML = originalHTML;
             cardContent.className = originalClassName;
         }, 300);
     }
@@ -883,7 +898,7 @@ class FlashCardApp {
                 <ellipse cx="50" cy="50" rx="45" ry="30" fill="#a855f7" stroke="#7e22ce" stroke-width="3"/>
             </svg>`,
             'Diamond': `<svg viewBox="0 0 100 100" class="shape-svg">
-                <polygon points="50,5 95,50 50,95 5,50" fill="#06b6d4" stroke="#0e7490" stroke-width="3"/>
+                <polygon points="50,2 85,50 50,98 15,50" fill="#06b6d4" stroke="#0e7490" stroke-width="3"/>
             </svg>`,
             'Pentagon': `<svg viewBox="0 0 100 100" class="shape-svg">
                 <polygon points="50,5 97,38 79,95 21,95 3,38" fill="#84cc16" stroke="#4d7c0f" stroke-width="3"/>
@@ -1663,7 +1678,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.7.0';
+    const version = '1.7.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
