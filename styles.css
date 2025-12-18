@@ -677,6 +677,22 @@ body {
     animation: hintBtnAppear 0.3s ease-out forwards;
 }
 
+/* Hint button disappear animation */
+@keyframes hintBtnDisappear {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.hint-btn-disappear {
+    animation: hintBtnDisappear 0.15s ease-in forwards;
+}
+
 /* Hint Popup Styles */
 .hint-overlay {
     position: absolute;
@@ -737,6 +753,113 @@ body {
     display: none;
 }
 
+/* Icon Hint Button Styles (blue, top left) */
+.icon-hint-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #3b82f6;
+    border: 3px solid #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.icon-hint-btn:hover {
+    background: #3b82f6;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.icon-hint-btn:active {
+    transform: scale(0.95);
+}
+
+.icon-hint-btn.hidden {
+    display: none;
+}
+
+/* Icon hint button appear animation */
+@keyframes iconHintBtnAppear {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.icon-hint-btn-appear {
+    animation: iconHintBtnAppear 0.3s ease-out forwards;
+}
+
+/* Icon hint button disappear animation */
+@keyframes iconHintBtnDisappear {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.icon-hint-btn-disappear {
+    animation: iconHintBtnDisappear 0.15s ease-in forwards;
+}
+
+/* Icon Hint Popup Styles */
+.icon-hint-overlay {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    z-index: 55;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
+}
+
+.icon-hint-overlay.show {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+.icon-hint-overlay.hidden {
+    display: none;
+}
+
+.icon-hint-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    border: 3px solid #3b82f6;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+}
+
+.icon-hint-icon {
+    font-size: 5rem;
+    line-height: 1;
+}
+
 /* Hint popup responsive adjustments */
 @media (max-width: 480px) {
     .hint-overlay {
@@ -759,6 +882,18 @@ body {
 
     .hint-icon {
         font-size: 2.5rem;
+    }
+
+    .icon-hint-overlay {
+        top: 5%;
+    }
+
+    .icon-hint-content {
+        padding: 1rem 1.25rem;
+    }
+
+    .icon-hint-icon {
+        font-size: 4rem;
     }
 }
 
@@ -783,6 +918,18 @@ body {
 
     .hint-icon {
         font-size: 4rem;
+    }
+
+    .icon-hint-overlay {
+        top: 10%;
+    }
+
+    .icon-hint-content {
+        padding: 2rem 2.5rem;
+    }
+
+    .icon-hint-icon {
+        font-size: 6rem;
     }
 }
 

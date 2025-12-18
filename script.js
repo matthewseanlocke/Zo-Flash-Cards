@@ -39,10 +39,32 @@ class FlashCardApp {
 
         // Icon hints - associate letters with memorable images
         this.letterIcons = {
-            'S': '🐍',  // Snake
-            's': '🐍',
-            'U': '☂️',  // Umbrella
-            'u': '☂️',
+            'A': '🍎', 'a': '🍎',  // Apple
+            'B': '🐻', 'b': '🐻',  // Bear
+            'C': '🐱', 'c': '🐱',  // Cat
+            'D': '🐕', 'd': '🐕',  // Dog
+            'E': '🐘', 'e': '🐘',  // Elephant
+            'F': '🐸', 'f': '🐸',  // Frog
+            'G': '🍇', 'g': '🍇',  // Grapes
+            'H': '🏠', 'h': '🏠',  // House
+            'I': '🍦', 'i': '🍦',  // Ice cream
+            'J': '🪼', 'j': '🪼',  // Jellyfish
+            'K': '🪁', 'k': '🪁',  // Kite
+            'L': '🦁', 'l': '🦁',  // Lion
+            'M': '🐭', 'm': '🐭',  // Mouse
+            'N': '👃', 'n': '👃',  // Nose
+            'O': '🐙', 'o': '🐙',  // Octopus
+            'P': '🐷', 'p': '🐷',  // Pig
+            'Q': '👸', 'q': '👸',  // Queen
+            'R': '🌈', 'r': '🌈',  // Rainbow
+            'S': '🐍', 's': '🐍',  // Snake
+            'T': '🐢', 't': '🐢',  // Turtle
+            'U': '☂️', 'u': '☂️',  // Umbrella
+            'V': '🎻', 'v': '🎻',  // Violin
+            'W': '🐋', 'w': '🐋',  // Whale
+            'X': '🩻', 'x': '🩻',  // X-ray
+            'Y': '🪀', 'y': '🪀',  // Yo-yo
+            'Z': '🦓', 'z': '🦓',  // Zebra
         };
 
         this.initializeElements();
@@ -81,10 +103,13 @@ class FlashCardApp {
         this.correctBtn = document.getElementById('correctBtn');
         this.wrongBtn = document.getElementById('wrongBtn');
         this.hintBtn = document.getElementById('hintBtn');
+        this.iconHintBtn = document.getElementById('iconHintBtn');
         this.tapHint = document.getElementById('tapHint');
 
-        // Hint overlay element
+        // Hint overlay elements
         this.hintOverlay = document.getElementById('hintOverlay');
+        this.iconHintOverlay = document.getElementById('iconHintOverlay');
+        this.iconHintEmoji = document.getElementById('iconHintEmoji');
 
         // Coloring canvas
         this.coloringCanvas = document.getElementById('coloringCanvas');
@@ -151,7 +176,7 @@ class FlashCardApp {
         this.nextBtn.addEventListener('click', () => this.nextCard());
         this.correctBtn.addEventListener('click', () => this.markCard(true));
         this.wrongBtn.addEventListener('click', () => this.markCard(false));
-        // Hint button - hold to show, release to hide
+        // Similar letter hint button - hold to show, release to hide
         this.hintBtn.addEventListener('mousedown', () => this.showHint());
         this.hintBtn.addEventListener('mouseup', () => this.hideHint());
         this.hintBtn.addEventListener('mouseleave', () => this.hideHint());
@@ -161,6 +186,17 @@ class FlashCardApp {
         });
         this.hintBtn.addEventListener('touchend', () => this.hideHint());
         this.hintBtn.addEventListener('touchcancel', () => this.hideHint());
+
+        // Icon hint button - hold to show, release to hide
+        this.iconHintBtn.addEventListener('mousedown', () => this.showIconHint());
+        this.iconHintBtn.addEventListener('mouseup', () => this.hideIconHint());
+        this.iconHintBtn.addEventListener('mouseleave', () => this.hideIconHint());
+        this.iconHintBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.showIconHint();
+        });
+        this.iconHintBtn.addEventListener('touchend', () => this.hideIconHint());
+        this.iconHintBtn.addEventListener('touchcancel', () => this.hideIconHint());
 
         // Coloring canvas events
         this.coloringCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
@@ -432,6 +468,10 @@ class FlashCardApp {
     }
 
     nextCard() {
+        // Hide hints immediately
+        this.hintOverlay.style.display = 'none';
+        this.iconHintOverlay.style.display = 'none';
+
         if (!this.gameStarted || this.isFlipping) return;
 
         let totalCards;
@@ -459,6 +499,10 @@ class FlashCardApp {
     }
 
     previousCard() {
+        // Hide hints immediately
+        this.hintOverlay.style.display = 'none';
+        this.iconHintOverlay.style.display = 'none';
+
         if (!this.gameStarted || this.cardHistory.length === 0 || this.isFlipping) return;
         
         // Animate card flip
@@ -470,10 +514,21 @@ class FlashCardApp {
 
     animateCardFlip(callback) {
         this.isFlipping = true;
-        this.cardInner.classList.add('flipped');
+
+        // Hide hints immediately (bypass CSS transitions with inline style)
+        this.hintOverlay.style.display = 'none';
+        this.hintOverlay.classList.remove('show');
+        this.hintOverlay.classList.add('hidden');
+
+        this.iconHintOverlay.style.display = 'none';
+        this.iconHintOverlay.classList.remove('show');
+        this.iconHintOverlay.classList.add('hidden');
 
         // Clear coloring when flipping
         this.clearColoringCanvas();
+
+        // Start the flip animation
+        this.cardInner.classList.add('flipped');
 
         setTimeout(() => {
             callback();
@@ -486,6 +541,13 @@ class FlashCardApp {
 
     markCard(isCorrect) {
         if (!this.gameStarted || this.isFlipping || this.cardAnswered) return;
+
+        // Animate hint buttons shrinking away
+        this.animateHintButtonsHide();
+
+        // Hide overlays immediately
+        this.hintOverlay.style.display = 'none';
+        this.iconHintOverlay.style.display = 'none';
 
         // Mark this card as answered to prevent double-clicking
         this.cardAnswered = true;
@@ -578,23 +640,15 @@ class FlashCardApp {
         }, 300);
     }
 
-    // Get hint data for the current card (if any)
-    // Returns { type: 'letters', letters: [...] } or { type: 'icon', letter: '...', icon: '...' }
-    getHintData(card) {
+    // Get similar letter hint data for the current card (if any)
+    // Returns { letters: [...] } or null
+    getSimilarLetterHintData(card) {
         if (this.contentType !== 'letters') return null;
 
         // Helper to build the full group from a letter and its similar letters
         const buildGroup = (letter, similar) => {
             const similarArray = Array.isArray(similar) ? similar : [similar];
-            return { type: 'letters', letters: [letter, ...similarArray] };
-        };
-
-        // Helper to check for icon hint
-        const getIconHint = (letter, displayLetter) => {
-            if (this.letterIcons[letter]) {
-                return { type: 'icon', letter: displayLetter, icon: this.letterIcons[letter] };
-            }
-            return null;
+            return { letters: [letter, ...similarArray] };
         };
 
         if (this.letterCase === 'uppercase') {
@@ -602,15 +656,13 @@ class FlashCardApp {
             if (this.similarLetters[upper]) {
                 return buildGroup(upper, this.similarLetters[upper]);
             }
-            return getIconHint(upper, upper);
         } else if (this.letterCase === 'lowercase') {
             const lower = card.charAt(0);
             if (this.similarLetters[lower]) {
                 return buildGroup(lower, this.similarLetters[lower]);
             }
-            return getIconHint(lower, lower);
         } else {
-            // Both mode (e.g., "Bb") - check similar letters first
+            // Both mode (e.g., "Bb") - check similar letters
             const upper = card.charAt(0);
             const lower = card.charAt(1);
 
@@ -620,7 +672,7 @@ class FlashCardApp {
                 const similarUpper = this.similarLetters[upper];
                 if (!Array.isArray(similarLower) && !Array.isArray(similarUpper) &&
                     similarLower.toUpperCase() === similarUpper) {
-                    return { type: 'letters', letters: [card, `${similarUpper}${similarLower}`] };
+                    return { letters: [card, `${similarUpper}${similarLower}`] };
                 }
             }
 
@@ -632,24 +684,37 @@ class FlashCardApp {
             if (this.similarLetters[upper]) {
                 return buildGroup(upper, this.similarLetters[upper]);
             }
-            // Check for icon hint (use uppercase version for display)
-            return getIconHint(upper, card);
         }
 
         return null;
     }
 
-    // Update hint button visibility based on current card
+    // Get icon hint for the current card
+    // Returns icon emoji or null
+    getIconHint(card) {
+        if (this.contentType !== 'letters') return null;
+
+        const letter = card.charAt(0).toUpperCase();
+        return this.letterIcons[letter] || null;
+    }
+
+    // Update hint buttons visibility based on current card
     updateHintButton() {
-        // Clear any pending hint button timeout
+        // Clear any pending hint button timeouts
         if (this.hintBtnTimeout) {
             clearTimeout(this.hintBtnTimeout);
             this.hintBtnTimeout = null;
+        }
+        if (this.iconHintBtnTimeout) {
+            clearTimeout(this.iconHintBtnTimeout);
+            this.iconHintBtnTimeout = null;
         }
 
         // Always hide immediately first
         this.hintBtn.classList.add('hidden');
         this.hintBtn.classList.remove('hint-btn-appear');
+        this.iconHintBtn.classList.add('hidden');
+        this.iconHintBtn.classList.remove('icon-hint-btn-appear');
 
         if (this.contentType !== 'letters') {
             return;
@@ -664,20 +729,31 @@ class FlashCardApp {
             card = cards[this.currentIndex];
         }
 
-        const hintData = this.getHintData(card);
-        if (hintData) {
-            // Delay showing the button until after the card flip completes
+        // Check for similar letter hint (yellow button, top right)
+        const similarLetterData = this.getSimilarLetterHintData(card);
+        if (similarLetterData) {
             this.hintBtnTimeout = setTimeout(() => {
+                this.hintBtn.style.display = '';  // Clear inline style
                 this.hintBtn.classList.remove('hidden');
-                // Trigger reflow to restart animation
                 void this.hintBtn.offsetWidth;
                 this.hintBtn.classList.add('hint-btn-appear');
+            }, 450);
+        }
+
+        // Check for icon hint (blue button, top left) - all letters have icons
+        const iconHint = this.getIconHint(card);
+        if (iconHint) {
+            this.iconHintBtnTimeout = setTimeout(() => {
+                this.iconHintBtn.style.display = '';  // Clear inline style
+                this.iconHintBtn.classList.remove('hidden');
+                void this.iconHintBtn.offsetWidth;
+                this.iconHintBtn.classList.add('icon-hint-btn-appear');
             }, 450);
         }
     }
 
     showHint() {
-        // Only show hint for letters
+        // Only show similar letter hint for letters
         if (this.contentType !== 'letters') return;
 
         // Get current card
@@ -689,45 +765,33 @@ class FlashCardApp {
             card = cards[this.currentIndex];
         }
 
-        const hintData = this.getHintData(card);
+        const hintData = this.getSimilarLetterHintData(card);
         if (!hintData) return;
 
         // Build the hint content dynamically
         const hintContent = this.hintOverlay.querySelector('.hint-content');
         hintContent.innerHTML = '';
 
-        if (hintData.type === 'letters') {
-            // Sort alphabetically so order is always consistent (B|P not P|B)
-            hintData.letters.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        // Sort alphabetically so order is always consistent (B|P not P|B)
+        hintData.letters.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-            hintData.letters.forEach((letter, index) => {
-                // Add letter
-                const letterDiv = document.createElement('div');
-                letterDiv.className = 'hint-letter';
-                letterDiv.textContent = letter;
-                hintContent.appendChild(letterDiv);
-
-                // Add divider between letters (not after the last one)
-                if (index < hintData.letters.length - 1) {
-                    const divider = document.createElement('div');
-                    divider.className = 'hint-divider';
-                    hintContent.appendChild(divider);
-                }
-            });
-        } else if (hintData.type === 'icon') {
-            // Show letter and icon side by side
+        hintData.letters.forEach((letter, index) => {
+            // Add letter
             const letterDiv = document.createElement('div');
             letterDiv.className = 'hint-letter';
-            letterDiv.textContent = hintData.letter;
+            letterDiv.textContent = letter;
             hintContent.appendChild(letterDiv);
 
-            const iconDiv = document.createElement('div');
-            iconDiv.className = 'hint-icon';
-            iconDiv.textContent = hintData.icon;
-            hintContent.appendChild(iconDiv);
-        }
+            // Add divider between letters (not after the last one)
+            if (index < hintData.letters.length - 1) {
+                const divider = document.createElement('div');
+                divider.className = 'hint-divider';
+                hintContent.appendChild(divider);
+            }
+        });
 
-        // Show the popup
+        // Show the popup (clear inline style first)
+        this.hintOverlay.style.display = '';
         this.hintOverlay.classList.remove('hidden');
         this.hintOverlay.classList.add('show');
     }
@@ -742,6 +806,60 @@ class FlashCardApp {
             this.hideHint();
         } else {
             this.showHint();
+        }
+    }
+
+    showIconHint() {
+        // Only show icon hint for letters
+        if (this.contentType !== 'letters') return;
+
+        // Get current card
+        let card;
+        if (this.isReplayMode) {
+            card = this.replayCards[this.currentIndex];
+        } else {
+            const cards = this.isSequential ? this.cards : this.shuffledCards;
+            card = cards[this.currentIndex];
+        }
+
+        const icon = this.getIconHint(card);
+        if (!icon) return;
+
+        // Set the icon in the popup (just the icon, no letter)
+        this.iconHintEmoji.textContent = icon;
+
+        // Show the popup (clear inline style first)
+        this.iconHintOverlay.style.display = '';
+        this.iconHintOverlay.classList.remove('hidden');
+        this.iconHintOverlay.classList.add('show');
+    }
+
+    hideIconHint() {
+        this.iconHintOverlay.classList.remove('show');
+        this.iconHintOverlay.classList.add('hidden');
+    }
+
+    // Animate hint buttons shrinking away
+    animateHintButtonsHide() {
+        // Only animate if buttons are visible
+        if (!this.hintBtn.classList.contains('hidden')) {
+            this.hintBtn.classList.remove('hint-btn-appear');
+            this.hintBtn.classList.add('hint-btn-disappear');
+            setTimeout(() => {
+                this.hintBtn.style.display = 'none';
+                this.hintBtn.classList.remove('hint-btn-disappear');
+                this.hintBtn.classList.add('hidden');
+            }, 150);
+        }
+
+        if (!this.iconHintBtn.classList.contains('hidden')) {
+            this.iconHintBtn.classList.remove('icon-hint-btn-appear');
+            this.iconHintBtn.classList.add('icon-hint-btn-disappear');
+            setTimeout(() => {
+                this.iconHintBtn.style.display = 'none';
+                this.iconHintBtn.classList.remove('icon-hint-btn-disappear');
+                this.iconHintBtn.classList.add('hidden');
+            }, 150);
         }
     }
 
@@ -1446,7 +1564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.4.4';
+    const version = '1.5.6';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
@@ -1456,7 +1574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log(`%c🎴 Zo Flash Cards v${version}`, 'color: #10b981; font-size: 16px; font-weight: bold;');
-    console.log(`%cBuild: ${buildDate} - Added letter/number coloring feature`, 'color: #6b7280; font-size: 12px;');
+    console.log(`%cBuild: ${buildDate} - Fix hint timing on card flip`, 'color: #6b7280; font-size: 12px;');
     console.log(`%cType 'version()' to check version anytime`, 'color: #3b82f6; font-size: 12px;');
     
     // Global version function
@@ -1464,7 +1582,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`%c🎴 Zo Flash Cards`, 'color: #10b981; font-size: 14px; font-weight: bold;');
         console.log(`Version: ${version}`);
         console.log(`Build Date: ${buildDate}`);
-        console.log(`Features: Letter/Number Coloring, Hint Button, Session History`);
+        console.log(`Features: Letter/Number Coloring, Icon Hints, Similar Letter Hints, Session History`);
         return `v${version} (${buildDate})`;
     };
     
