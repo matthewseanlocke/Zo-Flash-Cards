@@ -1564,7 +1564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.6.7';
+    const version = '1.6.8';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
