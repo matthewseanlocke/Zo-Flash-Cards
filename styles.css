@@ -497,6 +497,27 @@ body {
     transform: scale(1.05);
 }
 
+/* Red delete button for history */
+.delete-btn-red {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #fef2f2;
+    color: #ef4444;
+    border: 2px solid #fecaca;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-btn-red:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
 /* Detailed results grid styling */
 .result-item {
     width: 32px;
@@ -1500,6 +1521,15 @@ body {
     letter-spacing: 0.05em;
     margin-bottom: 0.75rem;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.history-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #9ca3af;
 }
 
 /* Large Play Button - Centered */

@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.9.0 - Icon-only settings with inline order options
+// Version: 1.9.1 - Simplified history panel with icon-only sessions
 
 class FlashCardApp {
     constructor() {
@@ -1434,16 +1434,17 @@ class FlashCardApp {
                         <div class="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center">
                             ${contentTypeIcon}
                         </div>
-                        <div>
-                            <div class="font-medium text-gray-900 text-sm">${contentTypeDisplay}</div>
-                            <div class="text-xs text-gray-500">${shortDate}</div>
-                        </div>
+                        <div class="text-xs text-gray-500">${shortDate}</div>
                     </div>
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-3">
                         <span class="text-xl font-bold ${accuracyColor}">
                             ${score.accuracy}%
                         </span>
-                        <button class="delete-btn-modern" title="Delete this session">🗑</button>
+                        <button class="delete-btn-red" title="Delete">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             `;
@@ -1451,13 +1452,13 @@ class FlashCardApp {
             // Add click handler to view detailed results
             scoreCard.addEventListener('click', (e) => {
                 // Don't show details if delete button was clicked
-                if (!e.target.classList.contains('delete-btn-modern')) {
+                if (!e.target.closest('.delete-btn-red')) {
                     this.showPreviousScoreDetails(score);
                 }
             });
-            
+
             // Add delete button handler
-            const deleteBtn = scoreCard.querySelector('.delete-btn-modern');
+            const deleteBtn = scoreCard.querySelector('.delete-btn-red');
             deleteBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.showDeleteConfirmation(score);
@@ -1690,7 +1691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.9.0';
+    const version = '1.9.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
