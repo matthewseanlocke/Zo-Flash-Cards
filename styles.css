@@ -1545,6 +1545,14 @@ body {
     opacity: 0.7;
 }
 
+/* History session card icons - no background */
+.history-content-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+}
+
 /* Large Play Button - Centered */
 .play-now-btn-large {
     display: flex;

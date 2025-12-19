@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.9.2 - Clock history icon, no panel, bigger date text
+// Version: 1.9.3 - Remove white bg from history icons, bigger icons and date
 
 class FlashCardApp {
     constructor() {
@@ -1395,13 +1395,13 @@ class FlashCardApp {
             if (score.contentType === 'letters') {
                 contentTypeDisplay = score.letterCase === 'both' ? 'Letters (Aa)' :
                                    score.letterCase === 'uppercase' ? 'Letters (A)' : 'Letters (a)';
-                contentTypeIcon = '<span class="font-bold text-base" style="font-family: Andika, sans-serif;">Aa</span>';
+                contentTypeIcon = '<span class="font-bold text-xl" style="font-family: Andika, sans-serif;">Aa</span>';
             } else if (score.contentType === 'numbers') {
                 contentTypeDisplay = 'Numbers';
-                contentTypeIcon = '<span class="font-bold text-base" style="font-family: Andika, sans-serif;">123</span>';
+                contentTypeIcon = '<span class="font-bold text-xl" style="font-family: Andika, sans-serif;">123</span>';
             } else if (score.contentType === 'colors') {
                 contentTypeDisplay = 'Colors';
-                contentTypeIcon = `<svg viewBox="0 0 50 24" style="width: 32px; height: 16px;">
+                contentTypeIcon = `<svg viewBox="0 0 50 24" style="width: 50px; height: 24px;">
                     <rect x="2" y="2" width="6" height="20" rx="1" fill="#ef4444"/>
                     <rect x="10" y="2" width="6" height="20" rx="1" fill="#f97316"/>
                     <rect x="18" y="2" width="6" height="20" rx="1" fill="#eab308"/>
@@ -1411,7 +1411,7 @@ class FlashCardApp {
                 </svg>`;
             } else if (score.contentType === 'shapes') {
                 contentTypeDisplay = 'Shapes';
-                contentTypeIcon = `<svg viewBox="0 0 60 20" style="width: 36px; height: 14px; color: #374151;">
+                contentTypeIcon = `<svg viewBox="0 0 60 20" style="width: 50px; height: 20px; color: #374151;">
                     <polygon points="10,2 18,18 2,18" fill="currentColor"/>
                     <circle cx="30" cy="10" r="8" fill="currentColor"/>
                     <rect x="42" y="2" width="16" height="16" fill="currentColor"/>
@@ -1431,10 +1431,10 @@ class FlashCardApp {
             scoreCard.innerHTML = `
                 <div class="flex items-center justify-between p-3 ${bgColor} border rounded-xl">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center">
+                        <div class="history-content-icon">
                             ${contentTypeIcon}
                         </div>
-                        <div class="text-sm font-medium text-gray-600">${shortDate}</div>
+                        <div class="text-base font-semibold text-gray-700">${shortDate}</div>
                     </div>
                     <div class="flex items-center space-x-3">
                         <span class="text-xl font-bold ${accuracyColor}">
@@ -1691,7 +1691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.9.2';
+    const version = '1.9.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
