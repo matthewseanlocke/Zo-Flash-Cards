@@ -1395,19 +1395,19 @@ class FlashCardApp {
             if (score.contentType === 'letters') {
                 contentTypeDisplay = score.letterCase === 'both' ? 'Letters (Aa)' :
                                    score.letterCase === 'uppercase' ? 'Letters (A)' : 'Letters (a)';
-                contentTypeIcon = '<span class="font-bold text-xl" style="font-family: Andika, sans-serif;">Aa</span>';
+                contentTypeIcon = '<span style="font-family: Andika, sans-serif; font-size: 1.75rem; font-weight: 700;">Aa</span>';
             } else if (score.contentType === 'numbers') {
                 contentTypeDisplay = 'Numbers';
-                contentTypeIcon = '<span class="font-bold text-xl" style="font-family: Andika, sans-serif;">123</span>';
+                contentTypeIcon = '<span style="font-family: Andika, sans-serif; font-size: 1.75rem; font-weight: 700;">123</span>';
             } else if (score.contentType === 'colors') {
                 contentTypeDisplay = 'Colors';
-                contentTypeIcon = `<svg viewBox="0 0 50 24" style="width: 50px; height: 24px;">
-                    <rect x="2" y="2" width="6" height="20" rx="1" fill="#ef4444"/>
-                    <rect x="10" y="2" width="6" height="20" rx="1" fill="#f97316"/>
-                    <rect x="18" y="2" width="6" height="20" rx="1" fill="#eab308"/>
-                    <rect x="26" y="2" width="6" height="20" rx="1" fill="#22c55e"/>
-                    <rect x="34" y="2" width="6" height="20" rx="1" fill="#3b82f6"/>
-                    <rect x="42" y="2" width="6" height="20" rx="1" fill="#a855f7"/>
+                contentTypeIcon = `<svg viewBox="0 0 50 28" style="width: 50px; height: 28px;">
+                    <rect x="2" y="2" width="6" height="24" rx="1" fill="#ef4444"/>
+                    <rect x="10" y="2" width="6" height="24" rx="1" fill="#f97316"/>
+                    <rect x="18" y="2" width="6" height="24" rx="1" fill="#eab308"/>
+                    <rect x="26" y="2" width="6" height="24" rx="1" fill="#22c55e"/>
+                    <rect x="34" y="2" width="6" height="24" rx="1" fill="#3b82f6"/>
+                    <rect x="42" y="2" width="6" height="24" rx="1" fill="#a855f7"/>
                 </svg>`;
             } else if (score.contentType === 'shapes') {
                 contentTypeDisplay = 'Shapes';
