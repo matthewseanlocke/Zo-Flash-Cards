@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.0 - Redesigned settings panel, Play button starts game directly, separate settings icon
+// Version: 1.8.1 - Inline settings on welcome screen, simplified UI
 
 class FlashCardApp {
     constructor() {
@@ -76,10 +76,8 @@ class FlashCardApp {
     initializeElements() {
         // Navigation elements
         this.exitBtn = document.getElementById('exitBtn');
-        this.settingsPanel = document.getElementById('settingsPanel');
-        this.closeSettingsBtn = document.getElementById('closeSettingsBtn');
-        
-        // Settings elements
+
+        // Settings elements (inline on welcome screen)
         this.lettersBtn = document.getElementById('lettersBtn');
         this.numbersBtn = document.getElementById('numbersBtn');
         this.colorsBtn = document.getElementById('colorsBtn');
@@ -87,9 +85,7 @@ class FlashCardApp {
         this.letterCaseSection = document.getElementById('letterCaseSection');
         this.sequentialBtn = document.getElementById('sequentialBtn');
         this.randomBtn = document.getElementById('randomBtn');
-        this.startBtn = document.getElementById('startBtn');
         this.playNowBtn = document.getElementById('playNowBtn');
-        this.openSettingsBtn = document.getElementById('openSettingsBtn');
         
         // Game elements
         this.welcomeCard = document.getElementById('welcomeCard');
@@ -151,12 +147,9 @@ class FlashCardApp {
     }
 
     setupEventListeners() {
-        // Navigation and settings
+        // Navigation
         this.exitBtn.addEventListener('click', () => this.exitTest());
-        this.closeSettingsBtn.addEventListener('click', () => this.hideSettings());
-        this.startBtn.addEventListener('click', () => this.startGame());
         this.playNowBtn.addEventListener('click', () => this.startGame());
-        this.openSettingsBtn.addEventListener('click', () => this.showSettings());
         
         // Content type selection
         this.lettersBtn.addEventListener('click', () => this.selectContentType('letters'));
@@ -219,13 +212,6 @@ class FlashCardApp {
         this.closeScoreBtn.addEventListener('click', () => this.returnToWelcome());
         this.replayWrongBtn.addEventListener('click', () => this.replayWrongCards());
 
-        // Settings panel backdrop
-        this.settingsPanel.addEventListener('click', (e) => {
-            if (e.target === this.settingsPanel) {
-                this.hideSettings();
-            }
-        });
-        
         // Score modal backdrop - NO backdrop click allowed for completed sessions
         // Users must explicitly choose "Play Again" or "Close"
         
@@ -360,20 +346,6 @@ class FlashCardApp {
         }
     }
 
-    showSettings() {
-        this.settingsPanel.classList.remove('hidden');
-        setTimeout(() => {
-            this.settingsPanel.classList.add('show');
-        }, 10);
-    }
-
-    hideSettings() {
-        this.settingsPanel.classList.remove('show');
-        setTimeout(() => {
-            this.settingsPanel.classList.add('hidden');
-        }, 300);
-    }
-
     startGame() {
         this.generateCards();
         this.currentIndex = 0;
@@ -383,8 +355,7 @@ class FlashCardApp {
         this.gameStarted = true;
         this.isReplayMode = false;
         this.replayCount = 0;
-        
-        this.hideSettings();
+
         this.welcomeCard.classList.add('hidden');
         this.flashCard.classList.remove('hidden');
         this.gameControls.classList.remove('hidden');
@@ -1599,8 +1570,7 @@ class FlashCardApp {
         this.tapHint.classList.add('hidden');
         this.exitBtn.classList.add('hidden');
         this.cardContainer.classList.remove('game-mode');
-        
-        this.hideSettings();
+
         this.hideScoreModal();
     }
 
@@ -1680,7 +1650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.0';
+    const version = '1.8.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
