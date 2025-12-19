@@ -1601,9 +1601,9 @@ body {
     transform-origin: center bottom;
 }
 
-/* Wave animation when Colors is selected */
+/* Wave animation when Colors is selected - plays once */
 .content-type-row-btn.selected .colors-icon-svg rect {
-    animation: colorWave 1.5s ease-in-out infinite;
+    animation: colorWave 0.8s ease-in-out forwards;
 }
 
 .content-type-row-btn.selected .colors-icon-svg rect:nth-child(1) { animation-delay: 0s; }
