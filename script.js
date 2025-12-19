@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.9.1 - Simplified history panel with icon-only sessions
+// Version: 1.9.2 - Clock history icon, no panel, bigger date text
 
 class FlashCardApp {
     constructor() {
@@ -1434,7 +1434,7 @@ class FlashCardApp {
                         <div class="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center">
                             ${contentTypeIcon}
                         </div>
-                        <div class="text-xs text-gray-500">${shortDate}</div>
+                        <div class="text-sm font-medium text-gray-600">${shortDate}</div>
                     </div>
                     <div class="flex items-center space-x-3">
                         <span class="text-xl font-bold ${accuracyColor}">
@@ -1691,7 +1691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.9.1';
+    const version = '1.9.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

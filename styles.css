@@ -1526,10 +1526,23 @@ body {
     align-items: center;
 }
 
+/* History section - no panel, matches Settings style */
+.history-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-header {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0;
+}
+
 .history-icon {
-    width: 24px;
-    height: 24px;
-    stroke: #9ca3af;
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    opacity: 0.7;
 }
 
 /* Large Play Button - Centered */

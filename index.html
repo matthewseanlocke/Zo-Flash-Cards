@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.9.1</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.9.2</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,13 +169,15 @@
                     </div>
                 </div>
 
-                <!-- History Panel -->
-                <div id="previousScoresSection" class="welcome-panel sessions-panel flex-1 min-h-0">
-                    <h3 class="panel-title">
+                <!-- History Section (no panel) -->
+                <div id="previousScoresSection" class="history-section flex-1 min-h-0">
+                    <div class="history-header">
                         <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/>
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 6v6l4 2"/>
+                            <path d="M3 12a9 9 0 0 1 9-9" stroke-dasharray="4 2"/>
                         </svg>
-                    </h3>
+                    </div>
                     <div id="previousScoresList" class="space-y-2 flex-1 overflow-y-auto">
                         <p class="text-gray-500 text-center text-sm">No previous sessions yet</p>
                     </div>
