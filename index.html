@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.8.3</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.8.4</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,8 +44,8 @@
         <div id="cardContainer" class="relative w-full max-w-md h-full flex-1 perspective-1000">
             <!-- Welcome Card -->
             <div id="welcomeCard" class="absolute inset-0 flex flex-col gap-3 p-3 overflow-y-auto">
-                <!-- Play Button Panel -->
-                <div class="welcome-panel play-panel">
+                <!-- Play Button (no panel) -->
+                <div class="play-button-container">
                     <button id="playNowBtn" class="play-now-btn-large">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
@@ -85,11 +85,11 @@
                             <span class="content-type-name">Numbers</span>
                         </button>
                         <button id="colorsBtn" class="content-type-row-btn">
-                            <span class="content-type-icon">🎨</span>
+                            <span class="content-type-icon icon-colors">🎨</span>
                             <span class="content-type-name">Colors</span>
                         </button>
                         <button id="shapesBtn" class="content-type-row-btn">
-                            <span class="content-type-icon">△○□</span>
+                            <span class="content-type-icon icon-shapes">△ ○ □</span>
                             <span class="content-type-name">Shapes</span>
                         </button>
                     </div>

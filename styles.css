@@ -1475,10 +1475,11 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.play-panel {
+/* Play button container - no panel, just centered */
+.play-button-container {
     display: flex;
     justify-content: center;
-    padding: 1.25rem;
+    padding: 0.5rem 0;
 }
 
 .settings-panel-inline {
@@ -1581,6 +1582,17 @@ body {
 
 .content-type-row-btn.selected .content-type-name {
     color: #1d4ed8;
+}
+
+/* Larger colors emoji */
+.content-type-icon.icon-colors {
+    font-size: 2rem;
+}
+
+/* Larger, evenly spaced shapes */
+.content-type-icon.icon-shapes {
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
 }
 
 /* Letter Case Inline Row - Inside Letters button */
