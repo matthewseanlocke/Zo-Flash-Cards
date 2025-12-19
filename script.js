@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.6.6 - Fixed landscape background and added hint button for similar letters
+// Version: 1.8.0 - Redesigned settings panel, Play button starts game directly, separate settings icon
 
 class FlashCardApp {
     constructor() {
@@ -89,6 +89,7 @@ class FlashCardApp {
         this.randomBtn = document.getElementById('randomBtn');
         this.startBtn = document.getElementById('startBtn');
         this.playNowBtn = document.getElementById('playNowBtn');
+        this.openSettingsBtn = document.getElementById('openSettingsBtn');
         
         // Game elements
         this.welcomeCard = document.getElementById('welcomeCard');
@@ -154,7 +155,8 @@ class FlashCardApp {
         this.exitBtn.addEventListener('click', () => this.exitTest());
         this.closeSettingsBtn.addEventListener('click', () => this.hideSettings());
         this.startBtn.addEventListener('click', () => this.startGame());
-        this.playNowBtn.addEventListener('click', () => this.showSettings());
+        this.playNowBtn.addEventListener('click', () => this.startGame());
+        this.openSettingsBtn.addEventListener('click', () => this.showSettings());
         
         // Content type selection
         this.lettersBtn.addEventListener('click', () => this.selectContentType('letters'));
@@ -323,38 +325,38 @@ class FlashCardApp {
     selectContentType(type) {
         this.contentType = type;
 
-        // Reset all buttons to default state
-        this.lettersBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
-        this.numbersBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
-        this.colorsBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
-        this.shapesBtn.className = 'py-3 px-3 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm';
+        // Remove selected class from all buttons
+        this.lettersBtn.classList.remove('selected');
+        this.numbersBtn.classList.remove('selected');
+        this.colorsBtn.classList.remove('selected');
+        this.shapesBtn.classList.remove('selected');
 
         // Update selected button and show/hide letter case section
         if (type === 'letters') {
-            this.lettersBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
+            this.lettersBtn.classList.add('selected');
             this.letterCaseSection.classList.remove('hidden');
         } else if (type === 'numbers') {
-            this.numbersBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
+            this.numbersBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
         } else if (type === 'colors') {
-            this.colorsBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
+            this.colorsBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
         } else if (type === 'shapes') {
-            this.shapesBtn.className = 'py-3 px-3 bg-blue-500 text-white rounded-lg font-medium text-sm';
+            this.shapesBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
         }
     }
 
     selectOrder(sequential) {
         this.isSequential = sequential;
-        
-        // Update button states
+
+        // Update button states using selected class
         if (sequential) {
-            this.sequentialBtn.className = 'flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors';
-            this.randomBtn.className = 'flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors';
+            this.sequentialBtn.classList.add('selected');
+            this.randomBtn.classList.remove('selected');
         } else {
-            this.randomBtn.className = 'flex-1 py-3 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors';
-            this.sequentialBtn.className = 'flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors';
+            this.randomBtn.classList.add('selected');
+            this.sequentialBtn.classList.remove('selected');
         }
     }
 
@@ -1678,7 +1680,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.7.2';
+    const version = '1.8.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

@@ -1104,34 +1104,361 @@ body {
         max-height: 95vh;
         margin: 2.5vh auto;
     }
-    
+
     #detailedResults {
         grid-template-columns: repeat(5, 1fr);
         max-height: 200px;
     }
-    
+
     #detailedResults.colors-grid {
         grid-template-columns: repeat(3, 1fr) !important;
         max-height: 250px !important;
     }
-    
+
     .colors-grid .color-result-item {
         min-height: 40px !important;
         padding: 6px 8px !important;
     }
-    
+
     .color-indicator {
         width: 16px !important;
         height: 16px !important;
     }
-    
+
     .color-label {
         font-size: 9px !important;
     }
-    
+
     .result-item {
         width: 28px;
         height: 28px;
         font-size: 12px;
     }
+}
+
+/* ===========================================
+   Welcome Screen Buttons
+   =========================================== */
+
+/* Play Now Button - Large green button with icon */
+.play-now-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    transition: all 0.2s ease;
+}
+
+.play-now-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+}
+
+.play-now-btn:active {
+    transform: translateY(0);
+}
+
+/* Settings Icon Button */
+.settings-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background: white;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.settings-icon-btn:hover {
+    background: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.settings-icon-btn:active {
+    transform: translateY(0);
+}
+
+/* ===========================================
+   Full Screen Settings Panel
+   =========================================== */
+
+.settings-panel {
+    background: linear-gradient(to bottom right, #60a5fa, #a855f7, #ec4899);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.settings-panel.show {
+    opacity: 1;
+}
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1rem;
+    transition: transform 0.3s ease;
+    transform: translateY(20px);
+}
+
+.settings-panel.show .settings-container {
+    transform: translateY(0);
+}
+
+/* Settings Header */
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0 1rem 0;
+    margin-bottom: 1rem;
+}
+
+.settings-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.settings-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Settings Content */
+.settings-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Settings Section */
+.settings-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.settings-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Content Type Grid */
+.content-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.content-type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f3f4f6;
+    border: 3px solid transparent;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.content-type-btn:hover {
+    background: #e5e7eb;
+}
+
+.content-type-btn.selected {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.content-type-icon {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #374151;
+    font-family: 'Andika', sans-serif;
+}
+
+.content-type-btn.selected .content-type-icon {
+    color: #1d4ed8;
+}
+
+.content-type-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.content-type-btn.selected .content-type-name {
+    color: #1d4ed8;
+}
+
+/* Letter Case Section - Smooth transitions */
+.letter-case-section {
+    transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+    max-height: 200px;
+    overflow: hidden;
+}
+
+.letter-case-section.hidden {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+/* Letter Case Options */
+.letter-case-options {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.letter-case-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.letter-case-option input[type="radio"] {
+    display: none;
+}
+
+.letter-case-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: #f3f4f6;
+    border: 3px solid transparent;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.letter-case-option input[type="radio"]:checked + .letter-case-box {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.letter-case-preview {
+    font-family: 'Andika', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #374151;
+}
+
+.letter-case-option input[type="radio"]:checked + .letter-case-box .letter-case-preview {
+    color: #1d4ed8;
+}
+
+.letter-case-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.letter-case-option input[type="radio"]:checked + .letter-case-box .letter-case-name {
+    color: #1d4ed8;
+}
+
+/* Order Options */
+.order-options {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.order-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    background: #f3f4f6;
+    border: 3px solid transparent;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.order-btn:hover {
+    background: #e5e7eb;
+}
+
+.order-btn.selected {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+/* Settings Footer */
+.settings-footer {
+    padding: 1rem 0;
+    margin-top: auto;
+}
+
+.start-game-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    transition: all 0.2s ease;
+}
+
+.start-game-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+}
+
+.start-game-btn:active {
+    transform: translateY(0);
 }
