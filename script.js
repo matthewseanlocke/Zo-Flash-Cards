@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.8 - Wave animations on all content type icons
+// Version: 1.8.9 - Fix previous sessions icons and undefined content type
 
 class FlashCardApp {
     constructor() {
@@ -1372,27 +1372,48 @@ class FlashCardApp {
             });
             
             let contentTypeDisplay;
+            let contentTypeIcon;
             if (score.contentType === 'letters') {
-                contentTypeDisplay = score.letterCase === 'both' ? 'Letters (Aa)' : 
+                contentTypeDisplay = score.letterCase === 'both' ? 'Letters (Aa)' :
                                    score.letterCase === 'uppercase' ? 'Letters (A)' : 'Letters (a)';
+                contentTypeIcon = '<span class="font-bold text-base" style="font-family: Andika, sans-serif;">Aa</span>';
             } else if (score.contentType === 'numbers') {
                 contentTypeDisplay = 'Numbers';
+                contentTypeIcon = '<span class="font-bold text-base" style="font-family: Andika, sans-serif;">123</span>';
             } else if (score.contentType === 'colors') {
                 contentTypeDisplay = 'Colors';
+                contentTypeIcon = `<svg viewBox="0 0 50 24" style="width: 32px; height: 16px;">
+                    <rect x="2" y="2" width="6" height="20" rx="1" fill="#ef4444"/>
+                    <rect x="10" y="2" width="6" height="20" rx="1" fill="#f97316"/>
+                    <rect x="18" y="2" width="6" height="20" rx="1" fill="#eab308"/>
+                    <rect x="26" y="2" width="6" height="20" rx="1" fill="#22c55e"/>
+                    <rect x="34" y="2" width="6" height="20" rx="1" fill="#3b82f6"/>
+                    <rect x="42" y="2" width="6" height="20" rx="1" fill="#a855f7"/>
+                </svg>`;
+            } else if (score.contentType === 'shapes') {
+                contentTypeDisplay = 'Shapes';
+                contentTypeIcon = `<svg viewBox="0 0 60 20" style="width: 36px; height: 14px; color: #374151;">
+                    <polygon points="10,2 18,18 2,18" fill="currentColor"/>
+                    <circle cx="30" cy="10" r="8" fill="currentColor"/>
+                    <rect x="42" y="2" width="16" height="16" fill="currentColor"/>
+                </svg>`;
+            } else {
+                // Fallback for undefined or unknown content types
+                contentTypeDisplay = score.contentType || 'Unknown';
+                contentTypeIcon = '❓';
             }
-            
-            const accuracyColor = score.accuracy >= 80 ? 'text-emerald-600' : 
+
+            const accuracyColor = score.accuracy >= 80 ? 'text-emerald-600' :
                                  score.accuracy >= 60 ? 'text-amber-600' : 'text-red-500';
-            
-            const bgColor = score.accuracy >= 80 ? 'bg-emerald-50 border-emerald-200' : 
+
+            const bgColor = score.accuracy >= 80 ? 'bg-emerald-50 border-emerald-200' :
                            score.accuracy >= 60 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200';
-            
+
             scoreCard.innerHTML = `
                 <div class="flex items-center justify-between p-3 ${bgColor} border rounded-xl">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center text-lg">
-                            ${score.contentType === 'letters' ? '🔤' : 
-                              score.contentType === 'numbers' ? '🔢' : '🎨'}
+                        <div class="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center">
+                            ${contentTypeIcon}
                         </div>
                         <div>
                             <div class="font-medium text-gray-900 text-sm">${contentTypeDisplay}</div>
@@ -1650,7 +1671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.8';
+    const version = '1.8.9';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
