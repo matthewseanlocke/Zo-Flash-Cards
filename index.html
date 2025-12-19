@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.8.4</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.8.5</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,13 @@
                             <span class="content-type-name">Colors</span>
                         </button>
                         <button id="shapesBtn" class="content-type-row-btn">
-                            <span class="content-type-icon icon-shapes">△ ○ □</span>
+                            <span class="content-type-icon icon-shapes">
+                                <svg viewBox="0 0 60 20" class="shapes-icon-svg">
+                                    <polygon points="10,2 18,18 2,18" fill="currentColor"/>
+                                    <circle cx="30" cy="10" r="8" fill="currentColor"/>
+                                    <rect x="42" y="2" width="16" height="16" fill="currentColor"/>
+                                </svg>
+                            </span>
                             <span class="content-type-name">Shapes</span>
                         </button>
                     </div>

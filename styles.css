@@ -1589,10 +1589,21 @@ body {
     font-size: 2rem;
 }
 
-/* Larger, evenly spaced shapes */
+/* SVG shapes icon */
 .content-type-icon.icon-shapes {
-    font-size: 1.5rem;
-    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shapes-icon-svg {
+    width: 50px;
+    height: 20px;
+    color: #374151;
+}
+
+.content-type-row-btn.selected .shapes-icon-svg {
+    color: #1d4ed8;
 }
 
 /* Letter Case Inline Row - Inside Letters button */

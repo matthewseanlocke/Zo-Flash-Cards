@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.4 - Play button without panel, larger icons
+// Version: 1.8.5 - SVG shapes icon for consistent sizing
 
 class FlashCardApp {
     constructor() {
@@ -1650,7 +1650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.4';
+    const version = '1.8.5';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
