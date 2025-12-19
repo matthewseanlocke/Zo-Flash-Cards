@@ -71,6 +71,67 @@ class FlashCardApp {
         this.setupEventListeners();
         this.loadSavedScores();
         this.displayPreviousScores();
+        this.startWelcomeAnimations();
+    }
+
+    startWelcomeAnimations() {
+        // Clear any existing interval
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+        }
+
+        // Play initial animation after a short delay
+        setTimeout(() => this.playWelcomeAnimationSequence(), 500);
+
+        // Set up repeating animation every 5 seconds
+        this.animationInterval = setInterval(() => {
+            if (!this.gameStarted) {
+                this.playWelcomeAnimationSequence();
+            }
+        }, 5000);
+    }
+
+    stopWelcomeAnimations() {
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+            this.animationInterval = null;
+        }
+    }
+
+    playWelcomeAnimationSequence() {
+        // Find the currently selected content type button
+        const selectedBtn = document.querySelector('.content-type-row-btn.selected');
+        if (!selectedBtn) return;
+
+        // Find the play button within the selected row
+        const playBtn = selectedBtn.querySelector('.play-btn');
+        if (!playBtn) return;
+
+        // Re-trigger icon animation by removing and re-adding selected class
+        selectedBtn.classList.remove('selected');
+        // Force reflow to reset animation
+        void selectedBtn.offsetWidth;
+        selectedBtn.classList.add('selected');
+
+        // Determine animation duration based on content type
+        // Letters: 0.1s delay + 0.6s = 700ms
+        // Numbers: 0.2s delay + 0.6s = 800ms
+        // Colors: 0.5s delay + 0.8s = 1300ms
+        // Shapes: 0.2s delay + 0.6s = 800ms
+        const isColors = selectedBtn.id === 'colorsBtn';
+        const iconAnimationDuration = isColors ? 800 : 500;
+
+        // After icon animation completes, animate the play button
+        setTimeout(() => {
+            playBtn.classList.remove('animate-pulse-play');
+            void playBtn.offsetWidth;
+            playBtn.classList.add('animate-pulse-play');
+
+            // Remove the class after animation completes
+            setTimeout(() => {
+                playBtn.classList.remove('animate-pulse-play');
+            }, 600);
+        }, iconAnimationDuration);
     }
 
     initializeElements() {
@@ -337,18 +398,39 @@ class FlashCardApp {
         this.shapesBtn.classList.remove('selected');
 
         // Update selected button and show/hide letter case section
+        let selectedBtn;
         if (type === 'letters') {
             this.lettersBtn.classList.add('selected');
             this.letterCaseSection.classList.remove('hidden');
+            selectedBtn = this.lettersBtn;
         } else if (type === 'numbers') {
             this.numbersBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
+            selectedBtn = this.numbersBtn;
         } else if (type === 'colors') {
             this.colorsBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
+            selectedBtn = this.colorsBtn;
         } else if (type === 'shapes') {
             this.shapesBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
+            selectedBtn = this.shapesBtn;
+        }
+
+        // Trigger play button animation after icon animation
+        if (selectedBtn) {
+            const playBtn = selectedBtn.querySelector('.play-btn');
+            const isColors = type === 'colors';
+            const delay = isColors ? 800 : 500;
+
+            setTimeout(() => {
+                if (playBtn) {
+                    playBtn.classList.remove('animate-pulse-play');
+                    void playBtn.offsetWidth;
+                    playBtn.classList.add('animate-pulse-play');
+                    setTimeout(() => playBtn.classList.remove('animate-pulse-play'), 600);
+                }
+            }, delay);
         }
     }
 
@@ -381,6 +463,7 @@ class FlashCardApp {
         this.gameStarted = true;
         this.isReplayMode = false;
         this.replayCount = 0;
+        this.stopWelcomeAnimations();
 
         this.welcomeCard.classList.add('hidden');
         this.flashCard.classList.remove('hidden');
@@ -1432,11 +1515,28 @@ class FlashCardApp {
             const accuracyColor = score.accuracy >= 80 ? 'text-emerald-600' :
                                  score.accuracy >= 60 ? 'text-amber-600' : 'text-red-500';
 
-            const bgColor = score.accuracy >= 80 ? 'bg-emerald-50 border-emerald-200' :
-                           score.accuracy >= 60 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200';
+            // Semi-transparent white background with colored border based on content type
+            let borderColor;
+            switch (score.contentType) {
+                case 'letters':
+                    borderColor = '#3b82f6'; // blue
+                    break;
+                case 'numbers':
+                    borderColor = '#8b5cf6'; // violet
+                    break;
+                case 'colors':
+                    borderColor = '#f97316'; // orange
+                    break;
+                case 'shapes':
+                    borderColor = '#64748b'; // slate
+                    break;
+                default:
+                    borderColor = '#9ca3af'; // gray
+            }
+            const bgStyle = `background-color: rgba(255, 255, 255, 0.6); border-color: ${borderColor}; border-width: 3px;`;
 
             scoreCard.innerHTML = `
-                <div class="flex items-center justify-between p-3 ${bgColor} border rounded-xl">
+                <div class="flex items-center justify-between p-3 border-2 rounded-xl" style="${bgStyle}">
                     <div class="flex items-center space-x-3">
                         <div class="history-content-icon">
                             ${contentTypeIcon}
@@ -1620,6 +1720,7 @@ class FlashCardApp {
         this.cardContainer.classList.remove('game-mode');
 
         this.hideScoreModal();
+        this.startWelcomeAnimations();
     }
 
     exitTest() {
@@ -1698,7 +1799,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.9.3';
+    const version = '1.9.21';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
