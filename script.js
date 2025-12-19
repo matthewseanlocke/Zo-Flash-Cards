@@ -83,11 +83,11 @@ class FlashCardApp {
         this.colorsBtn = document.getElementById('colorsBtn');
         this.shapesBtn = document.getElementById('shapesBtn');
         this.letterCaseSection = document.getElementById('letterCaseSection');
-        this.playNowBtn = document.getElementById('playNowBtn');
 
         // Order buttons (all of them across all rows)
         this.sequentialBtns = document.querySelectorAll('.sequential-btn');
         this.randomBtns = document.querySelectorAll('.random-btn');
+        this.playBtns = document.querySelectorAll('.play-btn');
         
         // Game elements
         this.welcomeCard = document.getElementById('welcomeCard');
@@ -151,8 +151,15 @@ class FlashCardApp {
     setupEventListeners() {
         // Navigation
         this.exitBtn.addEventListener('click', () => this.exitTest());
-        this.playNowBtn.addEventListener('click', () => this.startGame());
-        
+
+        // Play buttons in each category row
+        this.playBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.startGame();
+            });
+        });
+
         // Content type selection
         this.lettersBtn.addEventListener('click', () => this.selectContentType('letters'));
         this.numbersBtn.addEventListener('click', () => this.selectContentType('numbers'));
