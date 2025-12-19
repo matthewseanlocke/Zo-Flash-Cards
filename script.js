@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.7 - Wave animation plays once
+// Version: 1.8.8 - Wave animations on all content type icons
 
 class FlashCardApp {
     constructor() {
@@ -1650,7 +1650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.7';
+    const version = '1.8.8';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
