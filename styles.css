@@ -1584,6 +1584,49 @@ body {
     color: #1d4ed8;
 }
 
+/* Row options - hidden by default, shown when selected */
+.row-options {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+}
+
+.content-type-row-btn.selected .row-options {
+    display: flex;
+}
+
+/* Order icon buttons within each row */
+.order-inline-row {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.order-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.order-icon-btn:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.order-icon-btn.selected {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
 /* Letters icon with animation */
 .content-type-icon.icon-letters {
     display: flex;

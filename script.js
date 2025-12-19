@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.9 - Fix previous sessions icons and undefined content type
+// Version: 1.9.0 - Icon-only settings with inline order options
 
 class FlashCardApp {
     constructor() {
@@ -83,9 +83,11 @@ class FlashCardApp {
         this.colorsBtn = document.getElementById('colorsBtn');
         this.shapesBtn = document.getElementById('shapesBtn');
         this.letterCaseSection = document.getElementById('letterCaseSection');
-        this.sequentialBtn = document.getElementById('sequentialBtn');
-        this.randomBtn = document.getElementById('randomBtn');
         this.playNowBtn = document.getElementById('playNowBtn');
+
+        // Order buttons (all of them across all rows)
+        this.sequentialBtns = document.querySelectorAll('.sequential-btn');
+        this.randomBtns = document.querySelectorAll('.random-btn');
         
         // Game elements
         this.welcomeCard = document.getElementById('welcomeCard');
@@ -157,9 +159,19 @@ class FlashCardApp {
         this.colorsBtn.addEventListener('click', () => this.selectContentType('colors'));
         this.shapesBtn.addEventListener('click', () => this.selectContentType('shapes'));
         
-        // Order selection
-        this.sequentialBtn.addEventListener('click', () => this.selectOrder(true));
-        this.randomBtn.addEventListener('click', () => this.selectOrder(false));
+        // Order selection - all sequential and random buttons across all rows
+        this.sequentialBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectOrder(true);
+            });
+        });
+        this.randomBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectOrder(false);
+            });
+        });
         
         // Letter case selection
         document.querySelectorAll('input[name="letterCase"]').forEach(radio => {
@@ -336,14 +348,21 @@ class FlashCardApp {
     selectOrder(sequential) {
         this.isSequential = sequential;
 
-        // Update button states using selected class
-        if (sequential) {
-            this.sequentialBtn.classList.add('selected');
-            this.randomBtn.classList.remove('selected');
-        } else {
-            this.randomBtn.classList.add('selected');
-            this.sequentialBtn.classList.remove('selected');
-        }
+        // Update all order buttons across all rows
+        this.sequentialBtns.forEach(btn => {
+            if (sequential) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+        this.randomBtns.forEach(btn => {
+            if (sequential) {
+                btn.classList.remove('selected');
+            } else {
+                btn.classList.add('selected');
+            }
+        });
     }
 
     startGame() {
@@ -1671,7 +1690,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.9';
+    const version = '1.9.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

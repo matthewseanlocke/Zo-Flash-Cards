@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.8.9</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.9.0</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,34 +61,61 @@
 
                     <!-- Content Type Selection (stacked) -->
                     <div class="content-type-stack">
-                        <button id="lettersBtn" class="content-type-row-btn selected">
+                        <div id="lettersBtn" class="content-type-row-btn selected">
                             <span class="content-type-icon icon-letters">
                                 <span class="letter-char">A</span><span class="letter-char">a</span>
                             </span>
-                            <span class="content-type-name">Letters</span>
-                            <!-- Letter Case Options (inline) -->
-                            <div id="letterCaseSection" class="letter-case-inline-row">
-                                <label class="letter-case-option">
-                                    <input type="radio" name="letterCase" value="both" checked>
-                                    <span class="letter-case-chip">Aa</span>
-                                </label>
-                                <label class="letter-case-option">
-                                    <input type="radio" name="letterCase" value="uppercase">
-                                    <span class="letter-case-chip">A</span>
-                                </label>
-                                <label class="letter-case-option">
-                                    <input type="radio" name="letterCase" value="lowercase">
-                                    <span class="letter-case-chip">a</span>
-                                </label>
+                            <!-- Options appear when selected -->
+                            <div class="row-options">
+                                <div id="letterCaseSection" class="letter-case-inline-row">
+                                    <label class="letter-case-option">
+                                        <input type="radio" name="letterCase" value="both" checked>
+                                        <span class="letter-case-chip">Aa</span>
+                                    </label>
+                                    <label class="letter-case-option">
+                                        <input type="radio" name="letterCase" value="uppercase">
+                                        <span class="letter-case-chip">A</span>
+                                    </label>
+                                    <label class="letter-case-option">
+                                        <input type="radio" name="letterCase" value="lowercase">
+                                        <span class="letter-case-chip">a</span>
+                                    </label>
+                                </div>
+                                <div class="order-inline-row">
+                                    <button class="order-icon-btn sequential-btn selected" title="In Order">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="order-icon-btn random-btn" title="Shuffle">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                        </button>
-                        <button id="numbersBtn" class="content-type-row-btn">
+                        </div>
+                        <div id="numbersBtn" class="content-type-row-btn">
                             <span class="content-type-icon icon-numbers">
                                 <span class="number-char">1</span><span class="number-char">2</span><span class="number-char">3</span>
                             </span>
-                            <span class="content-type-name">Numbers</span>
-                        </button>
-                        <button id="colorsBtn" class="content-type-row-btn">
+                            <!-- Options appear when selected -->
+                            <div class="row-options">
+                                <div class="order-inline-row">
+                                    <button class="order-icon-btn sequential-btn selected" title="In Order">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="order-icon-btn random-btn" title="Shuffle">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="colorsBtn" class="content-type-row-btn">
                             <span class="content-type-icon icon-colors">
                                 <svg viewBox="0 0 50 24" class="colors-icon-svg">
                                     <rect x="2" y="2" width="6" height="20" rx="1" fill="#ef4444"/>
@@ -99,9 +126,23 @@
                                     <rect x="42" y="2" width="6" height="20" rx="1" fill="#a855f7"/>
                                 </svg>
                             </span>
-                            <span class="content-type-name">Colors</span>
-                        </button>
-                        <button id="shapesBtn" class="content-type-row-btn">
+                            <!-- Options appear when selected -->
+                            <div class="row-options">
+                                <div class="order-inline-row">
+                                    <button class="order-icon-btn sequential-btn selected" title="In Order">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="order-icon-btn random-btn" title="Shuffle">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="shapesBtn" class="content-type-row-btn">
                             <span class="content-type-icon icon-shapes">
                                 <svg viewBox="0 0 60 20" class="shapes-icon-svg">
                                     <polygon points="10,2 18,18 2,18" fill="currentColor"/>
@@ -109,24 +150,22 @@
                                     <rect x="42" y="2" width="16" height="16" fill="currentColor"/>
                                 </svg>
                             </span>
-                            <span class="content-type-name">Shapes</span>
-                        </button>
-                    </div>
-
-                    <!-- Order Selection -->
-                    <div class="order-row mt-3">
-                        <button id="sequentialBtn" class="order-row-btn selected">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                            </svg>
-                            <span>In Order</span>
-                        </button>
-                        <button id="randomBtn" class="order-row-btn">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                            <span>Shuffle</span>
-                        </button>
+                            <!-- Options appear when selected -->
+                            <div class="row-options">
+                                <div class="order-inline-row">
+                                    <button class="order-icon-btn sequential-btn selected" title="In Order">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="order-icon-btn random-btn" title="Shuffle">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
