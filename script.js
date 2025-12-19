@@ -1515,33 +1515,43 @@ class FlashCardApp {
             const accuracyColor = score.accuracy >= 80 ? 'text-emerald-600' :
                                  score.accuracy >= 60 ? 'text-amber-600' : 'text-red-500';
 
-            // Semi-transparent white background with colored border based on content type
-            let borderColor;
+            // Category-specific colors for history panels (matching settings panels)
+            let bgColor, borderColor, textColor;
             switch (score.contentType) {
                 case 'letters':
-                    borderColor = '#3b82f6'; // blue
+                    bgColor = 'rgba(219, 234, 254, 0.85)'; // blue-100 with transparency
+                    borderColor = '#3b82f6'; // blue-500
+                    textColor = '#1d4ed8'; // blue-700
                     break;
                 case 'numbers':
-                    borderColor = '#8b5cf6'; // violet
+                    bgColor = 'rgba(237, 233, 254, 0.85)'; // violet-100 with transparency
+                    borderColor = '#8b5cf6'; // violet-500
+                    textColor = '#6d28d9'; // violet-700
                     break;
                 case 'colors':
-                    borderColor = '#f97316'; // orange
+                    bgColor = 'rgba(255, 237, 213, 0.85)'; // orange-100 with transparency
+                    borderColor = '#f97316'; // orange-500
+                    textColor = '#c2410c'; // orange-700
                     break;
                 case 'shapes':
-                    borderColor = '#64748b'; // slate
+                    bgColor = 'rgba(254, 226, 226, 0.85)'; // red-100 with transparency
+                    borderColor = '#ef4444'; // red-500
+                    textColor = '#dc2626'; // red-600
                     break;
                 default:
-                    borderColor = '#9ca3af'; // gray
+                    bgColor = 'rgba(243, 244, 246, 0.85)'; // gray-100 with transparency
+                    borderColor = '#9ca3af'; // gray-400
+                    textColor = '#374151'; // gray-700
             }
-            const bgStyle = `background-color: rgba(255, 255, 255, 0.6); border-color: ${borderColor}; border-width: 3px;`;
+            const bgStyle = `background-color: ${bgColor}; border-color: ${borderColor}; border-width: 3px;`;
 
             scoreCard.innerHTML = `
                 <div class="flex items-center justify-between p-3 border-2 rounded-xl" style="${bgStyle}">
                     <div class="flex items-center space-x-3">
-                        <div class="history-content-icon">
+                        <div class="history-content-icon" style="color: ${textColor};">
                             ${contentTypeIcon}
                         </div>
-                        <div class="text-base font-semibold text-gray-700">${shortDate}</div>
+                        <div class="text-base font-semibold" style="color: ${textColor};">${shortDate}</div>
                     </div>
                     <div class="flex items-center space-x-3">
                         <span class="text-xl font-bold ${accuracyColor}">
@@ -1799,7 +1809,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.9.21';
+    const version = '1.9.24';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

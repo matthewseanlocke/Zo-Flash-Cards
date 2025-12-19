@@ -1559,9 +1559,25 @@ body {
     background: #e5e7eb;
 }
 
-.content-type-row-btn.selected {
+/* Category-specific selected colors */
+#lettersBtn.selected {
     background: #dbeafe;
     border-color: #3b82f6;
+}
+
+#numbersBtn.selected {
+    background: #ede9fe;
+    border-color: #8b5cf6;
+}
+
+#colorsBtn.selected {
+    background: #ffedd5;
+    border-color: #f97316;
+}
+
+#shapesBtn.selected {
+    background: #fee2e2;
+    border-color: #ef4444;
 }
 
 .content-type-row-btn .content-type-icon {
@@ -1573,8 +1589,21 @@ body {
     text-align: center;
 }
 
-.content-type-row-btn.selected .content-type-icon {
+/* Category-specific icon colors when selected */
+#lettersBtn.selected .content-type-icon {
     color: #1d4ed8;
+}
+
+#numbersBtn.selected .content-type-icon {
+    color: #6d28d9;
+}
+
+#colorsBtn.selected .content-type-icon {
+    color: #c2410c;
+}
+
+#shapesBtn.selected .content-type-icon {
+    color: #dc2626;
 }
 
 .content-type-row-btn .content-type-name {
@@ -1584,8 +1613,21 @@ body {
     flex: 1;
 }
 
-.content-type-row-btn.selected .content-type-name {
+/* Category-specific text colors when selected */
+#lettersBtn.selected .content-type-name {
     color: #1d4ed8;
+}
+
+#numbersBtn.selected .content-type-name {
+    color: #6d28d9;
+}
+
+#colorsBtn.selected .content-type-name {
+    color: #c2410c;
+}
+
+#shapesBtn.selected .content-type-name {
+    color: #dc2626;
 }
 
 /* Row options - hidden by default, shown when selected */
@@ -1662,9 +1704,28 @@ body {
     border-color: #9ca3af;
 }
 
-.order-icon-btn.selected {
+/* Category-specific selected colors for order buttons */
+#lettersBtn .order-icon-btn.selected {
     background: #3b82f6;
     border-color: #3b82f6;
+    color: white;
+}
+
+#numbersBtn .order-icon-btn.selected {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+#colorsBtn .order-icon-btn.selected {
+    background: #f97316;
+    border-color: #f97316;
+    color: white;
+}
+
+#shapesBtn .order-icon-btn.selected {
+    background: #ef4444;
+    border-color: #ef4444;
     color: white;
 }
 
@@ -1734,7 +1795,7 @@ body {
     color: #374151;
 }
 
-.content-type-row-btn.selected .icon-letters {
+#lettersBtn.selected .icon-letters {
     color: #1d4ed8;
 }
 
@@ -1760,8 +1821,8 @@ body {
     color: #374151;
 }
 
-.content-type-row-btn.selected .icon-numbers {
-    color: #1d4ed8;
+#numbersBtn.selected .icon-numbers {
+    color: #6d28d9;
 }
 
 .number-char {
@@ -1829,8 +1890,8 @@ body {
     color: #374151;
 }
 
-.content-type-row-btn.selected .shapes-icon-svg {
-    color: #1d4ed8;
+#shapesBtn.selected .shapes-icon-svg {
+    color: #dc2626;
 }
 
 .shapes-icon-svg polygon,
