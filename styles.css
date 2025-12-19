@@ -1467,111 +1467,220 @@ body {
    Inline Settings (Welcome Screen)
    =========================================== */
 
-.inline-settings {
-    width: 100%;
+/* Welcome Panels - Card-like sections */
+.welcome-panel {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Content Type Row - 4 items in single row */
-.content-type-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+.play-panel {
+    display: flex;
+    justify-content: center;
+    padding: 1.25rem;
+}
+
+.settings-panel-inline {
+    display: flex;
+    flex-direction: column;
+}
+
+.sessions-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+/* Large Play Button - Centered */
+.play-now-btn-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 1.25rem 3rem;
+    border-radius: 1.25rem;
+    font-weight: 700;
+    font-size: 1.75rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+    transition: all 0.2s ease;
+}
+
+.play-now-btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
+}
+
+.play-now-btn-large:active {
+    transform: translateY(0);
+}
+
+/* Content Type Stack - Vertical list */
+.content-type-stack {
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
 }
 
-.content-type-row .content-type-btn {
-    padding: 0.5rem 0.25rem;
-    border-radius: 0.75rem;
-    border-width: 2px;
-}
-
-.content-type-row .content-type-icon {
-    font-size: 1.25rem;
-}
-
-.content-type-row .content-type-name {
-    font-size: 0.65rem;
-}
-
-/* Inline Options Row - Letter Case + Order side by side */
-.inline-options-row {
+/* Content Type Row Button - Full width with icon and name */
+.content-type-row-btn {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 1rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #f3f4f6;
+    border: 3px solid transparent;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
 }
 
-/* Letter Case Inline - Compact version */
-.letter-case-inline {
+.content-type-row-btn:hover {
+    background: #e5e7eb;
+}
+
+.content-type-row-btn.selected {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.content-type-row-btn .content-type-icon {
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-family: 'Andika', sans-serif;
+    color: #374151;
+    min-width: 50px;
+    text-align: center;
+}
+
+.content-type-row-btn.selected .content-type-icon {
+    color: #1d4ed8;
+}
+
+.content-type-row-btn .content-type-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    flex: 1;
+}
+
+.content-type-row-btn.selected .content-type-name {
+    color: #1d4ed8;
+}
+
+/* Letter Case Inline Row - Inside Letters button */
+.letter-case-inline-row {
     display: flex;
     gap: 0.375rem;
+    margin-left: auto;
     transition: opacity 0.3s ease, max-width 0.3s ease;
-    max-width: 200px;
-    overflow: hidden;
 }
 
-.letter-case-inline.hidden {
+.letter-case-inline-row.hidden {
     opacity: 0;
     max-width: 0;
+    overflow: hidden;
     pointer-events: none;
 }
 
-.letter-case-inline .letter-case-option {
-    flex: none;
+.letter-case-inline-row .letter-case-option {
+    cursor: pointer;
 }
 
-.letter-case-inline .letter-case-box {
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    border-width: 2px;
-}
-
-.letter-case-inline .letter-case-preview {
-    font-size: 1rem;
-}
-
-/* Order Inline - Icon only buttons */
-.order-inline {
-    display: flex;
-    gap: 0.375rem;
-}
-
-.order-inline .order-btn {
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    border-width: 2px;
-}
-
-.order-inline .order-btn span {
+.letter-case-inline-row .letter-case-option input[type="radio"] {
     display: none;
 }
 
-/* Mobile adjustments for inline settings */
+.letter-case-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.5rem;
+    background: white;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-family: 'Andika', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.letter-case-inline-row .letter-case-option input[type="radio"]:checked + .letter-case-chip {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+/* Order Row - Two buttons side by side */
+.order-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.order-row-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: #f3f4f6;
+    border: 3px solid transparent;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.order-row-btn:hover {
+    background: #e5e7eb;
+}
+
+.order-row-btn.selected {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+/* Mobile adjustments */
 @media (max-width: 380px) {
-    .content-type-row {
-        gap: 0.375rem;
+    .play-now-btn-large {
+        padding: 1rem 2rem;
+        font-size: 1.5rem;
     }
 
-    .content-type-row .content-type-btn {
-        padding: 0.375rem 0.125rem;
+    .content-type-row-btn .content-type-icon {
+        font-size: 1.5rem;
+        min-width: 40px;
     }
 
-    .content-type-row .content-type-icon {
+    .content-type-row-btn .content-type-name {
         font-size: 1rem;
     }
 
-    .content-type-row .content-type-name {
-        font-size: 0.6rem;
-    }
-
-    .letter-case-inline .letter-case-box {
-        padding: 0.375rem 0.5rem;
-    }
-
-    .letter-case-inline .letter-case-preview {
+    .letter-case-chip {
+        min-width: 32px;
+        height: 32px;
         font-size: 0.875rem;
-    }
-
-    .order-inline .order-btn {
-        padding: 0.375rem 0.5rem;
     }
 }

@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.2 - Play button at top, Settings section below
+// Version: 1.8.3 - Separate panels for Play, Settings, Previous Sessions
 
 class FlashCardApp {
     constructor() {
@@ -1650,7 +1650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.2';
+    const version = '1.8.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
