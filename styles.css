@@ -1584,9 +1584,38 @@ body {
     color: #1d4ed8;
 }
 
-/* Larger colors emoji */
+/* Rainbow colors icon */
 .content-type-icon.icon-colors {
-    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.colors-icon-svg {
+    width: 50px;
+    height: 24px;
+}
+
+.colors-icon-svg rect {
+    transition: transform 0.3s ease;
+    transform-origin: center bottom;
+}
+
+/* Wave animation when Colors is selected */
+.content-type-row-btn.selected .colors-icon-svg rect {
+    animation: colorWave 1.5s ease-in-out infinite;
+}
+
+.content-type-row-btn.selected .colors-icon-svg rect:nth-child(1) { animation-delay: 0s; }
+.content-type-row-btn.selected .colors-icon-svg rect:nth-child(2) { animation-delay: 0.1s; }
+.content-type-row-btn.selected .colors-icon-svg rect:nth-child(3) { animation-delay: 0.2s; }
+.content-type-row-btn.selected .colors-icon-svg rect:nth-child(4) { animation-delay: 0.3s; }
+.content-type-row-btn.selected .colors-icon-svg rect:nth-child(5) { animation-delay: 0.4s; }
+.content-type-row-btn.selected .colors-icon-svg rect:nth-child(6) { animation-delay: 0.5s; }
+
+@keyframes colorWave {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.6); }
 }
 
 /* SVG shapes icon */

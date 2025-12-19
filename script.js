@@ -1,5 +1,5 @@
 // Flash Card App JavaScript
-// Version: 1.8.5 - SVG shapes icon for consistent sizing
+// Version: 1.8.6 - Custom rainbow palette icon with wave animation
 
 class FlashCardApp {
     constructor() {
@@ -1650,7 +1650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.8.5';
+    const version = '1.8.6';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
