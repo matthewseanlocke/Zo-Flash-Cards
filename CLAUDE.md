@@ -47,6 +47,8 @@ Format: `MAJOR.MINOR.PATCH` (e.g., v1.10.0)
 
 **After completing work, always ask the user if they want to commit and push to GitHub.** Don't wait for them to ask - be proactive about offering to save their work.
 
+**Do NOT commit PNG files** - Any `.png` images in this repo are screenshots used for troubleshooting during development conversations. They should not be committed.
+
 Commit message format: `v{version}: Brief description of changes`
 
 Example: `v1.9.21: Add welcome screen idle animations`
