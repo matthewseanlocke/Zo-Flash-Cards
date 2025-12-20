@@ -17,6 +17,7 @@ class FlashCardApp {
         };
         this.cardHistory = []; // For going back
         this.cardResults = new Map(); // Track individual card results
+        this.answeredThisRun = new Set(); // Track cards answered in current game/replay run
         this.isFlipping = false; // Track if card is currently flipping
         this.cardAnswered = false; // Track if current card has been answered
         this.isReplayMode = false; // Track if replaying wrong cards
@@ -199,9 +200,11 @@ class FlashCardApp {
         this.closeScoreBtn = document.getElementById('closeScoreBtn');
         this.replayWrongBtn = document.getElementById('replayWrongBtn');
 
-        // Previous scores
+        // Previous scores / History
         this.previousScoresList = document.getElementById('previousScoresList');
-        
+        this.historyToggleBtn = document.getElementById('historyToggleBtn');
+        this.historyExpanded = false;
+
         // Delete modal
         this.deleteModal = document.getElementById('deleteModal');
         this.cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
@@ -305,6 +308,9 @@ class FlashCardApp {
                 this.hideDeleteModal();
             }
         });
+
+        // History toggle
+        this.historyToggleBtn.addEventListener('click', () => this.toggleHistory());
         
         // Keyboard support
         document.addEventListener('keydown', (e) => {
@@ -460,6 +466,7 @@ class FlashCardApp {
         this.scores = { correct: 0, wrong: 0, total: 0 };
         this.cardHistory = [];
         this.cardResults = new Map();
+        this.answeredThisRun = new Set();
         this.gameStarted = true;
         this.isReplayMode = false;
         this.replayCount = 0;
@@ -514,18 +521,14 @@ class FlashCardApp {
         // Reset card states
         this.cardInner.classList.remove('flipped');
 
-        // Check if card was already answered
-        if (this.isReplayMode) {
-            // In replay mode, start fresh (don't highlight - they were all wrong)
-            this.cardAnswered = false;
-            this.resetAnswerButtons();
-        } else if (this.cardResults.has(card)) {
-            // Card was already answered - show which answer was given but allow changing
+        // Check if card was already answered in this run
+        if (this.answeredThisRun.has(card)) {
+            // Card was answered in this run - highlight the answer given
             this.cardAnswered = false; // Allow re-answering
             const wasCorrect = this.cardResults.get(card);
             this.highlightPreviousAnswer(wasCorrect);
         } else {
-            // Card not yet answered
+            // Card not yet answered in this run
             this.cardAnswered = false;
             this.resetAnswerButtons();
         }
@@ -662,21 +665,32 @@ class FlashCardApp {
             currentCard = cards[this.currentIndex];
         }
 
+        // Track that this card has been answered in this run
+        this.answeredThisRun.add(currentCard);
+
         // Check if this card was already answered
         const previousAnswer = this.cardResults.get(currentCard);
         const wasAlreadyAnswered = previousAnswer !== undefined;
 
         if (this.isReplayMode) {
-            // In replay mode, only update if they got it correct (was wrong before)
-            if (isCorrect) {
+            // In replay mode, handle answer changes
+            const currentAnswer = this.cardResults.get(currentCard);
+
+            if (isCorrect && !currentAnswer) {
+                // Changed from wrong to correct
                 this.scores.wrong--;
                 this.scores.correct++;
                 this.cardResults.set(currentCard, true);
-                this.flashFeedback('green');
-            } else {
-                // Still wrong, no score change
-                this.flashFeedback('red');
+            } else if (!isCorrect && currentAnswer) {
+                // Changed from correct back to wrong
+                this.scores.correct--;
+                this.scores.wrong++;
+                this.cardResults.set(currentCard, false);
             }
+            // If answer unchanged, no score adjustment needed but still update cardResults
+            // to ensure highlighting works correctly
+            this.cardResults.set(currentCard, isCorrect);
+            this.flashFeedback(isCorrect ? 'green' : 'red');
         } else if (wasAlreadyAnswered) {
             // Changing a previous answer
             if (previousAnswer !== isCorrect) {
@@ -1238,7 +1252,7 @@ class FlashCardApp {
     updateNavigationButtons() {
         this.prevBtn.disabled = this.cardHistory.length === 0;
 
-        // Get current card to check if already answered
+        // Get current card to check if already answered in this run
         let currentCard;
         if (this.isReplayMode) {
             currentCard = this.replayCards[this.currentIndex];
@@ -1247,9 +1261,9 @@ class FlashCardApp {
             currentCard = cards[this.currentIndex];
         }
 
-        // Enable next if card is answered OR was previously answered (can skip after viewing)
-        const wasAlreadyAnswered = this.cardResults.has(currentCard);
-        this.nextBtn.disabled = !this.cardAnswered && !wasAlreadyAnswered;
+        // Next button enabled if card was answered (just now or earlier in this run)
+        const wasAnsweredThisRun = this.answeredThisRun.has(currentCard);
+        this.nextBtn.disabled = !this.cardAnswered && !wasAnsweredThisRun;
     }
 
     endGame() {
@@ -1386,6 +1400,7 @@ class FlashCardApp {
         this.replayCount++;
         this.currentIndex = 0;
         this.cardHistory = [];
+        this.answeredThisRun = new Set();
         this.gameStarted = true;
 
         // Hide score modal and show game UI
@@ -1456,41 +1471,36 @@ class FlashCardApp {
 
     displayPreviousScores() {
         const savedScores = this.loadSavedScores();
-        
+
         if (savedScores.length === 0) {
             this.previousScoresList.innerHTML = '<p class="text-gray-500 text-center text-sm">No previous sessions yet</p>';
             return;
         }
-        
+
         // Sort by date, most recent first
         savedScores.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
+
         // Show only the last 10 sessions
         const recentScores = savedScores.slice(0, 10);
-        
+
         this.previousScoresList.innerHTML = '';
-        
+
         recentScores.forEach((score, index) => {
             const scoreCard = document.createElement('div');
-            scoreCard.className = 'score-card-modern rounded-xl cursor-pointer';
-            
+            scoreCard.className = 'score-card-accordion';
+
             const date = new Date(score.date);
-            const shortDate = date.toLocaleDateString('en-US', { 
-                month: 'short', 
+            const shortDate = date.toLocaleDateString('en-US', {
+                month: 'short',
                 day: 'numeric'
             });
-            
-            let contentTypeDisplay;
+
             let contentTypeIcon;
             if (score.contentType === 'letters') {
-                contentTypeDisplay = score.letterCase === 'both' ? 'Letters (Aa)' :
-                                   score.letterCase === 'uppercase' ? 'Letters (A)' : 'Letters (a)';
                 contentTypeIcon = '<span style="font-family: Andika, sans-serif; font-size: 1.75rem; font-weight: 700;">Aa</span>';
             } else if (score.contentType === 'numbers') {
-                contentTypeDisplay = 'Numbers';
                 contentTypeIcon = '<span style="font-family: Andika, sans-serif; font-size: 1.75rem; font-weight: 700;">123</span>';
             } else if (score.contentType === 'colors') {
-                contentTypeDisplay = 'Colors';
                 contentTypeIcon = `<svg viewBox="0 0 50 28" style="width: 50px; height: 28px;">
                     <rect x="2" y="2" width="6" height="24" rx="1" fill="#ef4444"/>
                     <rect x="10" y="2" width="6" height="24" rx="1" fill="#f97316"/>
@@ -1500,15 +1510,12 @@ class FlashCardApp {
                     <rect x="42" y="2" width="6" height="24" rx="1" fill="#a855f7"/>
                 </svg>`;
             } else if (score.contentType === 'shapes') {
-                contentTypeDisplay = 'Shapes';
                 contentTypeIcon = `<svg viewBox="0 0 60 20" style="width: 50px; height: 20px; color: #374151;">
                     <polygon points="10,2 18,18 2,18" fill="currentColor"/>
                     <circle cx="30" cy="10" r="8" fill="currentColor"/>
                     <rect x="42" y="2" width="16" height="16" fill="currentColor"/>
                 </svg>`;
             } else {
-                // Fallback for undefined or unknown content types
-                contentTypeDisplay = score.contentType || 'Unknown';
                 contentTypeIcon = '❓';
             }
 
@@ -1519,34 +1526,37 @@ class FlashCardApp {
             let bgColor, borderColor, textColor;
             switch (score.contentType) {
                 case 'letters':
-                    bgColor = 'rgba(219, 234, 254, 0.85)'; // blue-100 with transparency
-                    borderColor = '#3b82f6'; // blue-500
-                    textColor = '#1d4ed8'; // blue-700
+                    bgColor = 'rgba(219, 234, 254, 0.85)';
+                    borderColor = '#3b82f6';
+                    textColor = '#1d4ed8';
                     break;
                 case 'numbers':
-                    bgColor = 'rgba(237, 233, 254, 0.85)'; // violet-100 with transparency
-                    borderColor = '#8b5cf6'; // violet-500
-                    textColor = '#6d28d9'; // violet-700
+                    bgColor = 'rgba(237, 233, 254, 0.85)';
+                    borderColor = '#8b5cf6';
+                    textColor = '#6d28d9';
                     break;
                 case 'colors':
-                    bgColor = 'rgba(255, 237, 213, 0.85)'; // orange-100 with transparency
-                    borderColor = '#f97316'; // orange-500
-                    textColor = '#c2410c'; // orange-700
+                    bgColor = 'rgba(255, 237, 213, 0.85)';
+                    borderColor = '#f97316';
+                    textColor = '#c2410c';
                     break;
                 case 'shapes':
-                    bgColor = 'rgba(254, 226, 226, 0.85)'; // red-100 with transparency
-                    borderColor = '#ef4444'; // red-500
-                    textColor = '#dc2626'; // red-600
+                    bgColor = 'rgba(254, 226, 226, 0.85)';
+                    borderColor = '#ef4444';
+                    textColor = '#dc2626';
                     break;
                 default:
-                    bgColor = 'rgba(243, 244, 246, 0.85)'; // gray-100 with transparency
-                    borderColor = '#9ca3af'; // gray-400
-                    textColor = '#374151'; // gray-700
+                    bgColor = 'rgba(243, 244, 246, 0.85)';
+                    borderColor = '#9ca3af';
+                    textColor = '#374151';
             }
             const bgStyle = `background-color: ${bgColor}; border-color: ${borderColor}; border-width: 3px;`;
 
+            // Generate the detailed card results HTML for expansion
+            const detailsContent = this.generateCardResultsHTML(score);
+
             scoreCard.innerHTML = `
-                <div class="flex items-center justify-between p-3 border-2 rounded-xl" style="${bgStyle}">
+                <div class="score-card-header flex items-center justify-between p-3 border-2 rounded-xl cursor-pointer" style="${bgStyle}">
                     <div class="flex items-center space-x-3">
                         <div class="history-content-icon" style="color: ${textColor};">
                             ${contentTypeIcon}
@@ -1557,6 +1567,9 @@ class FlashCardApp {
                         <span class="text-xl font-bold ${accuracyColor}">
                             ${score.accuracy}%
                         </span>
+                        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="${textColor}" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"/>
+                        </svg>
                         <button class="delete-btn-red" title="Delete">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -1564,13 +1577,52 @@ class FlashCardApp {
                         </button>
                     </div>
                 </div>
+                <div class="accordion-content" style="border-color: ${borderColor}; background-color: ${bgColor};">
+                    <div class="accordion-inner">
+                        <div class="session-details-table">
+                            <div class="detail-row">
+                                <span class="detail-label">Total Cards:</span>
+                                <span class="detail-value">${score.scores.total}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label text-emerald-600">Correct:</span>
+                                <span class="detail-value text-emerald-600">${score.scores.correct}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label text-red-500">Wrong:</span>
+                                <span class="detail-value text-red-500">${score.scores.wrong}</span>
+                            </div>
+                            <div class="detail-row detail-row-highlight">
+                                <span class="detail-label font-bold">Accuracy:</span>
+                                <span class="detail-value font-bold">${score.accuracy}%</span>
+                            </div>
+                            ${score.replayCount > 0 ? `
+                            <div class="detail-row">
+                                <span class="detail-label text-blue-500">Replay Attempts:</span>
+                                <span class="detail-value text-blue-500">${score.replayCount}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        ${detailsContent}
+                        <div class="results-legend">
+                            <div class="legend-item">
+                                <span class="legend-color legend-correct"></span>
+                                <span>Correct</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color legend-wrong"></span>
+                                <span>Wrong</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             `;
-            
-            // Add click handler to view detailed results
-            scoreCard.addEventListener('click', (e) => {
-                // Don't show details if delete button was clicked
+
+            // Add click handler to toggle expansion
+            const header = scoreCard.querySelector('.score-card-header');
+            header.addEventListener('click', (e) => {
                 if (!e.target.closest('.delete-btn-red')) {
-                    this.showPreviousScoreDetails(score);
+                    this.toggleAccordion(scoreCard);
                 }
             });
 
@@ -1580,9 +1632,130 @@ class FlashCardApp {
                 e.stopPropagation();
                 this.showDeleteConfirmation(score);
             });
-            
+
             this.previousScoresList.appendChild(scoreCard);
         });
+    }
+
+    generateCardResultsHTML(scoreData) {
+        if (!scoreData.cardResults) {
+            return '<p class="text-gray-500 text-center text-sm">Detailed results not available</p>';
+        }
+
+        // Generate the full card set for this score's configuration
+        let allCards = [];
+        if (scoreData.contentType === 'letters') {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            allCards = letters.map(letter => {
+                if (scoreData.letterCase === 'both') {
+                    return `${letter}${letter.toLowerCase()}`;
+                } else if (scoreData.letterCase === 'uppercase') {
+                    return letter;
+                } else {
+                    return letter.toLowerCase();
+                }
+            });
+        } else if (scoreData.contentType === 'numbers') {
+            allCards = Array.from({length: 10}, (_, i) => i.toString());
+        } else if (scoreData.contentType === 'colors') {
+            allCards = ['Red', 'Blue', 'Yellow', 'Green', 'Orange', 'Purple', 'Pink', 'Brown', 'Black', 'White'];
+        } else if (scoreData.contentType === 'shapes') {
+            allCards = ['Circle', 'Square', 'Triangle', 'Rectangle', 'Star', 'Heart', 'Oval', 'Diamond', 'Pentagon', 'Hexagon'];
+        }
+
+        let gridClass = 'grid-cols-6';
+        if (scoreData.contentType === 'colors') {
+            gridClass = 'grid-cols-5';
+        } else if (scoreData.contentType === 'shapes') {
+            gridClass = 'grid-cols-5 shapes-grid';
+        }
+
+        let itemsHTML = '';
+        allCards.forEach(card => {
+            let bgStyle = 'background: linear-gradient(135deg, #9ca3af, #6b7280);'; // not attempted
+            let title = `${card}: Not attempted`;
+
+            if (scoreData.cardResults[card] !== undefined) {
+                const isCorrect = scoreData.cardResults[card];
+                if (isCorrect) {
+                    bgStyle = 'background: linear-gradient(135deg, #10b981, #059669);'; // correct - green
+                } else {
+                    bgStyle = 'background: linear-gradient(135deg, #ef4444, #dc2626);'; // wrong - red
+                }
+                title = `${card}: ${isCorrect ? 'Correct' : 'Wrong'}`;
+            }
+
+            // Colors handled separately below
+            if (scoreData.contentType !== 'colors') {
+                let content = '';
+                let itemStyle = 'width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); ' + bgStyle;
+
+                if (scoreData.contentType === 'shapes') {
+                    content = this.getShapeResultIcon(card);
+                } else {
+                    content = card;
+                }
+
+                itemsHTML += `<div style="${itemStyle}" title="${title}">${content}</div>`;
+            }
+        });
+
+        // Special handling for colors - two-column list format
+        if (scoreData.contentType === 'colors') {
+            const colorMap = {
+                'Red': '#ef4444', 'Blue': '#3b82f6', 'Yellow': '#ca8a04', 'Green': '#16a34a',
+                'Orange': '#ea580c', 'Purple': '#9333ea', 'Pink': '#db2777', 'Brown': '#92400e',
+                'Black': '#1f2937', 'White': '#9ca3af'
+            };
+            let listHTML = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 1rem; font-size: 0.9rem;">';
+            allCards.forEach(card => {
+                const isCorrect = scoreData.cardResults[card];
+                const icon = isCorrect ? '✓' : '✗';
+                const iconColor = isCorrect ? '#10b981' : '#ef4444';
+                const textColor = colorMap[card] || '#374151';
+                listHTML += `<div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="color: ${iconColor}; font-weight: bold;">${icon}</span>
+                    <span style="color: ${textColor}; font-weight: 600;">${card}</span>
+                </div>`;
+            });
+            listHTML += '</div>';
+            return `<div class="card-results-grid" style="display: block;">${listHTML}</div>`;
+        }
+
+        return `<div class="card-results-grid ${gridClass}">${itemsHTML}</div>`;
+    }
+
+    toggleAccordion(scoreCard) {
+        const isExpanded = scoreCard.classList.contains('expanded');
+
+        // Close all other accordions first
+        const allCards = this.previousScoresList.querySelectorAll('.score-card-accordion.expanded');
+        allCards.forEach(card => {
+            if (card !== scoreCard) {
+                card.classList.remove('expanded');
+            }
+        });
+
+        // Toggle this accordion
+        if (isExpanded) {
+            scoreCard.classList.remove('expanded');
+        } else {
+            scoreCard.classList.add('expanded');
+        }
+    }
+
+    toggleHistory() {
+        this.historyExpanded = !this.historyExpanded;
+
+        if (this.historyExpanded) {
+            this.previousScoresList.classList.remove('collapsed');
+            this.previousScoresList.classList.add('expanded');
+            this.historyToggleBtn.classList.add('expanded');
+        } else {
+            this.previousScoresList.classList.remove('expanded');
+            this.previousScoresList.classList.add('collapsed');
+            this.historyToggleBtn.classList.remove('expanded');
+        }
     }
 
     showPreviousScoreDetails(scoreData) {
@@ -1716,6 +1889,7 @@ class FlashCardApp {
         this.currentIndex = 0;
         this.cardHistory = [];
         this.cardResults = new Map();
+        this.answeredThisRun = new Set();
         this.scores = { correct: 0, wrong: 0, total: 0 };
 
         // Clear coloring canvas
@@ -1809,7 +1983,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.9.24';
+    const version = '1.10.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

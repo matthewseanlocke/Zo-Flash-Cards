@@ -1512,10 +1512,23 @@ body {
     opacity: 0.7;
 }
 
-.history-header {
+/* History toggle button */
+.history-toggle-btn {
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 0.5rem 0;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
 }
 
 .history-icon {
@@ -1523,6 +1536,51 @@ body {
     height: 28px;
     stroke: white;
     opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.history-toggle-btn:hover .history-icon {
+    opacity: 1;
+}
+
+.history-chevron {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    opacity: 0.5;
+    transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.history-toggle-btn:hover .history-chevron {
+    opacity: 0.8;
+}
+
+.history-toggle-btn.expanded .history-chevron {
+    transform: rotate(180deg);
+}
+
+/* History list with slide animation */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+    padding-right: 10px;
+}
+
+.history-list.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.history-list.expanded {
+    max-height: 2000px;
+    opacity: 1;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 /* History session card icons - no background */
@@ -1531,6 +1589,153 @@ body {
     align-items: center;
     justify-content: center;
     min-width: 50px;
+}
+
+/* Score Card Accordion Styles */
+.score-card-accordion {
+    margin-bottom: 0.25rem;
+}
+
+.score-card-header {
+    transition: border-radius 0.2s ease;
+}
+
+.score-card-accordion.expanded .score-card-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-width: 0;
+}
+
+.accordion-chevron {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+    opacity: 0.6;
+}
+
+.score-card-accordion.expanded .accordion-chevron {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, border-width 0.1s ease;
+    border-left: 0 solid;
+    border-right: 0 solid;
+    border-bottom: 0 solid;
+    border-top: none;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.score-card-accordion.expanded .accordion-content {
+    max-height: 1000px;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+}
+
+.accordion-inner {
+    padding: 0.75rem;
+}
+
+/* Session details table (like old modal) */
+.session-details-table {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    font-size: 0.95rem;
+}
+
+.detail-row-highlight {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: 0.25rem;
+    padding-top: 0.5rem;
+}
+
+.detail-label {
+    color: #374151;
+}
+
+.detail-value {
+    color: #374151;
+}
+
+/* Card results grid in accordion */
+.card-results-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.card-results-grid.grid-cols-6 {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.card-results-grid.grid-cols-5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.card-results-grid.grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Ensure result items in accordion have visible backgrounds */
+.card-results-grid .result-item.result-correct {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.card-results-grid .result-item.result-wrong {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.card-results-grid .result-item.result-not-attempted {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+/* Results legend */
+.results-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 0.25rem;
+}
+
+.legend-correct {
+    background-color: #22c55e;
+}
+
+.legend-wrong {
+    background-color: #ef4444;
+}
+
+.legend-not-attempted {
+    background-color: #d1d5db;
 }
 
 /* Content Type Stack - Vertical list */

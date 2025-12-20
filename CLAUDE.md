@@ -10,19 +10,38 @@ Zo Flash Cards is a mobile-optimized flash card app for early childhood educatio
 
 **Always increment the version number** when making changes to the app. The version must be updated in **TWO places**:
 
-1. **`script.js`** (around line 1701) - this is the source of truth:
-   ```js
-   const version = '1.9.11';
-   ```
-
-2. **`index.html`** (line 19) - fallback display:
-   ```html
-   <span id="versionDisplay" class="text-white/50 text-xs">v1.9.11</span>
-   ```
+1. **`script.js`** (search for `const version =`) - this is the source of truth
+2. **`index.html`** (line 19, `versionDisplay` span) - fallback display
 
 The JavaScript version overwrites the HTML on page load, so `script.js` is the authoritative source.
 
-Use semantic versioning: increment the patch number (e.g., v1.9.11 → v1.9.12) for bug fixes and small changes.
+### Versioning Strategy (Semantic Versioning)
+
+Format: `MAJOR.MINOR.PATCH` (e.g., v1.10.0)
+
+**PATCH (1.10.0 → 1.10.1)** - Increment for:
+- Bug fixes
+- Small styling tweaks
+- Minor text changes
+- Performance improvements
+
+**MINOR (1.10.0 → 1.11.0)** - Increment for:
+- New features (e.g., new content type, new UI component)
+- Significant UI changes (e.g., redesigned history panel)
+- New user-facing functionality
+- Reset PATCH to 0 when incrementing
+
+**MAJOR (1.x.x → 2.0.0)** - Increment for:
+- Complete app redesign
+- Breaking changes to saved data format
+- Fundamental architecture changes
+- Reset MINOR and PATCH to 0 when incrementing
+
+### When to Batch Changes
+
+- **During a work session**: Use PATCH increments for testing/iteration (e.g., 1.10.1, 1.10.2, 1.10.3)
+- **When committing**: Consider squashing multiple patches into a single MINOR bump if they represent a cohesive feature
+- **Example**: If you went from 1.9.0 → 1.9.15 adding a new feature, commit as 1.10.0 instead
 
 ## Git Workflow
 
@@ -78,3 +97,24 @@ Uses Tailwind CSS via CDN for utility classes, with custom CSS in `styles.css` f
 
 ### Button Sizing Note
 The global `button` rule sets `min-height: 44px` for touch-friendliness. When creating smaller buttons, you must explicitly set both `height` AND `min-height` to override this (e.g., `height: 32px; min-height: 32px;`).
+
+## Game State Tracking
+
+### Important: `answeredThisRun` vs `cardResults`
+
+The app tracks card answers using TWO different data structures:
+
+1. **`cardResults`** (Map): Stores the answer (true=correct, false=wrong) for each card across the ENTIRE session including replays. Used for scoring and saving to localStorage.
+
+2. **`answeredThisRun`** (Set): Tracks which cards have been answered in the CURRENT game run or replay run. Gets cleared at the start of each new game (`startGame()`) and each replay (`replayWrongCards()`).
+
+**Why both are needed:**
+- In replay mode, cards start in `cardResults` (they were answered wrong in the first playthrough)
+- But we need to know if they've been answered IN THIS REPLAY to:
+  - Enable/disable the next button (can only proceed after answering)
+  - Highlight the previously selected answer when going back to a card
+
+**When modifying navigation or answer display logic, always use `answeredThisRun` to check if a card needs to be answered, not `cardResults`.**
+
+### Answer Button Highlighting
+When displaying a card that was already answered in this run, call `highlightPreviousAnswer(wasCorrect)` to show which button was previously pressed. This gives visual feedback when navigating back through answered cards.
