@@ -1510,10 +1510,10 @@ class FlashCardApp {
                     <rect x="42" y="2" width="6" height="24" rx="1" fill="#a855f7"/>
                 </svg>`;
             } else if (score.contentType === 'shapes') {
-                contentTypeIcon = `<svg viewBox="0 0 60 20" style="width: 50px; height: 20px; color: #374151;">
-                    <polygon points="10,2 18,18 2,18" fill="currentColor"/>
-                    <circle cx="30" cy="10" r="8" fill="currentColor"/>
-                    <rect x="42" y="2" width="16" height="16" fill="currentColor"/>
+                contentTypeIcon = `<svg viewBox="0 0 60 20" style="width: 50px; height: 20px;">
+                    <polygon points="10,2 18,18 2,18" fill="#ef4444"/>
+                    <circle cx="30" cy="10" r="8" fill="#22c55e"/>
+                    <rect x="42" y="2" width="16" height="16" fill="#3b82f6"/>
                 </svg>`;
             } else {
                 contentTypeIcon = '❓';
@@ -1700,26 +1700,31 @@ class FlashCardApp {
             }
         });
 
-        // Special handling for colors - two-column list format
+        // Special handling for colors - grid of squares like letters
         if (scoreData.contentType === 'colors') {
             const colorMap = {
-                'Red': '#ef4444', 'Blue': '#3b82f6', 'Yellow': '#ca8a04', 'Green': '#16a34a',
-                'Orange': '#ea580c', 'Purple': '#9333ea', 'Pink': '#db2777', 'Brown': '#92400e',
-                'Black': '#1f2937', 'White': '#9ca3af'
+                'Red': { abbr: 'Re', color: '#ef4444' },
+                'Blue': { abbr: 'Bl', color: '#3b82f6' },
+                'Yellow': { abbr: 'Ye', color: '#ca8a04' },
+                'Green': { abbr: 'Gr', color: '#16a34a' },
+                'Orange': { abbr: 'Or', color: '#ea580c' },
+                'Purple': { abbr: 'Pu', color: '#9333ea' },
+                'Pink': { abbr: 'Pi', color: '#db2777' },
+                'Brown': { abbr: 'Br', color: '#92400e' },
+                'Black': { abbr: 'Bk', color: '#1f2937' },
+                'White': { abbr: 'Wh', color: '#6b7280' }
             };
-            let listHTML = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 1rem; font-size: 0.9rem;">';
+            let colorItemsHTML = '';
             allCards.forEach(card => {
                 const isCorrect = scoreData.cardResults[card];
-                const icon = isCorrect ? '✓' : '✗';
-                const iconColor = isCorrect ? '#10b981' : '#ef4444';
-                const textColor = colorMap[card] || '#374151';
-                listHTML += `<div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="color: ${iconColor}; font-weight: bold;">${icon}</span>
-                    <span style="color: ${textColor}; font-weight: 600;">${card}</span>
-                </div>`;
+                const bgStyle = isCorrect
+                    ? 'background: linear-gradient(135deg, #10b981, #059669);'
+                    : 'background: linear-gradient(135deg, #ef4444, #dc2626);';
+                const { abbr, color } = colorMap[card] || { abbr: '??', color: '#374151' };
+                const itemStyle = `width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; text-shadow: 0 0 2px rgba(255,255,255,0.8), 0 0 4px rgba(255,255,255,0.6); ${bgStyle}`;
+                colorItemsHTML += `<div style="${itemStyle}" title="${card}"><span style="color: ${color};">${abbr}</span></div>`;
             });
-            listHTML += '</div>';
-            return `<div class="card-results-grid" style="display: block;">${listHTML}</div>`;
+            return `<div class="card-results-grid grid-cols-5">${colorItemsHTML}</div>`;
         }
 
         return `<div class="card-results-grid ${gridClass}">${itemsHTML}</div>`;
@@ -1983,7 +1988,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.10.2';
+    const version = '1.10.4';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
