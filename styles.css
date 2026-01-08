@@ -2390,6 +2390,16 @@ body {
     height: 22px;
 }
 
+.brush-dot.xlarge {
+    width: 28px;
+    height: 28px;
+}
+
+.brush-dot.xxlarge {
+    width: 34px;
+    height: 34px;
+}
+
 /* Brush styles (shape stamps) */
 .brush-styles {
     display: flex;

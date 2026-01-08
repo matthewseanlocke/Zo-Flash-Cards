@@ -1365,7 +1365,7 @@ class FlashCardApp {
         // Calculate brush size based on selection
         let brushSize;
         if (this.contentType === 'draw') {
-            const sizes = { small: 10, medium: 25, large: 50 };
+            const sizes = { small: 10, medium: 25, large: 50, xlarge: 80, xxlarge: 120 };
             brushSize = (sizes[this.brushSize] || 25) * dpr;
         } else {
             brushSize = 25 * dpr; // Default for letter coloring
@@ -1390,7 +1390,7 @@ class FlashCardApp {
             if (this.brushStyle && this.brushStyle !== 'brush') {
                 // Shape stamp mode - draw shape outlines
                 // Use larger sizes for shapes to make them visible
-                const shapeSizes = { small: 30, medium: 50, large: 80 };
+                const shapeSizes = { small: 30, medium: 50, large: 80, xlarge: 120, xxlarge: 170 };
                 const shapeSize = (shapeSizes[this.brushSize] || 50) * dpr;
                 ctx.lineWidth = 3 * dpr; // Outline thickness
 
@@ -2409,7 +2409,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.12.0';
+    const version = '1.12.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
