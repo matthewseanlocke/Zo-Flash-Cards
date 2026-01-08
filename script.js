@@ -26,6 +26,7 @@ class FlashCardApp {
         this.drawColor = '#1f2937'; // Current drawing color (default black)
         this.brushSize = 'small'; // Brush size: 'small', 'medium', 'large'
         this.brushStyle = 'brush'; // Brush style: 'brush', 'circle', 'square', 'triangle', etc.
+        this.fillMode = true; // Fill mode: true = solid fill, false = outline only
         this.isEraser = false; // Eraser mode
         this.drawHistory = []; // Canvas state history for undo
         this.historyIndex = -1; // Current position in history
@@ -160,6 +161,7 @@ class FlashCardApp {
         this.clearCanvasBtn = document.getElementById('clearCanvasBtn');
         this.brushSizeBtns = document.querySelectorAll('.brush-size-btn');
         this.brushStyleBtns = document.querySelectorAll('.brush-style-btn');
+        this.fillModeBtns = document.querySelectorAll('.fill-mode-btn');
         this.stampTabs = document.querySelectorAll('.stamp-tab');
         this.stampContents = document.querySelectorAll('.stamp-content');
         this.undoBtn = document.getElementById('undoBtn');
@@ -271,6 +273,12 @@ class FlashCardApp {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.selectBrushStyle(btn.dataset.style);
+            });
+        });
+        this.fillModeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectFillMode(btn.dataset.fill === 'true');
             });
         });
         this.stampTabs.forEach(tab => {
@@ -1419,18 +1427,30 @@ class FlashCardApp {
                 }
             } else {
                 // Regular brush mode
-                ctx.lineWidth = brushSize;
+                ctx.lineWidth = this.fillMode ? brushSize : 3 * dpr;
 
-                // For taps (same start/end point), draw a filled circle
+                // For taps (same start/end point), draw a circle
                 if (x1 === x2 && y1 === y2) {
                     ctx.beginPath();
                     ctx.arc(x1, y1, brushSize / 2, 0, Math.PI * 2);
-                    ctx.fill();
+                    if (this.fillMode) {
+                        ctx.fill();
+                    } else {
+                        ctx.stroke();
+                    }
                 } else {
-                    ctx.beginPath();
-                    ctx.moveTo(x1, y1);
-                    ctx.lineTo(x2, y2);
-                    ctx.stroke();
+                    if (this.fillMode) {
+                        // Solid mode: thick line
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    } else {
+                        // Outline mode: draw circle outline at end point
+                        ctx.beginPath();
+                        ctx.arc(x2, y2, brushSize / 2, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
                 }
             }
             // Reset composite operation
@@ -1527,6 +1547,18 @@ class FlashCardApp {
         });
     }
 
+    selectFillMode(fill) {
+        this.fillMode = fill;
+        // Update fill mode UI
+        this.fillModeBtns.forEach(btn => {
+            if ((btn.dataset.fill === 'true') === fill) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
     selectStampCategory(category) {
         // Update tab UI
         this.stampTabs.forEach(tab => {
@@ -1601,18 +1633,31 @@ class FlashCardApp {
                     this.drawTextOutline(ctx, x, y, letter, size);
                     return;
                 }
+                if (shape.startsWith('low')) {
+                    const letter = shape.charAt(3).toLowerCase();
+                    this.drawTextOutline(ctx, x, y, letter, size);
+                    return;
+                }
                 break;
         }
-        ctx.stroke();
+        if (this.fillMode) {
+            ctx.fill();
+        } else {
+            ctx.stroke();
+        }
     }
 
-    // Draw a text character outline at the given position
+    // Draw a text character at the given position (filled or outline based on fillMode)
     drawTextOutline(ctx, x, y, char, size) {
         const fontSize = size * 0.9;
         ctx.font = `bold ${fontSize}px Andika, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.strokeText(char, x, y);
+        if (this.fillMode) {
+            ctx.fillText(char, x, y);
+        } else {
+            ctx.strokeText(char, x, y);
+        }
     }
 
     // Helper to draw a star
@@ -2464,7 +2509,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.13.2';
+    const version = '1.13.5';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
