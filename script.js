@@ -1558,8 +1558,25 @@ class FlashCardApp {
             case 'hexagon':
                 this.drawPolygon(ctx, x, y, 6, size / 2);
                 break;
+            default:
+                // Check if it's a number stamp (num0-num9)
+                if (shape.startsWith('num')) {
+                    const digit = shape.charAt(3);
+                    this.drawNumberOutline(ctx, x, y, digit, size);
+                    return; // Don't call stroke() - drawNumberOutline handles it
+                }
+                break;
         }
         ctx.stroke();
+    }
+
+    // Draw a number outline at the given position
+    drawNumberOutline(ctx, x, y, digit, size) {
+        const fontSize = size * 0.9;
+        ctx.font = `bold ${fontSize}px Andika, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.strokeText(digit, x, y);
     }
 
     // Helper to draw a star
@@ -2409,7 +2426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.12.1';
+    const version = '1.12.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

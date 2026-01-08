@@ -2440,3 +2440,11 @@ body {
     border-color: white;
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
+
+.brush-style-btn.number-style span {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'Andika', sans-serif;
+    line-height: 1;
+}
