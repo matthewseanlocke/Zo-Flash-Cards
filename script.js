@@ -827,7 +827,13 @@ class FlashCardApp {
                 const cards = this.isSequential ? this.cards : this.shuffledCards;
                 currentCard = cards[this.currentIndex];
             }
-            cardContent.innerHTML = `<div class="feedback-text">${feedbackSymbol}</div><div class="feedback-label">${currentCard}</div>`;
+            // For numbers, spell out the name
+            let displayName = currentCard;
+            if (this.contentType === 'numbers') {
+                const numberNames = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+                displayName = numberNames[parseInt(currentCard)] || currentCard;
+            }
+            cardContent.innerHTML = `<div class="feedback-text">${feedbackSymbol}</div><div class="feedback-label">${displayName}</div>`;
             cardContent.className = 'feedback-container';
         } else {
             cardContent.textContent = feedbackSymbol;
@@ -2277,7 +2283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.11.6';
+    const version = '1.11.7';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
