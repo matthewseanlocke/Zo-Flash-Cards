@@ -2448,3 +2448,10 @@ body {
     font-family: 'Andika', sans-serif;
     line-height: 1;
 }
+
+/* Number styles row */
+.number-styles {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+}
