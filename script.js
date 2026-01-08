@@ -325,8 +325,9 @@ class FlashCardApp {
         this.coloringCanvas.addEventListener('mousemove', (e) => this.draw(e));
         this.coloringCanvas.addEventListener('mouseup', () => this.stopDrawing());
         this.coloringCanvas.addEventListener('mouseleave', () => this.stopDrawing());
-        this.coloringCanvas.addEventListener('touchstart', (e) => this.startDrawing(e));
-        this.coloringCanvas.addEventListener('touchmove', (e) => this.draw(e));
+        // Use passive: false to ensure preventDefault works on mobile
+        this.coloringCanvas.addEventListener('touchstart', (e) => this.startDrawing(e), { passive: false });
+        this.coloringCanvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
         this.coloringCanvas.addEventListener('touchend', (e) => this.stopDrawing(e));
         this.coloringCanvas.addEventListener('touchcancel', () => this.stopDrawing());
 
@@ -1145,9 +1146,11 @@ class FlashCardApp {
         // For draw mode, skip mask creation (freeform drawing)
         if (this.contentType === 'draw') {
             this.maskCanvas = null; // No mask for freeform drawing
-            // Initialize history with blank canvas state
-            this.resetDrawHistory();
-            this.saveDrawState();
+            // Try to restore saved drawing, otherwise start with blank canvas
+            if (!this.loadDrawingFromStorage()) {
+                this.resetDrawHistory();
+                this.saveDrawState();
+            }
         } else {
             // Create the letter mask canvas at canvas center
             await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
@@ -1359,18 +1362,28 @@ class FlashCardApp {
             if (this.isEraser) {
                 // Eraser mode: use destination-out to erase
                 ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0,0,0,1)';
                 ctx.strokeStyle = 'rgba(0,0,0,1)';
             } else {
                 ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = this.drawColor;
                 ctx.strokeStyle = this.drawColor;
             }
             ctx.lineWidth = brushSize;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
+
+            // For taps (same start/end point), draw a filled circle
+            if (x1 === x2 && y1 === y2) {
+                ctx.beginPath();
+                ctx.arc(x1, y1, brushSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
             // Reset composite operation
             ctx.globalCompositeOperation = 'source-over';
             return;
@@ -1459,6 +1472,8 @@ class FlashCardApp {
             this.coloringCtx.clearRect(0, 0, this.coloringCanvas.width, this.coloringCanvas.height);
             // Save blank state to history
             this.saveDrawState();
+            // Clear saved drawing from storage
+            localStorage.removeItem('flashCardDrawing');
         }
     }
 
@@ -2151,9 +2166,45 @@ class FlashCardApp {
     }
 
     exitTest() {
+        // Save drawing if in draw mode before exiting
+        if (this.contentType === 'draw' && this.coloringCanvas) {
+            this.saveDrawingToStorage();
+        }
         // Exit without saving - just return to welcome screen
         this.resetApp();
         this.displayPreviousScores();
+    }
+
+    // Save current drawing to localStorage
+    saveDrawingToStorage() {
+        try {
+            const dataUrl = this.coloringCanvas.toDataURL('image/png');
+            localStorage.setItem('flashCardDrawing', dataUrl);
+        } catch (e) {
+            console.warn('Could not save drawing:', e);
+        }
+    }
+
+    // Load saved drawing from localStorage
+    loadDrawingFromStorage() {
+        try {
+            const dataUrl = localStorage.getItem('flashCardDrawing');
+            if (!dataUrl) return false;
+
+            const img = new Image();
+            img.onload = () => {
+                // Draw the saved image onto the canvas
+                this.coloringCtx.drawImage(img, 0, 0, this.coloringCanvas.width, this.coloringCanvas.height);
+                // Update history with restored state
+                this.resetDrawHistory();
+                this.saveDrawState();
+            };
+            img.src = dataUrl;
+            return true;
+        } catch (e) {
+            console.warn('Could not load drawing:', e);
+            return false;
+        }
     }
 
     showDeleteConfirmation(scoreData) {
@@ -2226,7 +2277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.11.3';
+    const version = '1.11.4';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
