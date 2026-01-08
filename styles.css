@@ -2494,17 +2494,18 @@ body.draw-active main > *:first-child {
 .stamp-category-tabs {
     display: flex;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
 .stamp-tab {
-    padding: 0.35rem 0.5rem;
+    padding: 0.5rem 0.65rem;
     border-radius: 1rem;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.7);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2516,19 +2517,19 @@ body.draw-active main > *:first-child {
 }
 
 .stamp-tab .tab-icon {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     color: white;
 }
 
 .stamp-tab .shapes-tab-icon {
-    width: 32px;
-    height: 14px;
+    width: 40px;
+    height: 18px;
 }
 
 .stamp-tab .tab-text {
     font-family: 'Andika', sans-serif;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 }
 
