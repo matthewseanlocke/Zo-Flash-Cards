@@ -563,6 +563,7 @@ class FlashCardApp {
             this.drawControls.classList.remove('hidden');
             this.flashCard.classList.add('draw-mode');
             this.cardContainer.classList.add('draw-mode');
+            document.body.classList.add('draw-active');
         } else {
             this.gameControls.classList.remove('hidden');
             this.progressContainer.classList.remove('hidden');
@@ -570,6 +571,7 @@ class FlashCardApp {
             this.drawControls.classList.add('hidden');
             this.flashCard.classList.remove('draw-mode');
             this.cardContainer.classList.remove('draw-mode');
+            document.body.classList.remove('draw-active');
             this.updateProgress();
         }
 
@@ -2421,6 +2423,7 @@ class FlashCardApp {
         this.drawControls.classList.add('hidden');
         this.cardContainer.classList.remove('game-mode');
         this.cardContainer.classList.remove('draw-mode');
+        document.body.classList.remove('draw-active');
 
         this.hideScoreModal();
         this.startWelcomeAnimations();
@@ -2538,7 +2541,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.14.0';
+    const version = '1.15.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

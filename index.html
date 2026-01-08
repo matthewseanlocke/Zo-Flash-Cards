@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.14.0</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.15.0</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -329,11 +329,25 @@
             </div>
             <!-- Stamp Category Tabs -->
             <div class="stamp-category-tabs">
-                <button class="stamp-tab selected" data-category="brush">Brush</button>
-                <button class="stamp-tab" data-category="shapes">Shapes</button>
-                <button class="stamp-tab" data-category="numbers">Numbers</button>
-                <button class="stamp-tab" data-category="letters">ABC</button>
-                <button class="stamp-tab" data-category="lowercase">abc</button>
+                <button class="stamp-tab selected" data-category="brush" title="Brush">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="tab-icon"><circle cx="12" cy="12" r="6"/></svg>
+                </button>
+                <button class="stamp-tab" data-category="shapes" title="Shapes">
+                    <svg viewBox="0 0 36 16" class="tab-icon shapes-tab-icon">
+                        <polygon points="6,1 11,14 1,14" fill="#ef4444"/>
+                        <circle cx="18" cy="8" r="6" fill="#22c55e"/>
+                        <rect x="25" y="2" width="10" height="10" fill="#3b82f6"/>
+                    </svg>
+                </button>
+                <button class="stamp-tab" data-category="numbers" title="Numbers">
+                    <span class="tab-text">123</span>
+                </button>
+                <button class="stamp-tab" data-category="letters" title="Uppercase">
+                    <span class="tab-text">ABC</span>
+                </button>
+                <button class="stamp-tab" data-category="lowercase" title="Lowercase">
+                    <span class="tab-text">abc</span>
+                </button>
             </div>
             <!-- Stamp Category Contents -->
             <div class="stamp-category-content">
