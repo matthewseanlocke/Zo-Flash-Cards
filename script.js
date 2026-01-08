@@ -25,6 +25,7 @@ class FlashCardApp {
         this.replayCount = 0; // Track number of replay attempts
         this.drawColor = '#1f2937'; // Current drawing color (default black)
         this.brushSize = 'small'; // Brush size: 'small', 'medium', 'large'
+        this.brushStyle = 'brush'; // Brush style: 'brush', 'circle', 'square', 'triangle', etc.
         this.isEraser = false; // Eraser mode
         this.drawHistory = []; // Canvas state history for undo
         this.historyIndex = -1; // Current position in history
@@ -158,6 +159,7 @@ class FlashCardApp {
         this.paletteColors = document.querySelectorAll('.palette-color');
         this.clearCanvasBtn = document.getElementById('clearCanvasBtn');
         this.brushSizeBtns = document.querySelectorAll('.brush-size-btn');
+        this.brushStyleBtns = document.querySelectorAll('.brush-style-btn');
         this.undoBtn = document.getElementById('undoBtn');
         this.redoBtn = document.getElementById('redoBtn');
 
@@ -261,6 +263,12 @@ class FlashCardApp {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.selectBrushSize(btn.dataset.size);
+            });
+        });
+        this.brushStyleBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectBrushStyle(btn.dataset.style);
             });
         });
         this.undoBtn.addEventListener('click', (e) => {
@@ -1375,20 +1383,43 @@ class FlashCardApp {
                 ctx.fillStyle = this.drawColor;
                 ctx.strokeStyle = this.drawColor;
             }
-            ctx.lineWidth = brushSize;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            // For taps (same start/end point), draw a filled circle
-            if (x1 === x2 && y1 === y2) {
-                ctx.beginPath();
-                ctx.arc(x1, y1, brushSize / 2, 0, Math.PI * 2);
-                ctx.fill();
+            // Check if using shape stamps
+            if (this.brushStyle && this.brushStyle !== 'brush') {
+                // Shape stamp mode - draw shape outlines
+                // Use larger sizes for shapes to make them visible
+                const shapeSizes = { small: 30, medium: 50, large: 80 };
+                const shapeSize = (shapeSizes[this.brushSize] || 50) * dpr;
+                ctx.lineWidth = 3 * dpr; // Outline thickness
+
+                // Draw shape at start position (for both tap and drag)
+                this.drawShapeOutline(x1, y1, this.brushStyle, shapeSize);
+
+                // For drag, also draw at end position if it's far enough
+                if (x1 !== x2 || y1 !== y2) {
+                    const dist = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    // Only draw new shape if moved enough distance (prevents overlapping)
+                    if (dist > shapeSize * 0.7) {
+                        this.drawShapeOutline(x2, y2, this.brushStyle, shapeSize);
+                    }
+                }
             } else {
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
+                // Regular brush mode
+                ctx.lineWidth = brushSize;
+
+                // For taps (same start/end point), draw a filled circle
+                if (x1 === x2 && y1 === y2) {
+                    ctx.beginPath();
+                    ctx.arc(x1, y1, brushSize / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
             }
             // Reset composite operation
             ctx.globalCompositeOperation = 'source-over';
@@ -1470,6 +1501,101 @@ class FlashCardApp {
                 btn.classList.remove('selected');
             }
         });
+    }
+
+    selectBrushStyle(style) {
+        this.brushStyle = style;
+        // Update brush style UI
+        this.brushStyleBtns.forEach(btn => {
+            if (btn.dataset.style === style) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    // Draw a shape outline at the given position
+    drawShapeOutline(x, y, shape, size) {
+        const ctx = this.coloringCtx;
+        ctx.beginPath();
+
+        switch (shape) {
+            case 'circle':
+                ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+                break;
+            case 'square':
+                ctx.rect(x - size / 2, y - size / 2, size, size);
+                break;
+            case 'triangle':
+                ctx.moveTo(x, y - size / 2);
+                ctx.lineTo(x + size / 2, y + size / 2);
+                ctx.lineTo(x - size / 2, y + size / 2);
+                ctx.closePath();
+                break;
+            case 'rectangle':
+                ctx.rect(x - size / 2, y - size / 3, size, size * 0.66);
+                break;
+            case 'star':
+                this.drawStar(ctx, x, y, 5, size / 2, size / 4);
+                break;
+            case 'heart':
+                this.drawHeart(ctx, x, y, size);
+                break;
+            case 'oval':
+                ctx.ellipse(x, y, size / 2, size / 3, 0, 0, Math.PI * 2);
+                break;
+            case 'diamond':
+                ctx.moveTo(x, y - size / 2);
+                ctx.lineTo(x + size / 3, y);
+                ctx.lineTo(x, y + size / 2);
+                ctx.lineTo(x - size / 3, y);
+                ctx.closePath();
+                break;
+            case 'pentagon':
+                this.drawPolygon(ctx, x, y, 5, size / 2);
+                break;
+            case 'hexagon':
+                this.drawPolygon(ctx, x, y, 6, size / 2);
+                break;
+        }
+        ctx.stroke();
+    }
+
+    // Helper to draw a star
+    drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+        let rot = Math.PI / 2 * 3;
+        let step = Math.PI / spikes;
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < spikes; i++) {
+            ctx.lineTo(cx + Math.cos(rot) * outerRadius, cy + Math.sin(rot) * outerRadius);
+            rot += step;
+            ctx.lineTo(cx + Math.cos(rot) * innerRadius, cy + Math.sin(rot) * innerRadius);
+            rot += step;
+        }
+        ctx.lineTo(cx, cy - outerRadius);
+        ctx.closePath();
+    }
+
+    // Helper to draw a heart
+    drawHeart(ctx, x, y, size) {
+        const width = size;
+        const height = size;
+        ctx.moveTo(x, y + height / 4);
+        ctx.bezierCurveTo(x, y, x - width / 2, y, x - width / 2, y + height / 4);
+        ctx.bezierCurveTo(x - width / 2, y + height / 2, x, y + height * 0.6, x, y + height * 0.75);
+        ctx.bezierCurveTo(x, y + height * 0.6, x + width / 2, y + height / 2, x + width / 2, y + height / 4);
+        ctx.bezierCurveTo(x + width / 2, y, x, y, x, y + height / 4);
+    }
+
+    // Helper to draw a regular polygon
+    drawPolygon(ctx, cx, cy, sides, radius) {
+        ctx.moveTo(cx + radius * Math.cos(-Math.PI / 2), cy + radius * Math.sin(-Math.PI / 2));
+        for (let i = 1; i <= sides; i++) {
+            const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+            ctx.lineTo(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
+        }
+        ctx.closePath();
     }
 
     // Clear the drawing canvas (for draw mode)
@@ -2283,7 +2409,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.11.7';
+    const version = '1.12.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
