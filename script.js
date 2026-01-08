@@ -28,6 +28,7 @@ class FlashCardApp {
         this.isEraser = false; // Eraser mode
         this.drawHistory = []; // Canvas state history for undo
         this.historyIndex = -1; // Current position in history
+        this.strokeDrawnThisTouch = false; // Track if stroke was drawn during touch
 
         // Similar letter mappings for hints (case-specific)
         this.similarLetters = {
@@ -326,8 +327,11 @@ class FlashCardApp {
         this.coloringCanvas.addEventListener('mouseleave', () => this.stopDrawing());
         this.coloringCanvas.addEventListener('touchstart', (e) => this.startDrawing(e));
         this.coloringCanvas.addEventListener('touchmove', (e) => this.draw(e));
-        this.coloringCanvas.addEventListener('touchend', () => this.stopDrawing());
+        this.coloringCanvas.addEventListener('touchend', (e) => this.stopDrawing(e));
         this.coloringCanvas.addEventListener('touchcancel', () => this.stopDrawing());
+
+        // Click handler as fallback for taps that don't register properly on mobile
+        this.coloringCanvas.addEventListener('click', (e) => this.handleCanvasTap(e));
         
         // Card tap functionality removed - users must use Correct/Wrong buttons
         
@@ -1236,6 +1240,7 @@ class FlashCardApp {
 
         if (e.cancelable) e.preventDefault();
         this.isDrawing = true;
+        this.strokeDrawnThisTouch = true; // Mark that we started drawing
         const pos = this.getCanvasPos(e);
         this.lastX = pos.x;
         this.lastY = pos.y;
@@ -1265,6 +1270,24 @@ class FlashCardApp {
             this.saveDrawState();
         }
         this.isDrawing = false;
+        // Reset stroke flag after a short delay to allow click event to check it
+        setTimeout(() => {
+            this.strokeDrawnThisTouch = false;
+        }, 100);
+    }
+
+    // Handle tap/click on canvas as fallback for mobile devices
+    handleCanvasTap(e) {
+        // Only for draw mode
+        if (this.contentType !== 'draw') return;
+
+        // If a stroke was already drawn via touch events, skip
+        if (this.strokeDrawnThisTouch) return;
+
+        // Draw a dot at the tap position
+        const pos = this.getCanvasPos(e);
+        this.drawBrushStroke(pos.x, pos.y, pos.x, pos.y);
+        this.saveDrawState();
     }
 
     // Save current canvas state to history
@@ -2203,7 +2226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.11.2';
+    const version = '1.11.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
