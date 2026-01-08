@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.13.5</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.14.0</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,6 +295,7 @@
                 <button class="palette-color" data-color="#3b82f6" style="background: #3b82f6;" title="Blue"></button>
                 <button class="palette-color" data-color="#a855f7" style="background: #a855f7;" title="Purple"></button>
                 <button class="palette-color" data-color="#ec4899" style="background: #ec4899;" title="Pink"></button>
+                <button class="palette-color" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
                 <button class="palette-color eraser-btn" data-color="eraser" title="Eraser">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 20H9L4 15l10-10 7 7-6 6 5 2z"/>
@@ -318,6 +319,13 @@
                 <button class="brush-size-btn" data-size="xxlarge" title="Huge">
                     <span class="brush-dot xxlarge"></span>
                 </button>
+                <span class="brush-sizes-spacer"></span>
+                <button class="fill-mode-btn selected" data-fill="true" title="Solid Fill">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+                </button>
+                <button class="fill-mode-btn" data-fill="false" title="Outline Only">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+                </button>
             </div>
             <!-- Stamp Category Tabs -->
             <div class="stamp-category-tabs">
@@ -330,15 +338,11 @@
             <!-- Stamp Category Contents -->
             <div class="stamp-category-content">
                 <div class="stamp-content" data-category="brush">
-                    <button class="brush-style-btn selected" data-style="brush" title="Freehand Brush">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+                    <button class="brush-style-btn selected" data-style="brush" title="Round Brush">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
                     </button>
-                    <span class="brush-divider"></span>
-                    <button class="fill-mode-btn selected" data-fill="true" title="Solid Fill">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
-                    </button>
-                    <button class="fill-mode-btn" data-fill="false" title="Outline Only">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+                    <button class="brush-style-btn" data-style="calligraphy" title="Calligraphy">
+                        <svg viewBox="0 0 24 24" fill="currentColor" transform="rotate(-45)"><ellipse cx="12" cy="12" rx="3" ry="8"/></svg>
                     </button>
                 </div>
                 <div class="stamp-content hidden" data-category="shapes">

@@ -1406,8 +1406,8 @@ class FlashCardApp {
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            // Check if using shape stamps
-            if (this.brushStyle && this.brushStyle !== 'brush') {
+            // Check if using shape stamps (not brush or calligraphy)
+            if (this.brushStyle && this.brushStyle !== 'brush' && this.brushStyle !== 'calligraphy') {
                 // Shape stamp mode - draw shape outlines
                 // Use larger sizes for shapes to make them visible
                 const shapeSizes = { small: 30, medium: 50, large: 80, xlarge: 120, xxlarge: 170 };
@@ -1423,6 +1423,35 @@ class FlashCardApp {
                     // Only draw new shape if moved enough distance (prevents overlapping)
                     if (dist > shapeSize * 0.7) {
                         this.drawShapeOutline(x2, y2, this.brushStyle, shapeSize);
+                    }
+                }
+            } else if (this.brushStyle === 'calligraphy') {
+                // Calligraphy brush mode - draw tilted ellipses
+                const angle = -Math.PI / 4; // 45 degree tilt
+                ctx.lineWidth = this.fillMode ? 1 : 2 * dpr;
+
+                // Draw ellipse at position
+                const drawCalligraphyPoint = (x, y) => {
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, brushSize / 6, brushSize / 2, angle, 0, Math.PI * 2);
+                    if (this.fillMode) {
+                        ctx.fill();
+                    } else {
+                        ctx.stroke();
+                    }
+                };
+
+                if (x1 === x2 && y1 === y2) {
+                    drawCalligraphyPoint(x1, y1);
+                } else {
+                    // Draw along the line for smooth strokes
+                    const dist = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const steps = Math.max(1, Math.floor(dist / (brushSize / 4)));
+                    for (let i = 0; i <= steps; i++) {
+                        const t = i / steps;
+                        const x = x1 + (x2 - x1) * t;
+                        const y = y1 + (y2 - y1) * t;
+                        drawCalligraphyPoint(x, y);
                     }
                 }
             } else {
@@ -2509,7 +2538,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.13.5';
+    const version = '1.14.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

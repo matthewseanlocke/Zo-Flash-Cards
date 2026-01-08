@@ -2301,7 +2301,12 @@ body {
 .draw-actions {
     display: flex;
     justify-content: center;
-    gap: 0.75rem;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.draw-actions-spacer {
+    width: 20px;
 }
 
 .draw-action-btn {
@@ -2362,7 +2367,12 @@ body {
 .brush-sizes {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 0.5rem;
+}
+
+.brush-sizes-spacer {
+    width: 12px;
 }
 
 .brush-size-btn {
