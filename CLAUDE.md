@@ -45,7 +45,9 @@ Format: `MAJOR.MINOR.PATCH` (e.g., v1.10.0)
 
 ## Git Workflow
 
-**After completing work, always ask the user if they want to commit and push to GitHub.** Don't wait for them to ask - be proactive about offering to save their work.
+**Wait for user verification before committing.** After making changes, let the user test and verify the fix works correctly. Only commit when the user explicitly confirms and asks for a commit.
+
+**After completing work, offer to commit and push to GitHub** - but wait for user approval before actually doing so.
 
 **Do NOT commit PNG files** - Any `.png` images in this repo are screenshots used for troubleshooting during development conversations. They should not be committed.
 

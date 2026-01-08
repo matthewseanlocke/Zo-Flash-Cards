@@ -2236,12 +2236,33 @@ body {
     }
 }
 
+/* Draw Mode - smaller card and container */
+#cardContainer.draw-mode {
+    flex: 0 0 auto !important;
+    height: 35vh !important;
+    max-height: 35vh !important;
+}
+
+#flashCard.draw-mode {
+    position: relative;
+    height: 100%;
+}
+
+#flashCard.draw-mode .card-inner {
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 auto;
+}
+
 /* Draw Mode Controls */
 #drawControls {
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     padding: 0.25rem;
+    max-height: 45vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #drawControls:not(.hidden) {
@@ -2442,8 +2463,8 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.25rem;
-    max-width: 320px;
+    gap: 0.35rem;
+    max-width: 380px;
 }
 
 .stamp-content.hidden {
@@ -2451,10 +2472,10 @@ body {
 }
 
 .brush-style-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     border-radius: 0.5rem;
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -2463,7 +2484,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
+    padding: 6px;
 }
 
 .brush-style-btn svg {

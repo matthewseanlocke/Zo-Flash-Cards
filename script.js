@@ -553,11 +553,15 @@ class FlashCardApp {
             this.progressContainer.classList.add('hidden');
             this.tapHint.classList.add('hidden');
             this.drawControls.classList.remove('hidden');
+            this.flashCard.classList.add('draw-mode');
+            this.cardContainer.classList.add('draw-mode');
         } else {
             this.gameControls.classList.remove('hidden');
             this.progressContainer.classList.remove('hidden');
             this.tapHint.classList.remove('hidden');
             this.drawControls.classList.add('hidden');
+            this.flashCard.classList.remove('draw-mode');
+            this.cardContainer.classList.remove('draw-mode');
             this.updateProgress();
         }
 
@@ -2334,6 +2338,7 @@ class FlashCardApp {
         this.resetDrawHistory();
         
         this.flashCard.classList.add('hidden');
+        this.flashCard.classList.remove('draw-mode');
         this.welcomeCard.classList.remove('hidden');
         this.gameControls.classList.add('hidden');
         this.progressContainer.classList.add('hidden');
@@ -2341,6 +2346,7 @@ class FlashCardApp {
         this.exitBtn.classList.add('hidden');
         this.drawControls.classList.add('hidden');
         this.cardContainer.classList.remove('game-mode');
+        this.cardContainer.classList.remove('draw-mode');
 
         this.hideScoreModal();
         this.startWelcomeAnimations();
@@ -2458,7 +2464,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.13.1';
+    const version = '1.13.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
