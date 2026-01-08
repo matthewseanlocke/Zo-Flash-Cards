@@ -160,6 +160,8 @@ class FlashCardApp {
         this.clearCanvasBtn = document.getElementById('clearCanvasBtn');
         this.brushSizeBtns = document.querySelectorAll('.brush-size-btn');
         this.brushStyleBtns = document.querySelectorAll('.brush-style-btn');
+        this.stampTabs = document.querySelectorAll('.stamp-tab');
+        this.stampContents = document.querySelectorAll('.stamp-content');
         this.undoBtn = document.getElementById('undoBtn');
         this.redoBtn = document.getElementById('redoBtn');
 
@@ -269,6 +271,12 @@ class FlashCardApp {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.selectBrushStyle(btn.dataset.style);
+            });
+        });
+        this.stampTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectStampCategory(tab.dataset.category);
             });
         });
         this.undoBtn.addEventListener('click', (e) => {
@@ -1515,6 +1523,25 @@ class FlashCardApp {
         });
     }
 
+    selectStampCategory(category) {
+        // Update tab UI
+        this.stampTabs.forEach(tab => {
+            if (tab.dataset.category === category) {
+                tab.classList.add('selected');
+            } else {
+                tab.classList.remove('selected');
+            }
+        });
+        // Show/hide content
+        this.stampContents.forEach(content => {
+            if (content.dataset.category === category) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        });
+    }
+
     // Draw a shape outline at the given position
     drawShapeOutline(x, y, shape, size) {
         const ctx = this.coloringCtx;
@@ -1559,24 +1586,29 @@ class FlashCardApp {
                 this.drawPolygon(ctx, x, y, 6, size / 2);
                 break;
             default:
-                // Check if it's a number stamp (num0-num9)
+                // Check if it's a number stamp (num0-num9) or letter stamp (letA-letZ)
                 if (shape.startsWith('num')) {
                     const digit = shape.charAt(3);
-                    this.drawNumberOutline(ctx, x, y, digit, size);
-                    return; // Don't call stroke() - drawNumberOutline handles it
+                    this.drawTextOutline(ctx, x, y, digit, size);
+                    return;
+                }
+                if (shape.startsWith('let')) {
+                    const letter = shape.charAt(3);
+                    this.drawTextOutline(ctx, x, y, letter, size);
+                    return;
                 }
                 break;
         }
         ctx.stroke();
     }
 
-    // Draw a number outline at the given position
-    drawNumberOutline(ctx, x, y, digit, size) {
+    // Draw a text character outline at the given position
+    drawTextOutline(ctx, x, y, char, size) {
         const fontSize = size * 0.9;
         ctx.font = `bold ${fontSize}px Andika, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.strokeText(digit, x, y);
+        ctx.strokeText(char, x, y);
     }
 
     // Helper to draw a star
@@ -2426,7 +2458,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.12.4';
+    const version = '1.13.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

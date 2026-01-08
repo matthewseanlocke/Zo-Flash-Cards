@@ -2400,13 +2400,55 @@ body {
     height: 34px;
 }
 
-/* Brush styles (shape stamps) */
-.brush-styles {
+/* Stamp Category Tabs */
+.stamp-category-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.stamp-tab {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: auto;
+    height: auto;
+}
+
+.stamp-tab:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.stamp-tab.selected {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+/* Stamp Category Content */
+.stamp-category-content {
+    display: flex;
+    justify-content: center;
+}
+
+.stamp-content {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.25rem;
-    max-width: 280px;
+    max-width: 320px;
+}
+
+.stamp-content.hidden {
+    display: none;
 }
 
 .brush-style-btn {
@@ -2441,17 +2483,11 @@ body {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
-.brush-style-btn.number-style span {
+.brush-style-btn span {
     color: white;
     font-weight: bold;
-    font-size: 15px;
+    font-size: 14px;
     font-family: 'Andika', sans-serif;
     line-height: 1;
 }
 
-/* Number styles row */
-.number-styles {
-    display: flex;
-    justify-content: center;
-    gap: 0.25rem;
-}
