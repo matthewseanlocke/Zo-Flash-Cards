@@ -817,8 +817,8 @@ class FlashCardApp {
         // Show feedback symbol
         const feedbackSymbol = color === 'green' ? '✓' : '✗';
 
-        // For shapes and colors, also show the name
-        if (this.contentType === 'shapes' || this.contentType === 'colors') {
+        // For shapes, colors, and numbers, also show the name
+        if (this.contentType === 'shapes' || this.contentType === 'colors' || this.contentType === 'numbers') {
             // Get current card name
             let currentCard;
             if (this.isReplayMode) {
@@ -2277,7 +2277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.11.5';
+    const version = '1.11.6';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
