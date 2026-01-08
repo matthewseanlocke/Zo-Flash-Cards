@@ -1785,6 +1785,11 @@ body {
     border-color: #ef4444;
 }
 
+#drawBtn.selected {
+    background: #ccfbf1;
+    border-color: #14b8a6;
+}
+
 .content-type-row-btn .content-type-icon {
     font-size: 1.75rem;
     font-weight: 700;
@@ -1811,6 +1816,10 @@ body {
     color: #dc2626;
 }
 
+#drawBtn.selected .content-type-icon {
+    color: #0d9488;
+}
+
 .content-type-row-btn .content-type-name {
     font-size: 1.125rem;
     font-weight: 600;
@@ -1833,6 +1842,10 @@ body {
 
 #shapesBtn.selected .content-type-name {
     color: #dc2626;
+}
+
+#drawBtn.selected .content-type-name {
+    color: #0d9488;
 }
 
 /* Row options - hidden by default, shown when selected */
@@ -2115,6 +2128,24 @@ body {
     50% { transform: scale(0.7); }
 }
 
+/* Draw icon */
+.draw-icon-svg {
+    width: 24px;
+    height: 24px;
+    color: #374151;
+}
+
+#drawBtn.selected .draw-icon-svg {
+    color: #0d9488;
+    animation: drawWiggle 0.5s ease-in-out;
+}
+
+@keyframes drawWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
 /* Letter Case Inline Row - Inside Letters button */
 .letter-case-inline-row {
     display: flex;
@@ -2203,4 +2234,158 @@ body {
         font-size: 1.5rem;
         min-width: 40px;
     }
+}
+
+/* Draw Mode Controls */
+#drawControls {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+}
+
+#drawControls:not(.hidden) {
+    display: flex;
+}
+
+.color-palette {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.palette-color {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 50%;
+    border: 3px solid white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.palette-color:hover {
+    transform: scale(1.1);
+}
+
+.palette-color.selected {
+    border-color: white;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.3);
+    transform: scale(1.15);
+}
+
+/* Draw action buttons (undo, redo, clear) */
+.draw-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.draw-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.draw-action-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.draw-action-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.draw-action-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.draw-action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Eraser button */
+.palette-color.eraser-btn {
+    background: white !important;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.palette-color.eraser-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.palette-color.eraser-btn.selected {
+    color: #374151;
+}
+
+/* Brush sizes */
+.brush-sizes {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.brush-size-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brush-size-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.brush-size-btn.selected {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: white;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.brush-dot {
+    background: white;
+    border-radius: 50%;
+}
+
+.brush-dot.small {
+    width: 8px;
+    height: 8px;
+}
+
+.brush-dot.medium {
+    width: 14px;
+    height: 14px;
+}
+
+.brush-dot.large {
+    width: 22px;
+    height: 22px;
 }

@@ -23,6 +23,11 @@ class FlashCardApp {
         this.isReplayMode = false; // Track if replaying wrong cards
         this.replayCards = []; // Cards to replay (wrong answers)
         this.replayCount = 0; // Track number of replay attempts
+        this.drawColor = '#1f2937'; // Current drawing color (default black)
+        this.brushSize = 'small'; // Brush size: 'small', 'medium', 'large'
+        this.isEraser = false; // Eraser mode
+        this.drawHistory = []; // Canvas state history for undo
+        this.historyIndex = -1; // Current position in history
 
         // Similar letter mappings for hints (case-specific)
         this.similarLetters = {
@@ -144,7 +149,16 @@ class FlashCardApp {
         this.numbersBtn = document.getElementById('numbersBtn');
         this.colorsBtn = document.getElementById('colorsBtn');
         this.shapesBtn = document.getElementById('shapesBtn');
+        this.drawBtn = document.getElementById('drawBtn');
         this.letterCaseSection = document.getElementById('letterCaseSection');
+
+        // Draw mode controls
+        this.drawControls = document.getElementById('drawControls');
+        this.paletteColors = document.querySelectorAll('.palette-color');
+        this.clearCanvasBtn = document.getElementById('clearCanvasBtn');
+        this.brushSizeBtns = document.querySelectorAll('.brush-size-btn');
+        this.undoBtn = document.getElementById('undoBtn');
+        this.redoBtn = document.getElementById('redoBtn');
 
         // Order buttons (all of them across all rows)
         this.sequentialBtns = document.querySelectorAll('.sequential-btn');
@@ -229,7 +243,34 @@ class FlashCardApp {
         this.numbersBtn.addEventListener('click', () => this.selectContentType('numbers'));
         this.colorsBtn.addEventListener('click', () => this.selectContentType('colors'));
         this.shapesBtn.addEventListener('click', () => this.selectContentType('shapes'));
-        
+        this.drawBtn.addEventListener('click', () => this.selectContentType('draw'));
+
+        // Draw mode controls
+        this.paletteColors.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectDrawColor(btn.dataset.color);
+            });
+        });
+        this.clearCanvasBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.clearDrawingCanvas();
+        });
+        this.brushSizeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectBrushSize(btn.dataset.size);
+            });
+        });
+        this.undoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.undo();
+        });
+        this.redoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.redo();
+        });
+
         // Order selection - all sequential and random buttons across all rows
         this.sequentialBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -380,8 +421,11 @@ class FlashCardApp {
                 'Heart', 'Oval', 'Diamond', 'Pentagon', 'Hexagon'
             ];
             this.cards = [...shapes];
+        } else if (this.contentType === 'draw') {
+            // Draw mode - single blank canvas
+            this.cards = ['draw'];
         }
-        
+
         // Create shuffled version for random mode
         this.shuffledCards = [...this.cards];
         this.shuffleArray(this.shuffledCards);
@@ -402,6 +446,7 @@ class FlashCardApp {
         this.numbersBtn.classList.remove('selected');
         this.colorsBtn.classList.remove('selected');
         this.shapesBtn.classList.remove('selected');
+        this.drawBtn.classList.remove('selected');
 
         // Update selected button and show/hide letter case section
         let selectedBtn;
@@ -421,6 +466,10 @@ class FlashCardApp {
             this.shapesBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
             selectedBtn = this.shapesBtn;
+        } else if (type === 'draw') {
+            this.drawBtn.classList.add('selected');
+            this.letterCaseSection.classList.add('hidden');
+            selectedBtn = this.drawBtn;
         }
 
         // Trigger play button animation after icon animation
@@ -474,13 +523,23 @@ class FlashCardApp {
 
         this.welcomeCard.classList.add('hidden');
         this.flashCard.classList.remove('hidden');
-        this.gameControls.classList.remove('hidden');
-        this.progressContainer.classList.remove('hidden');
-        this.tapHint.classList.remove('hidden');
         this.exitBtn.classList.remove('hidden');
         this.cardContainer.classList.add('game-mode');
-        
-        this.updateProgress();
+
+        // Draw mode: show draw controls instead of game controls
+        if (this.contentType === 'draw') {
+            this.gameControls.classList.add('hidden');
+            this.progressContainer.classList.add('hidden');
+            this.tapHint.classList.add('hidden');
+            this.drawControls.classList.remove('hidden');
+        } else {
+            this.gameControls.classList.remove('hidden');
+            this.progressContainer.classList.remove('hidden');
+            this.tapHint.classList.remove('hidden');
+            this.drawControls.classList.add('hidden');
+            this.updateProgress();
+        }
+
         this.displayCurrentCard();
     }
 
@@ -508,6 +567,11 @@ class FlashCardApp {
             this.cardContent.className = 'shape-display';
             // Reset card face to default white background
             cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
+        } else if (this.contentType === 'draw') {
+            // Blank canvas for drawing
+            this.cardContent.textContent = '';
+            this.cardContent.className = '';
+            cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
         } else {
             this.cardContent.textContent = card;
             // Scale down in "both" mode since showing two letters (e.g., "Ww")
@@ -516,7 +580,10 @@ class FlashCardApp {
             cardFront.className = 'card-face card-front absolute inset-0 bg-white rounded-2xl shadow-2xl flex items-center justify-center backface-hidden';
         }
 
-        this.updateProgress();
+        // Don't update progress for draw mode
+        if (this.contentType !== 'draw') {
+            this.updateProgress();
+        }
 
         // Reset card states
         this.cardInner.classList.remove('flipped');
@@ -1032,8 +1099,8 @@ class FlashCardApp {
 
     // Coloring functionality - uses canvas compositing for performance
     async setupColoringCanvas() {
-        // Enable coloring for letters and numbers (not colors - they have colored backgrounds)
-        if (this.contentType !== 'letters' && this.contentType !== 'numbers') {
+        // Enable coloring for letters, numbers, and draw mode (not colors/shapes - they have colored backgrounds)
+        if (this.contentType !== 'letters' && this.contentType !== 'numbers' && this.contentType !== 'draw') {
             this.coloringCanvas.classList.remove('active');
             return;
         }
@@ -1071,9 +1138,17 @@ class FlashCardApp {
         this.coloringCtx = this.coloringCanvas.getContext('2d');
         this.coloringCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        // Create the letter mask canvas at canvas center
-        await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
-        if (this.currentSetupId !== setupId) return;
+        // For draw mode, skip mask creation (freeform drawing)
+        if (this.contentType === 'draw') {
+            this.maskCanvas = null; // No mask for freeform drawing
+            // Initialize history with blank canvas state
+            this.resetDrawHistory();
+            this.saveDrawState();
+        } else {
+            // Create the letter mask canvas at canvas center
+            await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
+            if (this.currentSetupId !== setupId) return;
+        }
 
         // Enable the canvas for interaction
         this.coloringCanvas.classList.add('active');
@@ -1154,7 +1229,10 @@ class FlashCardApp {
     }
 
     startDrawing(e) {
-        if (!this.maskCanvas || (this.contentType !== 'letters' && this.contentType !== 'numbers')) return;
+        // Allow drawing for letters, numbers, and draw mode
+        const canDraw = this.contentType === 'draw' ||
+                       ((this.contentType === 'letters' || this.contentType === 'numbers') && this.maskCanvas);
+        if (!canDraw) return;
 
         if (e.cancelable) e.preventDefault();
         this.isDrawing = true;
@@ -1167,7 +1245,9 @@ class FlashCardApp {
     }
 
     draw(e) {
-        if (!this.isDrawing || !this.maskCanvas) return;
+        if (!this.isDrawing) return;
+        // For letters/numbers, require mask; for draw mode, no mask needed
+        if (this.contentType !== 'draw' && !this.maskCanvas) return;
 
         if (e.cancelable) e.preventDefault();
         const pos = this.getCanvasPos(e);
@@ -1180,15 +1260,101 @@ class FlashCardApp {
     }
 
     stopDrawing() {
+        if (this.isDrawing && this.contentType === 'draw') {
+            // Save state for undo after completing a stroke
+            this.saveDrawState();
+        }
         this.isDrawing = false;
     }
 
-    drawBrushStroke(x1, y1, x2, y2) {
-        if (!this.maskCanvas) return;
+    // Save current canvas state to history
+    saveDrawState() {
+        if (!this.coloringCanvas || !this.coloringCtx) return;
 
+        // If we're not at the end of history, remove future states
+        if (this.historyIndex < this.drawHistory.length - 1) {
+            this.drawHistory = this.drawHistory.slice(0, this.historyIndex + 1);
+        }
+
+        // Save current canvas state as ImageData
+        const imageData = this.coloringCtx.getImageData(
+            0, 0, this.coloringCanvas.width, this.coloringCanvas.height
+        );
+        this.drawHistory.push(imageData);
+        this.historyIndex = this.drawHistory.length - 1;
+
+        // Limit history to 50 states to prevent memory issues
+        if (this.drawHistory.length > 50) {
+            this.drawHistory.shift();
+            this.historyIndex--;
+        }
+
+        this.updateUndoRedoButtons();
+    }
+
+    // Undo last drawing action
+    undo() {
+        if (this.historyIndex <= 0) return;
+
+        this.historyIndex--;
+        const imageData = this.drawHistory[this.historyIndex];
+        this.coloringCtx.putImageData(imageData, 0, 0);
+        this.updateUndoRedoButtons();
+    }
+
+    // Redo previously undone action
+    redo() {
+        if (this.historyIndex >= this.drawHistory.length - 1) return;
+
+        this.historyIndex++;
+        const imageData = this.drawHistory[this.historyIndex];
+        this.coloringCtx.putImageData(imageData, 0, 0);
+        this.updateUndoRedoButtons();
+    }
+
+    // Update undo/redo button states
+    updateUndoRedoButtons() {
+        this.undoBtn.disabled = this.historyIndex <= 0;
+        this.redoBtn.disabled = this.historyIndex >= this.drawHistory.length - 1;
+    }
+
+    drawBrushStroke(x1, y1, x2, y2) {
         const ctx = this.coloringCtx;
         const dpr = this.canvasDpr || 1;
-        const brushSize = 25 * dpr;
+
+        // Calculate brush size based on selection
+        let brushSize;
+        if (this.contentType === 'draw') {
+            const sizes = { small: 10, medium: 25, large: 50 };
+            brushSize = (sizes[this.brushSize] || 25) * dpr;
+        } else {
+            brushSize = 25 * dpr; // Default for letter coloring
+        }
+
+        // For draw mode (freeform), draw directly without mask
+        if (this.contentType === 'draw') {
+            if (this.isEraser) {
+                // Eraser mode: use destination-out to erase
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = this.drawColor;
+            }
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            // Reset composite operation
+            ctx.globalCompositeOperation = 'source-over';
+            return;
+        }
+
+        // For letters/numbers, use mask-based coloring
+        if (!this.maskCanvas) return;
 
         // Reuse temp canvas or create if needed
         if (!this.tempCanvas || this.tempCanvas.width !== this.coloringCanvas.width) {
@@ -1231,6 +1397,53 @@ class FlashCardApp {
         this.tempCanvas = null;
         this.tempCtx = null;
         this.coloringCanvas.classList.remove('active');
+    }
+
+    // Draw mode color selection
+    selectDrawColor(color) {
+        if (color === 'eraser') {
+            this.isEraser = true;
+        } else {
+            this.isEraser = false;
+            this.drawColor = color;
+        }
+        // Update palette UI
+        this.paletteColors.forEach(btn => {
+            if (btn.dataset.color === color) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    // Draw mode brush size selection
+    selectBrushSize(size) {
+        this.brushSize = size;
+        // Update brush size UI
+        this.brushSizeBtns.forEach(btn => {
+            if (btn.dataset.size === size) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    // Clear the drawing canvas (for draw mode)
+    clearDrawingCanvas() {
+        if (this.coloringCanvas && this.coloringCtx) {
+            this.coloringCtx.clearRect(0, 0, this.coloringCanvas.width, this.coloringCanvas.height);
+            // Save blank state to history
+            this.saveDrawState();
+        }
+    }
+
+    // Reset draw history (called when starting draw mode or exiting)
+    resetDrawHistory() {
+        this.drawHistory = [];
+        this.historyIndex = -1;
+        this.updateUndoRedoButtons();
     }
 
     updateProgress() {
@@ -1897,8 +2110,9 @@ class FlashCardApp {
         this.answeredThisRun = new Set();
         this.scores = { correct: 0, wrong: 0, total: 0 };
 
-        // Clear coloring canvas
+        // Clear coloring canvas and reset draw history
         this.clearColoringCanvas();
+        this.resetDrawHistory();
         
         this.flashCard.classList.add('hidden');
         this.welcomeCard.classList.remove('hidden');
@@ -1906,6 +2120,7 @@ class FlashCardApp {
         this.progressContainer.classList.add('hidden');
         this.tapHint.classList.add('hidden');
         this.exitBtn.classList.add('hidden');
+        this.drawControls.classList.add('hidden');
         this.cardContainer.classList.remove('game-mode');
 
         this.hideScoreModal();
@@ -1988,7 +2203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.10.5';
+    const version = '1.11.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
