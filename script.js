@@ -37,6 +37,9 @@ class FlashCardApp {
         this.tttCurrentPlayer = 'X';
         this.tttGameOver = false;
 
+        // Clear any previously saved drawing (we no longer persist drawings)
+        localStorage.removeItem('flashCardDrawing');
+
         // Similar letter mappings for hints (case-specific)
         this.similarLetters = {
             // Lowercase only
@@ -1225,11 +1228,9 @@ class FlashCardApp {
         // For draw mode, skip mask creation (freeform drawing)
         if (this.contentType === 'draw') {
             this.maskCanvas = null; // No mask for freeform drawing
-            // Try to restore saved drawing, otherwise start with blank canvas
-            if (!this.loadDrawingFromStorage()) {
-                this.resetDrawHistory();
-                this.saveDrawState();
-            }
+            // Start with blank canvas
+            this.resetDrawHistory();
+            this.saveDrawState();
         } else {
             // Create the letter mask canvas at canvas center
             await this.createLetterMaskCanvas(canvasWidth, canvasHeight, dpr);
@@ -2476,45 +2477,9 @@ class FlashCardApp {
     }
 
     exitTest() {
-        // Save drawing if in draw mode before exiting
-        if (this.contentType === 'draw' && this.coloringCanvas) {
-            this.saveDrawingToStorage();
-        }
         // Exit without saving - just return to welcome screen
         this.resetApp();
         this.displayPreviousScores();
-    }
-
-    // Save current drawing to localStorage
-    saveDrawingToStorage() {
-        try {
-            const dataUrl = this.coloringCanvas.toDataURL('image/png');
-            localStorage.setItem('flashCardDrawing', dataUrl);
-        } catch (e) {
-            console.warn('Could not save drawing:', e);
-        }
-    }
-
-    // Load saved drawing from localStorage
-    loadDrawingFromStorage() {
-        try {
-            const dataUrl = localStorage.getItem('flashCardDrawing');
-            if (!dataUrl) return false;
-
-            const img = new Image();
-            img.onload = () => {
-                // Draw the saved image onto the canvas
-                this.coloringCtx.drawImage(img, 0, 0, this.coloringCanvas.width, this.coloringCanvas.height);
-                // Update history with restored state
-                this.resetDrawHistory();
-                this.saveDrawState();
-            };
-            img.src = dataUrl;
-            return true;
-        } catch (e) {
-            console.warn('Could not load drawing:', e);
-            return false;
-        }
     }
 
     showDeleteConfirmation(scoreData) {
@@ -2665,7 +2630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.16.8';
+    const version = '1.16.9';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
