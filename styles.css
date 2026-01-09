@@ -2683,7 +2683,12 @@ body.draw-active main > *:first-child {
 
 /* Content type button */
 #tictactoeBtn.selected {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: #dcfce7;
+    border-color: #22c55e;
+}
+
+#tictactoeBtn.selected .content-type-icon {
+    color: #16a34a;
 }
 
 .icon-tictactoe svg {
@@ -2703,7 +2708,7 @@ body.ttt-active nav #versionDisplay {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 15vh;
+    padding-top: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
 }
