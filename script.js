@@ -54,6 +54,9 @@ class FlashCardApp {
             'm': 'n', 'n': 'm',  // m and n look similar
         };
 
+        // Track current icon index for each letter (for cycling through hints)
+        this.letterIconIndex = {};
+
         // Icon hints - associate letters with memorable images (multiple options per letter)
         this.letterIcons = {
             'A': ['🍎', '🐜', '✈️', '🥑', '👼'],  // Apple, Ant, Airplane, Avocado, Angel
@@ -975,16 +978,26 @@ class FlashCardApp {
 
     // Get icon hint for the current card
     // Returns icon emoji or null
-    getIconHint(card) {
+    getIconHint(card, advance = false) {
         if (this.contentType !== 'letters') return null;
 
         const letter = card.charAt(0).toUpperCase();
         const icons = this.letterIcons[letter];
         if (!icons || icons.length === 0) return null;
 
-        // Randomly pick one from the array
-        const randomIndex = Math.floor(Math.random() * icons.length);
-        return icons[randomIndex];
+        // Initialize index for this letter if not set
+        if (this.letterIconIndex[letter] === undefined) {
+            this.letterIconIndex[letter] = 0;
+        }
+
+        const icon = icons[this.letterIconIndex[letter]];
+
+        // Advance to next icon for next press (if requested)
+        if (advance) {
+            this.letterIconIndex[letter] = (this.letterIconIndex[letter] + 1) % icons.length;
+        }
+
+        return icon;
     }
 
     // Update hint buttons visibility based on current card
@@ -1111,7 +1124,7 @@ class FlashCardApp {
             card = cards[this.currentIndex];
         }
 
-        const icon = this.getIconHint(card);
+        const icon = this.getIconHint(card, true);  // advance to next icon for next press
         if (!icon) return;
 
         // Set the icon in the popup (just the icon, no letter)
@@ -2635,7 +2648,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.17.0';
+    const version = '1.17.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
