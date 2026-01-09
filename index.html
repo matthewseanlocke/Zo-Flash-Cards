@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.15.1</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.15.14</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -303,54 +303,57 @@
                     </svg>
                 </button>
             </div>
-            <div class="brush-sizes">
-                <button class="brush-size-btn selected" data-size="small" title="Small">
-                    <span class="brush-dot small"></span>
-                </button>
-                <button class="brush-size-btn" data-size="medium" title="Medium">
-                    <span class="brush-dot medium"></span>
-                </button>
-                <button class="brush-size-btn" data-size="large" title="Large">
-                    <span class="brush-dot large"></span>
-                </button>
-                <button class="brush-size-btn" data-size="xlarge" title="Extra Large">
-                    <span class="brush-dot xlarge"></span>
-                </button>
-                <button class="brush-size-btn" data-size="xxlarge" title="Huge">
-                    <span class="brush-dot xxlarge"></span>
-                </button>
-                <span class="brush-sizes-spacer"></span>
-                <button class="fill-mode-btn selected" data-fill="true" title="Solid Fill">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
-                </button>
-                <button class="fill-mode-btn" data-fill="false" title="Outline Only">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
-                </button>
+            <div class="brush-row">
+                <div class="brush-sizes">
+                    <button class="brush-size-btn selected" data-size="small" title="Small">
+                        <span class="brush-dot small"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="medium" title="Medium">
+                        <span class="brush-dot medium"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="large" title="Large">
+                        <span class="brush-dot large"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="xlarge" title="Extra Large">
+                        <span class="brush-dot xlarge"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="xxlarge" title="Huge">
+                        <span class="brush-dot xxlarge"></span>
+                    </button>
+                </div>
+                <div class="fill-mode-group">
+                    <button class="fill-mode-btn selected" data-fill="true" title="Solid Fill">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+                    </button>
+                    <button class="fill-mode-btn" data-fill="false" title="Outline Only">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+                    </button>
+                </div>
             </div>
-            <!-- Stamp Category Tabs -->
-            <div class="stamp-category-tabs">
-                <button class="stamp-tab selected" data-category="brush" title="Brush">
-                    <svg viewBox="0 0 24 24" fill="currentColor" class="tab-icon"><circle cx="12" cy="12" r="6"/></svg>
-                </button>
-                <button class="stamp-tab" data-category="shapes" title="Shapes">
-                    <svg viewBox="0 0 36 16" class="tab-icon shapes-tab-icon">
-                        <polygon points="6,1 11,14 1,14" fill="#ef4444"/>
-                        <circle cx="18" cy="8" r="6" fill="#22c55e"/>
-                        <rect x="25" y="2" width="10" height="10" fill="#3b82f6"/>
-                    </svg>
-                </button>
-                <button class="stamp-tab" data-category="numbers" title="Numbers">
-                    <span class="tab-text">123</span>
-                </button>
-                <button class="stamp-tab" data-category="letters" title="Uppercase">
-                    <span class="tab-text">ABC</span>
-                </button>
-                <button class="stamp-tab" data-category="lowercase" title="Lowercase">
-                    <span class="tab-text">abc</span>
-                </button>
-            </div>
-            <!-- Stamp Category Contents -->
-            <div class="stamp-category-content">
+            <!-- Stamp Panel (unified tabs + content) -->
+            <div class="stamp-panel">
+                <div class="stamp-category-tabs">
+                    <button class="stamp-tab selected" data-category="brush" title="Brush">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="tab-icon"><circle cx="12" cy="12" r="6"/></svg>
+                    </button>
+                    <button class="stamp-tab" data-category="shapes" title="Shapes">
+                        <svg viewBox="0 0 36 16" class="tab-icon shapes-tab-icon" fill="currentColor">
+                            <polygon points="6,2 11,14 1,14"/>
+                            <circle cx="18" cy="8" r="6"/>
+                            <rect x="25" y="3" width="10" height="10"/>
+                        </svg>
+                    </button>
+                    <button class="stamp-tab" data-category="numbers" title="Numbers">
+                        <span class="tab-text">123</span>
+                    </button>
+                    <button class="stamp-tab" data-category="letters" title="Uppercase">
+                        <span class="tab-text">ABC</span>
+                    </button>
+                    <button class="stamp-tab" data-category="lowercase" title="Lowercase">
+                        <span class="tab-text">abc</span>
+                    </button>
+                </div>
+                <div class="stamp-category-content">
                 <div class="stamp-content" data-category="brush">
                     <button class="brush-style-btn selected" data-style="brush" title="Round Brush">
                         <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
@@ -459,6 +462,7 @@
                     <button class="brush-style-btn" data-style="lowY" title="y"><span>y</span></button>
                     <button class="brush-style-btn" data-style="lowZ" title="z"><span>z</span></button>
                 </div>
+            </div>
             </div>
             <div class="draw-actions">
                 <button id="undoBtn" class="draw-action-btn" title="Undo" disabled>

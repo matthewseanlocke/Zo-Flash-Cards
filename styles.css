@@ -2333,6 +2333,10 @@ body.draw-active main > *:first-child {
     display: flex;
     justify-content: center;
     gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 1rem;
+    padding: 0.5rem;
 }
 
 .palette-color {
@@ -2423,16 +2427,36 @@ body.draw-active main > *:first-child {
     color: #374151;
 }
 
-/* Brush sizes */
-.brush-sizes {
+/* Brush row container */
+.brush-row {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
 }
 
-.brush-sizes-spacer {
-    width: 12px;
+/* Brush sizes */
+.brush-sizes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 1rem;
+    padding: 0.4rem 0.5rem;
+}
+
+/* Fill mode group */
+.fill-mode-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 1rem;
+    padding: 0.4rem 0.5rem;
 }
 
 .brush-size-btn {
@@ -2490,25 +2514,38 @@ body.draw-active main > *:first-child {
     height: 34px;
 }
 
+/* Stamp Panel - unified wrapper */
+.stamp-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(100, 180, 255, 0.5);
+    border-radius: 0.75rem;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    min-width: 355px;
+    width: 355px;
+}
+
 /* Stamp Category Tabs */
 .stamp-category-tabs {
     display: flex;
-    justify-content: center;
-    gap: 0.35rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    justify-content: stretch;
+    gap: 0;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .stamp-tab {
-    padding: 0.5rem 0.65rem;
-    border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.7);
+    flex: 1;
+    padding: 0.5rem 0.4rem;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     min-height: auto;
     height: auto;
     display: flex;
@@ -2516,38 +2553,45 @@ body.draw-active main > *:first-child {
     justify-content: center;
 }
 
+.stamp-tab:last-child {
+    border-right: none;
+}
+
 .stamp-tab .tab-icon {
-    width: 22px;
-    height: 22px;
-    color: white;
+    width: 28px;
+    height: 28px;
+    color: inherit;
 }
 
 .stamp-tab .shapes-tab-icon {
-    width: 40px;
-    height: 18px;
+    width: 50px;
+    height: 22px;
 }
 
 .stamp-tab .tab-text {
     font-family: 'Andika', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
 }
 
 .stamp-tab:hover {
-    background: rgba(255, 255, 255, 0.25);
-    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .stamp-tab.selected {
-    background: rgba(255, 255, 255, 0.35);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
+    box-shadow: inset 0 -3px 0 rgba(100, 180, 255, 0.7);
 }
 
 /* Stamp Category Content */
 .stamp-category-content {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+    padding: 0.5rem;
+    min-height: 140px;
 }
 
 .stamp-content {
