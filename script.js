@@ -54,34 +54,34 @@ class FlashCardApp {
             'm': 'n', 'n': 'm',  // m and n look similar
         };
 
-        // Icon hints - associate letters with memorable images
+        // Icon hints - associate letters with memorable images (multiple options per letter)
         this.letterIcons = {
-            'A': '🍎', 'a': '🍎',  // Apple
-            'B': '🐻', 'b': '🐻',  // Bear
-            'C': '🐱', 'c': '🐱',  // Cat
-            'D': '🐕', 'd': '🐕',  // Dog
-            'E': '🐘', 'e': '🐘',  // Elephant
-            'F': '🐸', 'f': '🐸',  // Frog
-            'G': '🍇', 'g': '🍇',  // Grapes
-            'H': '🏠', 'h': '🏠',  // House
-            'I': '🍦', 'i': '🍦',  // Ice cream
-            'J': '🪼', 'j': '🪼',  // Jellyfish
-            'K': '🪁', 'k': '🪁',  // Kite
-            'L': '🦁', 'l': '🦁',  // Lion
-            'M': '🐭', 'm': '🐭',  // Mouse
-            'N': '👃', 'n': '👃',  // Nose
-            'O': '🐙', 'o': '🐙',  // Octopus
-            'P': '🐷', 'p': '🐷',  // Pig
-            'Q': '👸', 'q': '👸',  // Queen
-            'R': '🌈', 'r': '🌈',  // Rainbow
-            'S': '🐍', 's': '🐍',  // Snake
-            'T': '🐢', 't': '🐢',  // Turtle
-            'U': '☂️', 'u': '☂️',  // Umbrella
-            'V': '🎻', 'v': '🎻',  // Violin
-            'W': '🐋', 'w': '🐋',  // Whale
-            'X': '🩻', 'x': '🩻',  // X-ray
-            'Y': '🪀', 'y': '🪀',  // Yo-yo
-            'Z': '🦓', 'z': '🦓',  // Zebra
+            'A': ['🍎', '🐜', '✈️', '🥑', '👼'],  // Apple, Ant, Airplane, Avocado, Angel
+            'B': ['🐻', '🍌', '🦇', '🐝', '🎈'],  // Bear, Banana, Bat, Bee, Balloon
+            'C': ['🐱', '🚗', '🥕', '🏰', '🐄'],  // Cat, Car, Carrot, Castle, Cow
+            'D': ['🐕', '🦆', '🐬', '🍩', '🥁'],  // Dog, Duck, Dolphin, Donut, Drum
+            'E': ['🐘', '🥚', '🦅', '👁️', '🍆'],  // Elephant, Egg, Eagle, Eye, Eggplant
+            'F': ['🐸', '🐟', '🦩', '🔥', '🍟'],  // Frog, Fish, Flamingo, Fire, Fries
+            'G': ['🍇', '🦒', '👻', '🎸', '🦍'],  // Grapes, Giraffe, Ghost, Guitar, Gorilla
+            'H': ['🏠', '🐴', '❤️', '🦔', '🍯'],  // House, Horse, Heart, Hedgehog, Honey
+            'I': ['🍦', '🦎', '🧊', '🪱', '🏝️'],  // Ice cream, Iguana, Ice, Inchworm, Island
+            'J': ['🪼', '🤹', '👖', '🃏', '🧃'],  // Jellyfish, Juggler, Jeans, Joker, Juice
+            'K': ['🪁', '🔑', '🦘', '👑', '🥝'],  // Kite, Key, Kangaroo, King, Kiwi
+            'L': ['🦁', '🍋', '🐞', '🦎', '🍃'],  // Lion, Lemon, Ladybug, Lizard, Leaf
+            'M': ['🐭', '🌙', '🐒', '🍄', '🧲'],  // Mouse, Moon, Monkey, Mushroom, Magnet
+            'N': ['👃', '🥜', '📰', '🪺', '🎵'],  // Nose, Nut, Newspaper, Nest, Note
+            'O': ['🐙', '🍊', '🦉', '🧅', '🦦'],  // Octopus, Orange, Owl, Onion, Otter
+            'P': ['🐷', '🍕', '🐧', '🎃', '🍑'],  // Pig, Pizza, Penguin, Pumpkin, Peach
+            'Q': ['👸', '❓', '🦆', '🎯', '🛏️'],  // Queen, Question, Quack (duck), Quoits, Quilt (bed)
+            'R': ['🌈', '🐰', '🤖', '🚀', '🦏'],  // Rainbow, Rabbit, Robot, Rocket, Rhino
+            'S': ['🐍', '⭐', '🐌', '☀️', '🍓'],  // Snake, Star, Snail, Sun, Strawberry
+            'T': ['🐢', '🌳', '🐯', '🍅', '🚂'],  // Turtle, Tree, Tiger, Tomato, Train
+            'U': ['☂️', '🦄', '🎸', '👆', '🔮'],  // Umbrella, Unicorn, Ukulele, Up, UFO (crystal ball)
+            'V': ['🎻', '🌋', '🧛', '💜', '🥦'],  // Violin, Volcano, Vampire, Violet, Vegetable
+            'W': ['🐋', '🐺', '🍉', '⌚', '🪱'],  // Whale, Wolf, Watermelon, Watch, Worm
+            'X': ['🩻', '❌', '🎄', '✖️', '🔨'],  // X-ray, X mark, Xmas tree, Multiply, (a)Xe
+            'Y': ['🪀', '😋', '🧶', '☯️', '🍳'],  // Yo-yo, Yum, Yarn, Yin-yang, Yolk
+            'Z': ['🦓', '⚡', '🧟', '🤐', '💤'],  // Zebra, Zap, Zombie, Zipper, Zzz
         };
 
         this.initializeElements();
@@ -979,7 +979,12 @@ class FlashCardApp {
         if (this.contentType !== 'letters') return null;
 
         const letter = card.charAt(0).toUpperCase();
-        return this.letterIcons[letter] || null;
+        const icons = this.letterIcons[letter];
+        if (!icons || icons.length === 0) return null;
+
+        // Randomly pick one from the array
+        const randomIndex = Math.floor(Math.random() * icons.length);
+        return icons[randomIndex];
     }
 
     // Update hint buttons visibility based on current card
@@ -2630,7 +2635,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.16.9';
+    const version = '1.17.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
