@@ -10,6 +10,17 @@ html, body {
     padding: 0;
 }
 
+/* Nav bar - fixed height for consistency across all modes */
+nav {
+    height: 52px;
+    display: flex;
+    align-items: center;
+}
+
+nav > div {
+    width: 100%;
+}
+
 /* 3D Perspective and Card Flip Animation */
 .perspective-1000 {
     perspective: 1000px;
@@ -2692,16 +2703,11 @@ body.draw-active main > *:first-child {
 }
 
 .icon-tictactoe svg {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     stroke: currentColor;
 }
 
-/* Body class for TTT mode */
-body.ttt-active nav h1,
-body.ttt-active nav #versionDisplay {
-    display: none;
-}
 
 /* TTT Game Container */
 #tictactoeGame {
