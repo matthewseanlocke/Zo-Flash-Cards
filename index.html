@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.15.18</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.16.3</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,6 +186,26 @@
                             <div class="row-options">
                                 <div class="order-inline-row">
                                     <button class="order-icon-btn play-btn" title="Start Drawing">
+                                        <svg fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tic Tac Toe -->
+                        <div id="tictactoeBtn" class="content-type-row-btn">
+                            <span class="content-type-icon icon-tictactoe">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="8" y1="2" x2="8" y2="22"/>
+                                    <line x1="16" y1="2" x2="16" y2="22"/>
+                                    <line x1="2" y1="8" x2="22" y2="8"/>
+                                    <line x1="2" y1="16" x2="22" y2="16"/>
+                                </svg>
+                            </span>
+                            <div class="row-options">
+                                <div class="order-inline-row">
+                                    <button class="order-icon-btn play-btn" title="Play Tic Tac Toe">
                                         <svg fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M8 5v14l11-7z"/>
                                         </svg>
@@ -488,6 +508,26 @@
                         <path d="M14 11v6"/>
                     </svg>
                 </button>
+            </div>
+        </div>
+
+        <!-- Tic Tac Toe Game -->
+        <div id="tictactoeGame" class="hidden">
+            <div class="ttt-turn-indicator">Player X's Turn</div>
+            <div class="ttt-board">
+                <button class="ttt-cell" data-cell="0"></button>
+                <button class="ttt-cell" data-cell="1"></button>
+                <button class="ttt-cell" data-cell="2"></button>
+                <button class="ttt-cell" data-cell="3"></button>
+                <button class="ttt-cell" data-cell="4"></button>
+                <button class="ttt-cell" data-cell="5"></button>
+                <button class="ttt-cell" data-cell="6"></button>
+                <button class="ttt-cell" data-cell="7"></button>
+                <button class="ttt-cell" data-cell="8"></button>
+            </div>
+            <div class="ttt-result hidden">
+                <span class="ttt-winner-text"></span>
+                <button class="ttt-play-again">Play Again</button>
             </div>
         </div>
     </main>

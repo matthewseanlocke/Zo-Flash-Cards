@@ -32,6 +32,11 @@ class FlashCardApp {
         this.historyIndex = -1; // Current position in history
         this.strokeDrawnThisTouch = false; // Track if stroke was drawn during touch
 
+        // Tic Tac Toe state
+        this.tttBoard = Array(9).fill(null); // null, 'X', or 'O'
+        this.tttCurrentPlayer = 'X';
+        this.tttGameOver = false;
+
         // Similar letter mappings for hints (case-specific)
         this.similarLetters = {
             // Lowercase only
@@ -167,6 +172,15 @@ class FlashCardApp {
         this.undoBtn = document.getElementById('undoBtn');
         this.redoBtn = document.getElementById('redoBtn');
 
+        // Tic Tac Toe elements
+        this.tictactoeBtn = document.getElementById('tictactoeBtn');
+        this.tictactoeGame = document.getElementById('tictactoeGame');
+        this.tttCells = document.querySelectorAll('.ttt-cell');
+        this.tttTurnIndicator = document.querySelector('.ttt-turn-indicator');
+        this.tttResult = document.querySelector('.ttt-result');
+        this.tttWinnerText = document.querySelector('.ttt-winner-text');
+        this.tttPlayAgainBtn = document.querySelector('.ttt-play-again');
+
         // Order buttons (all of them across all rows)
         this.sequentialBtns = document.querySelectorAll('.sequential-btn');
         this.randomBtns = document.querySelectorAll('.random-btn');
@@ -251,6 +265,13 @@ class FlashCardApp {
         this.colorsBtn.addEventListener('click', () => this.selectContentType('colors'));
         this.shapesBtn.addEventListener('click', () => this.selectContentType('shapes'));
         this.drawBtn.addEventListener('click', () => this.selectContentType('draw'));
+        this.tictactoeBtn.addEventListener('click', () => this.selectContentType('tictactoe'));
+
+        // Tic Tac Toe controls
+        this.tttCells.forEach(cell => {
+            cell.addEventListener('click', () => this.handleTTTCellClick(cell));
+        });
+        this.tttPlayAgainBtn.addEventListener('click', () => this.resetTTTGame());
 
         // Draw mode controls
         this.paletteColors.forEach(btn => {
@@ -453,6 +474,9 @@ class FlashCardApp {
         } else if (this.contentType === 'draw') {
             // Draw mode - single blank canvas
             this.cards = ['draw'];
+        } else if (this.contentType === 'tictactoe') {
+            // Tic Tac Toe mode - single game
+            this.cards = ['tictactoe'];
         }
 
         // Create shuffled version for random mode
@@ -476,6 +500,7 @@ class FlashCardApp {
         this.colorsBtn.classList.remove('selected');
         this.shapesBtn.classList.remove('selected');
         this.drawBtn.classList.remove('selected');
+        this.tictactoeBtn.classList.remove('selected');
 
         // Update selected button and show/hide letter case section
         let selectedBtn;
@@ -499,6 +524,10 @@ class FlashCardApp {
             this.drawBtn.classList.add('selected');
             this.letterCaseSection.classList.add('hidden');
             selectedBtn = this.drawBtn;
+        } else if (type === 'tictactoe') {
+            this.tictactoeBtn.classList.add('selected');
+            this.letterCaseSection.classList.add('hidden');
+            selectedBtn = this.tictactoeBtn;
         }
 
         // Trigger play button animation after icon animation
@@ -551,8 +580,22 @@ class FlashCardApp {
         this.stopWelcomeAnimations();
 
         this.welcomeCard.classList.add('hidden');
-        this.flashCard.classList.remove('hidden');
         this.exitBtn.classList.remove('hidden');
+
+        // Tic Tac Toe mode: show TTT game instead of flash card
+        if (this.contentType === 'tictactoe') {
+            this.flashCard.classList.add('hidden');
+            this.cardContainer.classList.add('hidden');
+            this.gameControls.classList.add('hidden');
+            this.progressContainer.classList.add('hidden');
+            this.tapHint.classList.add('hidden');
+            this.tictactoeGame.classList.remove('hidden');
+            document.body.classList.add('ttt-active');
+            this.resetTTTGame();
+            return;
+        }
+
+        this.flashCard.classList.remove('hidden');
         this.cardContainer.classList.add('game-mode');
 
         // Draw mode: show draw controls instead of game controls
@@ -2421,9 +2464,12 @@ class FlashCardApp {
         this.tapHint.classList.add('hidden');
         this.exitBtn.classList.add('hidden');
         this.drawControls.classList.add('hidden');
+        this.tictactoeGame.classList.add('hidden');
         this.cardContainer.classList.remove('game-mode');
         this.cardContainer.classList.remove('draw-mode');
+        this.cardContainer.classList.remove('hidden');
         document.body.classList.remove('draw-active');
+        document.body.classList.remove('ttt-active');
 
         this.hideScoreModal();
         this.startWelcomeAnimations();
@@ -2534,6 +2580,84 @@ class FlashCardApp {
             }, 300);
         }, 2000);
     }
+
+    // Tic Tac Toe Methods
+    resetTTTGame() {
+        this.tttBoard = Array(9).fill(null);
+        this.tttCurrentPlayer = 'X';
+        this.tttGameOver = false;
+
+        this.tttCells.forEach(cell => {
+            cell.textContent = '';
+            cell.classList.remove('x', 'o', 'winner');
+            cell.disabled = false;
+        });
+
+        this.tttTurnIndicator.textContent = "Player X's Turn";
+        this.tttResult.classList.add('hidden');
+    }
+
+    handleTTTCellClick(cell) {
+        if (this.tttGameOver) return;
+
+        const index = parseInt(cell.dataset.cell);
+        if (this.tttBoard[index]) return; // Already filled
+
+        // Make move
+        this.tttBoard[index] = this.tttCurrentPlayer;
+        cell.textContent = this.tttCurrentPlayer;
+        cell.classList.add(this.tttCurrentPlayer.toLowerCase());
+
+        // Check for winner
+        const winner = this.checkTTTWinner();
+        if (winner) {
+            this.endTTTGame(winner);
+            return;
+        }
+
+        // Check for draw
+        if (!this.tttBoard.includes(null)) {
+            this.endTTTGame('draw');
+            return;
+        }
+
+        // Switch player
+        this.tttCurrentPlayer = this.tttCurrentPlayer === 'X' ? 'O' : 'X';
+        this.tttTurnIndicator.textContent = `Player ${this.tttCurrentPlayer}'s Turn`;
+    }
+
+    checkTTTWinner() {
+        const lines = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]              // Diagonals
+        ];
+
+        for (const [a, b, c] of lines) {
+            if (this.tttBoard[a] &&
+                this.tttBoard[a] === this.tttBoard[b] &&
+                this.tttBoard[a] === this.tttBoard[c]) {
+                // Highlight winning cells
+                this.tttCells[a].classList.add('winner');
+                this.tttCells[b].classList.add('winner');
+                this.tttCells[c].classList.add('winner');
+                return this.tttBoard[a];
+            }
+        }
+        return null;
+    }
+
+    endTTTGame(result) {
+        this.tttGameOver = true;
+        this.tttCells.forEach(cell => cell.disabled = true);
+
+        if (result === 'draw') {
+            this.tttWinnerText.textContent = "It's a Draw!";
+        } else {
+            this.tttWinnerText.textContent = `Player ${result} Wins!`;
+        }
+        this.tttResult.classList.remove('hidden');
+    }
 }
 
 // Initialize the app when the page loads
@@ -2541,7 +2665,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.15.18';
+    const version = '1.16.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

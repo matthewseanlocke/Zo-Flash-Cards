@@ -2679,3 +2679,141 @@ body.draw-active main > *:first-child {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
+/* ==================== Tic Tac Toe Styles ==================== */
+
+/* Content type button */
+#tictactoeBtn.selected {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.icon-tictactoe svg {
+    width: 32px;
+    height: 32px;
+    stroke: currentColor;
+}
+
+/* Body class for TTT mode */
+body.ttt-active nav h1,
+body.ttt-active nav #versionDisplay {
+    display: none;
+}
+
+/* TTT Game Container */
+#tictactoeGame {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 15vh;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#tictactoeGame:not(.hidden) {
+    display: flex;
+}
+
+/* Turn indicator */
+.ttt-turn-indicator {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 1rem;
+    font-family: 'Andika', sans-serif;
+}
+
+/* Game board */
+.ttt-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 1rem;
+}
+
+/* Cells */
+.ttt-cell {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 12px;
+    font-size: 3.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: auto;
+    height: auto;
+    aspect-ratio: 1;
+}
+
+.ttt-cell:hover:not(:disabled):not(.x):not(.o) {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.03);
+}
+
+.ttt-cell.x {
+    color: #ef4444;
+}
+
+.ttt-cell.o {
+    color: #3b82f6;
+}
+
+.ttt-cell.winner {
+    background: #fef08a;
+    animation: ttt-pulse 0.6s ease-in-out;
+}
+
+@keyframes ttt-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.ttt-cell:disabled {
+    cursor: default;
+}
+
+/* Result display */
+.ttt-result {
+    text-align: center;
+    margin-top: 1.5rem;
+    min-height: 80px;
+    visibility: visible;
+}
+
+.ttt-result.hidden {
+    visibility: hidden;
+}
+
+.ttt-winner-text {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 1rem;
+    font-family: 'Andika', sans-serif;
+}
+
+.ttt-play-again {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: auto;
+}
+
+.ttt-play-again:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+}
+
