@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.17.2</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.18.4</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -513,7 +513,18 @@
 
         <!-- Tic Tac Toe Game -->
         <div id="tictactoeGame" class="hidden">
-            <div class="ttt-turn-indicator">Player X's Turn</div>
+            <div class="ttt-player-select">
+                <button class="ttt-player-btn" data-player="1">
+                    <span class="ttt-player-icon-display" id="tttPlayer1Icon">❌</span>
+                </button>
+                <button class="ttt-player-btn" data-player="2">
+                    <span class="ttt-player-icon-display" id="tttPlayer2Icon">⭕</span>
+                </button>
+            </div>
+            <div class="ttt-turn-row">
+                <span class="ttt-turn-label">Turn:</span>
+                <button class="ttt-player-icon" id="tttCurrentIcon">❌</button>
+            </div>
             <div class="ttt-board">
                 <button class="ttt-cell" data-cell="0"></button>
                 <button class="ttt-cell" data-cell="1"></button>
@@ -524,6 +535,9 @@
                 <button class="ttt-cell" data-cell="6"></button>
                 <button class="ttt-cell" data-cell="7"></button>
                 <button class="ttt-cell" data-cell="8"></button>
+            </div>
+            <div class="ttt-icon-picker hidden" id="tttIconPicker">
+                <!-- Icons will be populated by JS -->
             </div>
             <div class="ttt-result hidden">
                 <span class="ttt-winner-text"></span>

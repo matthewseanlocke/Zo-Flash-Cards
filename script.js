@@ -33,9 +33,17 @@ class FlashCardApp {
         this.strokeDrawnThisTouch = false; // Track if stroke was drawn during touch
 
         // Tic Tac Toe state
-        this.tttBoard = Array(9).fill(null); // null, 'X', or 'O'
-        this.tttCurrentPlayer = 'X';
+        this.tttBoard = Array(9).fill(null); // null, 1, or 2 (player number)
+        this.tttCurrentPlayer = 1; // Player 1 or 2
         this.tttGameOver = false;
+        this.tttLastWinner = null; // Track who won last game
+
+        // TTT icon options for players to choose from
+        this.tttIconOptions = ['❌', '⭕', '⭐', '❤️', '💙', '🔵', '🟢', '🟡', '🔺', '🔷', '🌙', '☀️', '🌸', '🍀', '⚡', '🎯'];
+        this.tttPlayerIcons = {
+            1: '❌',  // Player 1 default
+            2: '⭕'   // Player 2 default
+        };
 
         // Clear any previously saved drawing (we no longer persist drawings)
         localStorage.removeItem('flashCardDrawing');
@@ -182,7 +190,11 @@ class FlashCardApp {
         this.tictactoeBtn = document.getElementById('tictactoeBtn');
         this.tictactoeGame = document.getElementById('tictactoeGame');
         this.tttCells = document.querySelectorAll('.ttt-cell');
-        this.tttTurnIndicator = document.querySelector('.ttt-turn-indicator');
+        this.tttCurrentIcon = document.getElementById('tttCurrentIcon');
+        this.tttPlayer1Icon = document.getElementById('tttPlayer1Icon');
+        this.tttPlayer2Icon = document.getElementById('tttPlayer2Icon');
+        this.tttPlayerBtns = document.querySelectorAll('.ttt-player-btn');
+        this.tttIconPicker = document.getElementById('tttIconPicker');
         this.tttResult = document.querySelector('.ttt-result');
         this.tttWinnerText = document.querySelector('.ttt-winner-text');
         this.tttPlayAgainBtn = document.querySelector('.ttt-play-again');
@@ -278,6 +290,14 @@ class FlashCardApp {
             cell.addEventListener('click', () => this.handleTTTCellClick(cell));
         });
         this.tttPlayAgainBtn.addEventListener('click', () => this.resetTTTGame());
+
+        // TTT player icon selection
+        this.tttPlayerBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const player = parseInt(btn.dataset.player);
+                this.openTTTIconPicker(player);
+            });
+        });
 
         // Draw mode controls
         this.paletteColors.forEach(btn => {
@@ -2567,29 +2587,101 @@ class FlashCardApp {
     // Tic Tac Toe Methods
     resetTTTGame() {
         this.tttBoard = Array(9).fill(null);
-        this.tttCurrentPlayer = 'X';
+        // Winner goes first, otherwise player 1
+        this.tttCurrentPlayer = this.tttLastWinner || 1;
         this.tttGameOver = false;
+        this.tttIconPickerPlayer = null;
 
         this.tttCells.forEach(cell => {
             cell.textContent = '';
-            cell.classList.remove('x', 'o', 'winner');
+            cell.classList.remove('player1', 'player2', 'winner');
             cell.disabled = false;
         });
 
-        this.tttTurnIndicator.textContent = "Player X's Turn";
+        this.updateTTTDisplay();
         this.tttResult.classList.add('hidden');
+        this.tttIconPicker.classList.add('hidden');
+    }
+
+    updateTTTDisplay() {
+        // Update current turn icon
+        this.tttCurrentIcon.textContent = this.tttPlayerIcons[this.tttCurrentPlayer];
+
+        // Update player icon displays
+        this.tttPlayer1Icon.textContent = this.tttPlayerIcons[1];
+        this.tttPlayer2Icon.textContent = this.tttPlayerIcons[2];
+
+        // Highlight active player button
+        this.tttPlayerBtns.forEach(btn => {
+            const player = parseInt(btn.dataset.player);
+            if (player === this.tttCurrentPlayer && !this.tttGameOver) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Update all cells on board with current icons
+        this.tttCells.forEach((cell, index) => {
+            const player = this.tttBoard[index];
+            if (player) {
+                cell.textContent = this.tttPlayerIcons[player];
+            }
+        });
+    }
+
+    openTTTIconPicker(player) {
+        this.tttIconPickerPlayer = player;
+
+        // Populate icon picker
+        this.tttIconPicker.innerHTML = '';
+        this.tttIconOptions.forEach(icon => {
+            const btn = document.createElement('button');
+            btn.className = 'ttt-icon-option';
+            btn.textContent = icon;
+
+            // Mark current selection
+            if (icon === this.tttPlayerIcons[player]) {
+                btn.classList.add('selected');
+            }
+
+            // Disable if other player is using this icon
+            const otherPlayer = player === 1 ? 2 : 1;
+            if (icon === this.tttPlayerIcons[otherPlayer]) {
+                btn.classList.add('disabled');
+                btn.disabled = true;
+            }
+
+            btn.addEventListener('click', () => this.selectTTTIcon(icon));
+            this.tttIconPicker.appendChild(btn);
+        });
+
+        this.tttIconPicker.classList.remove('hidden');
+    }
+
+    selectTTTIcon(icon) {
+        if (!this.tttIconPickerPlayer) return;
+
+        this.tttPlayerIcons[this.tttIconPickerPlayer] = icon;
+        this.tttIconPicker.classList.add('hidden');
+        this.tttIconPickerPlayer = null;
+
+        this.updateTTTDisplay();
     }
 
     handleTTTCellClick(cell) {
         if (this.tttGameOver) return;
+
+        // Close icon picker if open
+        this.tttIconPicker.classList.add('hidden');
 
         const index = parseInt(cell.dataset.cell);
         if (this.tttBoard[index]) return; // Already filled
 
         // Make move
         this.tttBoard[index] = this.tttCurrentPlayer;
-        cell.textContent = this.tttCurrentPlayer;
-        cell.classList.add(this.tttCurrentPlayer.toLowerCase());
+        cell.textContent = this.tttPlayerIcons[this.tttCurrentPlayer];
+        cell.classList.add(`player${this.tttCurrentPlayer}`);
 
         // Check for winner
         const winner = this.checkTTTWinner();
@@ -2605,8 +2697,8 @@ class FlashCardApp {
         }
 
         // Switch player
-        this.tttCurrentPlayer = this.tttCurrentPlayer === 'X' ? 'O' : 'X';
-        this.tttTurnIndicator.textContent = `Player ${this.tttCurrentPlayer}'s Turn`;
+        this.tttCurrentPlayer = this.tttCurrentPlayer === 1 ? 2 : 1;
+        this.updateTTTDisplay();
     }
 
     checkTTTWinner() {
@@ -2634,10 +2726,15 @@ class FlashCardApp {
         this.tttGameOver = true;
         this.tttCells.forEach(cell => cell.disabled = true);
 
+        // Clear active highlight
+        this.tttPlayerBtns.forEach(btn => btn.classList.remove('active'));
+
         if (result === 'draw') {
             this.tttWinnerText.textContent = "It's a Draw!";
+            // On draw, keep last winner (or stay with current starter)
         } else {
-            this.tttWinnerText.textContent = `Player ${result} Wins!`;
+            this.tttWinnerText.textContent = `${this.tttPlayerIcons[result]} Wins!`;
+            this.tttLastWinner = result; // Winner goes first next game
         }
         this.tttResult.classList.remove('hidden');
     }
@@ -2648,7 +2745,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.17.2';
+    const version = '1.18.4';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

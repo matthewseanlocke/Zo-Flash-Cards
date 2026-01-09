@@ -2718,10 +2718,11 @@ body.draw-active main > *:first-child {
 
 /* TTT Game Container */
 #tictactoeGame {
+    position: relative;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 1rem;
+    padding-top: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
 }
@@ -2730,14 +2731,119 @@ body.draw-active main > *:first-child {
     display: flex;
 }
 
-/* Turn indicator */
-.ttt-turn-indicator {
-    text-align: center;
-    font-size: 1.5rem;
+/* Turn indicator row */
+.ttt-turn-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.ttt-turn-label {
+    font-size: 2rem;
     font-weight: 600;
     color: white;
-    margin-bottom: 1rem;
     font-family: 'Andika', sans-serif;
+}
+
+.ttt-player-icon {
+    font-size: 2.5rem;
+    background: none;
+    border: none;
+    cursor: default;
+    padding: 0;
+    line-height: 1;
+}
+
+/* Player selection buttons - positioned in corners */
+.ttt-player-select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    pointer-events: none;
+}
+
+.ttt-player-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    pointer-events: auto;
+}
+
+.ttt-player-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.ttt-player-btn.active {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: white;
+    transform: scale(1.1);
+}
+
+.ttt-player-icon-display {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+/* Icon picker */
+.ttt-icon-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.75rem;
+    border-radius: 1rem;
+    margin-top: 0.75rem;
+    max-width: 300px;
+}
+
+.ttt-icon-picker.hidden {
+    display: none;
+}
+
+.ttt-icon-option {
+    font-size: 1.5rem;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ttt-icon-option:hover:not(.disabled) {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.ttt-icon-option.selected {
+    border-color: #3b82f6;
+    background: #dbeafe;
+}
+
+.ttt-icon-option.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
 /* Game board */
@@ -2754,7 +2860,7 @@ body.draw-active main > *:first-child {
 
 /* Cells */
 .ttt-cell {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.4);
     border: none;
     border-radius: 12px;
     font-size: 3.5rem;
@@ -2769,17 +2875,9 @@ body.draw-active main > *:first-child {
     aspect-ratio: 1;
 }
 
-.ttt-cell:hover:not(:disabled):not(.x):not(.o) {
-    background: rgba(255, 255, 255, 1);
+.ttt-cell:hover:not(:disabled):not(.player1):not(.player2) {
+    background: rgba(255, 255, 255, 0.6);
     transform: scale(1.03);
-}
-
-.ttt-cell.x {
-    color: #ef4444;
-}
-
-.ttt-cell.o {
-    color: #3b82f6;
 }
 
 .ttt-cell.winner {
