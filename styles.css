@@ -842,13 +842,16 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.hint-btn:hover {
-    background: rgba(245, 158, 11, 1);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+@media (hover: hover) {
+    .hint-btn:hover {
+        background: rgba(245, 158, 11, 1);
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 }
 
 .hint-btn:active {
+    background: rgba(245, 158, 11, 1);
     transform: scale(0.95);
 }
 
@@ -971,14 +974,18 @@ body {
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
-.icon-hint-btn:hover {
-    background: #3b82f6;
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+@media (hover: hover) {
+    .icon-hint-btn:hover {
+        background: #3b82f6;
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
 }
 
 .icon-hint-btn:active {
+    background: #3b82f6;
+    color: white;
     transform: scale(0.95);
 }
 
