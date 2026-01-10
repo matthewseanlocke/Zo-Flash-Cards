@@ -2255,14 +2255,16 @@ body {
 }
 
 /* Draw Mode - compact layout */
+/* Fullscreen Draw Mode */
 body.draw-active nav {
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    left: auto;
     padding: 0;
-    position: absolute;
-    top: 0.25rem;
-    right: 0.25rem;
     background: transparent;
     box-shadow: none;
-    z-index: 50;
+    z-index: 25;
 }
 
 body.draw-active nav > div {
@@ -2270,14 +2272,14 @@ body.draw-active nav > div {
 }
 
 body.draw-active #exitBtn {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     border-radius: 50%;
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
     padding: 0 !important;
     display: flex;
     align-items: center;
@@ -2287,8 +2289,8 @@ body.draw-active #exitBtn {
 }
 
 body.draw-active #exitBtn svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
 }
 
@@ -2298,51 +2300,135 @@ body.draw-active nav #versionDisplay {
 }
 
 body.draw-active main {
-    padding: 0.25rem;
-    gap: 0;
-    min-height: 100vh;
-    padding-top: 0;
+    display: none;
 }
 
-body.draw-active main > * {
-    margin-top: 0.15rem !important;
+/* Fullscreen Canvas */
+.draw-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background: white;
+    touch-action: none;
 }
 
-body.draw-active main > *:first-child {
-    margin-top: 0 !important;
+.draw-canvas.hidden {
+    display: none;
 }
 
-#cardContainer.draw-mode {
-    flex: 0 0 auto !important;
-    height: 30vh !important;
-    max-height: 30vh !important;
-    width: 95vw !important;
-    max-width: 95vw !important;
-}
-
-#flashCard.draw-mode {
-    position: relative;
-    height: 100%;
-}
-
-#flashCard.draw-mode .card-inner {
-    height: 100% !important;
-    max-height: 100% !important;
-    margin: 0 auto;
-    width: 100%;
-}
-
-/* Draw Mode Controls */
-#drawControls {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem;
-}
-
-#drawControls:not(.hidden) {
+/* Draw FAB Group */
+.draw-fab-group {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 20;
 }
+
+.draw-fab-group.hidden {
+    display: none;
+}
+
+/* Mini FAB buttons (undo/redo/clear) */
+.draw-fab-mini {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    background: rgba(75, 85, 99, 0.9);
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.draw-fab-mini:hover:not(:disabled) {
+    background: rgba(75, 85, 99, 1);
+    transform: scale(1.05);
+}
+
+.draw-fab-mini:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.draw-fab-mini svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Palette FAB Button (main, larger) */
+.draw-palette-fab {
+    width: 56px;
+    height: 56px;
+    min-height: 56px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.95);
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.draw-palette-fab:hover {
+    background: rgba(59, 130, 246, 1);
+    transform: scale(1.05);
+}
+
+.draw-palette-fab svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Draw Modal */
+.draw-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.draw-modal.hidden {
+    display: none;
+}
+
+.draw-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.draw-modal-content {
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1.5rem;
+    padding: 1rem;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Draw Mode Controls (inside modal) */
 
 .color-palette {
     display: flex;

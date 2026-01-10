@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.19.6</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.20.3</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,213 +304,6 @@
             <p>Mark each card as Correct ✓ or Wrong ✗</p>
         </div>
 
-        <!-- Draw Mode Controls -->
-        <div id="drawControls" class="hidden">
-            <div class="color-palette">
-                <button class="palette-color selected" data-color="#1f2937" style="background: #1f2937;" title="Black"></button>
-                <button class="palette-color" data-color="#ef4444" style="background: #ef4444;" title="Red"></button>
-                <button class="palette-color" data-color="#f97316" style="background: #f97316;" title="Orange"></button>
-                <button class="palette-color" data-color="#eab308" style="background: #eab308;" title="Yellow"></button>
-                <button class="palette-color" data-color="#22c55e" style="background: #22c55e;" title="Green"></button>
-                <button class="palette-color" data-color="#3b82f6" style="background: #3b82f6;" title="Blue"></button>
-                <button class="palette-color" data-color="#a855f7" style="background: #a855f7;" title="Purple"></button>
-                <button class="palette-color" data-color="#ec4899" style="background: #ec4899;" title="Pink"></button>
-                <button class="palette-color" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
-                <button class="palette-color eraser-btn" data-color="eraser" title="Eraser">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 20H9L4 15l10-10 7 7-6 6 5 2z"/>
-                        <path d="M6.5 13.5L11 9"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="brush-row">
-                <div class="brush-sizes">
-                    <button class="brush-size-btn selected" data-size="small" title="Small">
-                        <span class="brush-dot small"></span>
-                    </button>
-                    <button class="brush-size-btn" data-size="medium" title="Medium">
-                        <span class="brush-dot medium"></span>
-                    </button>
-                    <button class="brush-size-btn" data-size="large" title="Large">
-                        <span class="brush-dot large"></span>
-                    </button>
-                    <button class="brush-size-btn" data-size="xlarge" title="Extra Large">
-                        <span class="brush-dot xlarge"></span>
-                    </button>
-                    <button class="brush-size-btn" data-size="xxlarge" title="Huge">
-                        <span class="brush-dot xxlarge"></span>
-                    </button>
-                </div>
-                <div class="fill-mode-group">
-                    <button class="fill-mode-btn selected" data-fill="true" title="Solid Fill">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
-                    </button>
-                    <button class="fill-mode-btn" data-fill="false" title="Outline Only">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
-                    </button>
-                </div>
-            </div>
-            <!-- Stamp Panel (unified tabs + content) -->
-            <div class="stamp-panel">
-                <div class="stamp-category-tabs">
-                    <button class="stamp-tab selected" data-category="brush" title="Brush">
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="tab-icon"><circle cx="12" cy="12" r="6"/></svg>
-                    </button>
-                    <button class="stamp-tab" data-category="shapes" title="Shapes">
-                        <svg viewBox="0 0 36 16" class="tab-icon shapes-tab-icon" fill="currentColor">
-                            <polygon points="6,2 11,14 1,14"/>
-                            <circle cx="18" cy="8" r="6"/>
-                            <rect x="25" y="3" width="10" height="10"/>
-                        </svg>
-                    </button>
-                    <button class="stamp-tab" data-category="numbers" title="Numbers">
-                        <span class="tab-text">123</span>
-                    </button>
-                    <button class="stamp-tab" data-category="letters" title="Uppercase">
-                        <span class="tab-text">ABC</span>
-                    </button>
-                    <button class="stamp-tab" data-category="lowercase" title="Lowercase">
-                        <span class="tab-text">abc</span>
-                    </button>
-                </div>
-                <div class="stamp-category-content">
-                <div class="stamp-content" data-category="brush">
-                    <button class="brush-style-btn selected" data-style="brush" title="Round Brush">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="calligraphy" title="Calligraphy">
-                        <svg viewBox="0 0 24 24" fill="currentColor" transform="rotate(-45)"><ellipse cx="12" cy="12" rx="3" ry="8"/></svg>
-                    </button>
-                </div>
-                <div class="stamp-content hidden" data-category="shapes">
-                    <button class="brush-style-btn" data-style="circle" title="Circle">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="square" title="Square">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="triangle" title="Triangle">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L22 21H2z"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="rectangle" title="Rectangle">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="star" title="Star">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="heart" title="Heart">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C12 21 4 13.5 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 4.03 12 5.5C11.09 4.03 12.76 3 14.5 3C17.58 3 20 5.42 20 8.5C20 13.5 12 21 12 21Z"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="oval" title="Oval">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="6"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="diamond" title="Diamond">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L20 12L12 22L4 12z"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="pentagon" title="Pentagon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L22 9L18 21H6L2 9z"/></svg>
-                    </button>
-                    <button class="brush-style-btn" data-style="hexagon" title="Hexagon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L21 7V17L12 22L3 17V7z"/></svg>
-                    </button>
-                </div>
-                <div class="stamp-content hidden" data-category="numbers">
-                    <button class="brush-style-btn" data-style="num0" title="Zero"><span>0</span></button>
-                    <button class="brush-style-btn" data-style="num1" title="One"><span>1</span></button>
-                    <button class="brush-style-btn" data-style="num2" title="Two"><span>2</span></button>
-                    <button class="brush-style-btn" data-style="num3" title="Three"><span>3</span></button>
-                    <button class="brush-style-btn" data-style="num4" title="Four"><span>4</span></button>
-                    <button class="brush-style-btn" data-style="num5" title="Five"><span>5</span></button>
-                    <button class="brush-style-btn" data-style="num6" title="Six"><span>6</span></button>
-                    <button class="brush-style-btn" data-style="num7" title="Seven"><span>7</span></button>
-                    <button class="brush-style-btn" data-style="num8" title="Eight"><span>8</span></button>
-                    <button class="brush-style-btn" data-style="num9" title="Nine"><span>9</span></button>
-                </div>
-                <div class="stamp-content hidden" data-category="letters">
-                    <button class="brush-style-btn" data-style="letA" title="A"><span>A</span></button>
-                    <button class="brush-style-btn" data-style="letB" title="B"><span>B</span></button>
-                    <button class="brush-style-btn" data-style="letC" title="C"><span>C</span></button>
-                    <button class="brush-style-btn" data-style="letD" title="D"><span>D</span></button>
-                    <button class="brush-style-btn" data-style="letE" title="E"><span>E</span></button>
-                    <button class="brush-style-btn" data-style="letF" title="F"><span>F</span></button>
-                    <button class="brush-style-btn" data-style="letG" title="G"><span>G</span></button>
-                    <button class="brush-style-btn" data-style="letH" title="H"><span>H</span></button>
-                    <button class="brush-style-btn" data-style="letI" title="I"><span>I</span></button>
-                    <button class="brush-style-btn" data-style="letJ" title="J"><span>J</span></button>
-                    <button class="brush-style-btn" data-style="letK" title="K"><span>K</span></button>
-                    <button class="brush-style-btn" data-style="letL" title="L"><span>L</span></button>
-                    <button class="brush-style-btn" data-style="letM" title="M"><span>M</span></button>
-                    <button class="brush-style-btn" data-style="letN" title="N"><span>N</span></button>
-                    <button class="brush-style-btn" data-style="letO" title="O"><span>O</span></button>
-                    <button class="brush-style-btn" data-style="letP" title="P"><span>P</span></button>
-                    <button class="brush-style-btn" data-style="letQ" title="Q"><span>Q</span></button>
-                    <button class="brush-style-btn" data-style="letR" title="R"><span>R</span></button>
-                    <button class="brush-style-btn" data-style="letS" title="S"><span>S</span></button>
-                    <button class="brush-style-btn" data-style="letT" title="T"><span>T</span></button>
-                    <button class="brush-style-btn" data-style="letU" title="U"><span>U</span></button>
-                    <button class="brush-style-btn" data-style="letV" title="V"><span>V</span></button>
-                    <button class="brush-style-btn" data-style="letW" title="W"><span>W</span></button>
-                    <button class="brush-style-btn" data-style="letX" title="X"><span>X</span></button>
-                    <button class="brush-style-btn" data-style="letY" title="Y"><span>Y</span></button>
-                    <button class="brush-style-btn" data-style="letZ" title="Z"><span>Z</span></button>
-                </div>
-                <div class="stamp-content hidden" data-category="lowercase">
-                    <button class="brush-style-btn" data-style="lowA" title="a"><span>a</span></button>
-                    <button class="brush-style-btn" data-style="lowB" title="b"><span>b</span></button>
-                    <button class="brush-style-btn" data-style="lowC" title="c"><span>c</span></button>
-                    <button class="brush-style-btn" data-style="lowD" title="d"><span>d</span></button>
-                    <button class="brush-style-btn" data-style="lowE" title="e"><span>e</span></button>
-                    <button class="brush-style-btn" data-style="lowF" title="f"><span>f</span></button>
-                    <button class="brush-style-btn" data-style="lowG" title="g"><span>g</span></button>
-                    <button class="brush-style-btn" data-style="lowH" title="h"><span>h</span></button>
-                    <button class="brush-style-btn" data-style="lowI" title="i"><span>i</span></button>
-                    <button class="brush-style-btn" data-style="lowJ" title="j"><span>j</span></button>
-                    <button class="brush-style-btn" data-style="lowK" title="k"><span>k</span></button>
-                    <button class="brush-style-btn" data-style="lowL" title="l"><span>l</span></button>
-                    <button class="brush-style-btn" data-style="lowM" title="m"><span>m</span></button>
-                    <button class="brush-style-btn" data-style="lowN" title="n"><span>n</span></button>
-                    <button class="brush-style-btn" data-style="lowO" title="o"><span>o</span></button>
-                    <button class="brush-style-btn" data-style="lowP" title="p"><span>p</span></button>
-                    <button class="brush-style-btn" data-style="lowQ" title="q"><span>q</span></button>
-                    <button class="brush-style-btn" data-style="lowR" title="r"><span>r</span></button>
-                    <button class="brush-style-btn" data-style="lowS" title="s"><span>s</span></button>
-                    <button class="brush-style-btn" data-style="lowT" title="t"><span>t</span></button>
-                    <button class="brush-style-btn" data-style="lowU" title="u"><span>u</span></button>
-                    <button class="brush-style-btn" data-style="lowV" title="v"><span>v</span></button>
-                    <button class="brush-style-btn" data-style="lowW" title="w"><span>w</span></button>
-                    <button class="brush-style-btn" data-style="lowX" title="x"><span>x</span></button>
-                    <button class="brush-style-btn" data-style="lowY" title="y"><span>y</span></button>
-                    <button class="brush-style-btn" data-style="lowZ" title="z"><span>z</span></button>
-                </div>
-            </div>
-            </div>
-            <div class="draw-actions">
-                <button id="undoBtn" class="draw-action-btn" title="Undo" disabled>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 10h10a5 5 0 0 1 5 5v2"/>
-                        <path d="M3 10l5-5"/>
-                        <path d="M3 10l5 5"/>
-                    </svg>
-                </button>
-                <button id="redoBtn" class="draw-action-btn" title="Redo" disabled>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10H11a5 5 0 0 0-5 5v2"/>
-                        <path d="M21 10l-5-5"/>
-                        <path d="M21 10l-5 5"/>
-                    </svg>
-                </button>
-                <button id="clearCanvasBtn" class="draw-action-btn" title="Clear">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18"/>
-                        <path d="M8 6V4h8v2"/>
-                        <path d="M5 6v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6"/>
-                        <path d="M10 11v6"/>
-                        <path d="M14 11v6"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
         <!-- Tic Tac Toe Game -->
         <div id="tictactoeGame" class="hidden">
             <div class="ttt-player-select">
@@ -569,6 +362,235 @@
             </div>
         </div>
     </main>
+
+    <!-- Fullscreen Draw Canvas (outside main so it's not hidden) -->
+    <canvas id="drawCanvas" class="draw-canvas hidden"></canvas>
+
+    <!-- Draw Mode FAB Buttons -->
+    <div id="drawFabGroup" class="draw-fab-group hidden">
+        <button id="drawUndoFab" class="draw-fab-mini" title="Undo" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 10h10a5 5 0 0 1 5 5v2"/>
+                <path d="M3 10l5-5"/>
+                <path d="M3 10l5 5"/>
+            </svg>
+        </button>
+        <button id="drawRedoFab" class="draw-fab-mini" title="Redo" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10H11a5 5 0 0 0-5 5v2"/>
+                <path d="M21 10l-5-5"/>
+                <path d="M21 10l-5 5"/>
+            </svg>
+        </button>
+        <button id="drawClearFab" class="draw-fab-mini" title="Clear">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"/>
+                <path d="M8 6V4h8v2"/>
+                <path d="M5 6v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6"/>
+                <path d="M10 11v6"/>
+                <path d="M14 11v6"/>
+            </svg>
+        </button>
+        <button id="drawPaletteBtn" class="draw-palette-fab" title="Open Palette">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.2-.64-1.67-.08-.1-.13-.21-.13-.33 0-.28.22-.5.5-.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Draw Mode Modal -->
+    <div id="drawModal" class="draw-modal hidden">
+        <div class="draw-modal-backdrop" id="drawModalBackdrop"></div>
+        <div class="draw-modal-content">
+            <div class="color-palette">
+                <button class="palette-color selected" data-color="#1f2937" style="background: #1f2937;" title="Black"></button>
+                <button class="palette-color" data-color="#ef4444" style="background: #ef4444;" title="Red"></button>
+                <button class="palette-color" data-color="#f97316" style="background: #f97316;" title="Orange"></button>
+                <button class="palette-color" data-color="#eab308" style="background: #eab308;" title="Yellow"></button>
+                <button class="palette-color" data-color="#22c55e" style="background: #22c55e;" title="Green"></button>
+                <button class="palette-color" data-color="#3b82f6" style="background: #3b82f6;" title="Blue"></button>
+                <button class="palette-color" data-color="#a855f7" style="background: #a855f7;" title="Purple"></button>
+                <button class="palette-color" data-color="#ec4899" style="background: #ec4899;" title="Pink"></button>
+                <button class="palette-color" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
+                <button class="palette-color eraser-btn" data-color="eraser" title="Eraser">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 20H9L4 15l10-10 7 7-6 6 5 2z"/>
+                        <path d="M6.5 13.5L11 9"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="brush-row">
+                <div class="brush-sizes">
+                    <button class="brush-size-btn selected" data-size="small" title="Small">
+                        <span class="brush-dot small"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="medium" title="Medium">
+                        <span class="brush-dot medium"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="large" title="Large">
+                        <span class="brush-dot large"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="xlarge" title="Extra Large">
+                        <span class="brush-dot xlarge"></span>
+                    </button>
+                    <button class="brush-size-btn" data-size="xxlarge" title="Huge">
+                        <span class="brush-dot xxlarge"></span>
+                    </button>
+                </div>
+                <div class="fill-mode-group">
+                    <button class="fill-mode-btn selected" data-fill="true" title="Solid Fill">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+                    </button>
+                    <button class="fill-mode-btn" data-fill="false" title="Outline Only">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="stamp-panel">
+                <div class="stamp-category-tabs">
+                    <button class="stamp-tab selected" data-category="brush" title="Brush">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="tab-icon"><circle cx="12" cy="12" r="6"/></svg>
+                    </button>
+                    <button class="stamp-tab" data-category="shapes" title="Shapes">
+                        <svg viewBox="0 0 36 16" class="tab-icon shapes-tab-icon" fill="currentColor">
+                            <polygon points="6,2 11,14 1,14"/>
+                            <circle cx="18" cy="8" r="6"/>
+                            <rect x="25" y="3" width="10" height="10"/>
+                        </svg>
+                    </button>
+                    <button class="stamp-tab" data-category="numbers" title="Numbers">
+                        <span class="tab-text">123</span>
+                    </button>
+                    <button class="stamp-tab" data-category="letters" title="Uppercase">
+                        <span class="tab-text">ABC</span>
+                    </button>
+                    <button class="stamp-tab" data-category="lowercase" title="Lowercase">
+                        <span class="tab-text">abc</span>
+                    </button>
+                </div>
+                <div class="stamp-category-content">
+                    <div class="stamp-content" data-category="brush">
+                        <button class="brush-style-btn selected" data-style="brush" title="Round Brush">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+                        </button>
+                        <button class="brush-style-btn" data-style="calligraphy" title="Calligraphy">
+                            <svg viewBox="0 0 24 24" fill="currentColor" transform="rotate(-45)"><ellipse cx="12" cy="12" rx="3" ry="8"/></svg>
+                        </button>
+                    </div>
+                    <div class="stamp-content hidden" data-category="shapes">
+                        <button class="brush-style-btn" data-style="circle" title="Circle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+                        </button>
+                        <button class="brush-style-btn" data-style="square" title="Square">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16"/></svg>
+                        </button>
+                        <button class="brush-style-btn" data-style="triangle" title="Triangle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L22 21H2z"/></svg>
+                        </button>
+                        <button class="brush-style-btn" data-style="star" title="Star">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>
+                        </button>
+                        <button class="brush-style-btn" data-style="heart" title="Heart">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C12 21 4 13.5 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 4.03 12 5.5C11.09 4.03 12.76 3 14.5 3C17.58 3 20 5.42 20 8.5C20 13.5 12 21 12 21Z"/></svg>
+                        </button>
+                    </div>
+                    <div class="stamp-content hidden" data-category="numbers">
+                        <button class="brush-style-btn" data-style="num0" title="Zero"><span>0</span></button>
+                        <button class="brush-style-btn" data-style="num1" title="One"><span>1</span></button>
+                        <button class="brush-style-btn" data-style="num2" title="Two"><span>2</span></button>
+                        <button class="brush-style-btn" data-style="num3" title="Three"><span>3</span></button>
+                        <button class="brush-style-btn" data-style="num4" title="Four"><span>4</span></button>
+                        <button class="brush-style-btn" data-style="num5" title="Five"><span>5</span></button>
+                        <button class="brush-style-btn" data-style="num6" title="Six"><span>6</span></button>
+                        <button class="brush-style-btn" data-style="num7" title="Seven"><span>7</span></button>
+                        <button class="brush-style-btn" data-style="num8" title="Eight"><span>8</span></button>
+                        <button class="brush-style-btn" data-style="num9" title="Nine"><span>9</span></button>
+                    </div>
+                    <div class="stamp-content hidden" data-category="letters">
+                        <button class="brush-style-btn" data-style="letA" title="A"><span>A</span></button>
+                        <button class="brush-style-btn" data-style="letB" title="B"><span>B</span></button>
+                        <button class="brush-style-btn" data-style="letC" title="C"><span>C</span></button>
+                        <button class="brush-style-btn" data-style="letD" title="D"><span>D</span></button>
+                        <button class="brush-style-btn" data-style="letE" title="E"><span>E</span></button>
+                        <button class="brush-style-btn" data-style="letF" title="F"><span>F</span></button>
+                        <button class="brush-style-btn" data-style="letG" title="G"><span>G</span></button>
+                        <button class="brush-style-btn" data-style="letH" title="H"><span>H</span></button>
+                        <button class="brush-style-btn" data-style="letI" title="I"><span>I</span></button>
+                        <button class="brush-style-btn" data-style="letJ" title="J"><span>J</span></button>
+                        <button class="brush-style-btn" data-style="letK" title="K"><span>K</span></button>
+                        <button class="brush-style-btn" data-style="letL" title="L"><span>L</span></button>
+                        <button class="brush-style-btn" data-style="letM" title="M"><span>M</span></button>
+                        <button class="brush-style-btn" data-style="letN" title="N"><span>N</span></button>
+                        <button class="brush-style-btn" data-style="letO" title="O"><span>O</span></button>
+                        <button class="brush-style-btn" data-style="letP" title="P"><span>P</span></button>
+                        <button class="brush-style-btn" data-style="letQ" title="Q"><span>Q</span></button>
+                        <button class="brush-style-btn" data-style="letR" title="R"><span>R</span></button>
+                        <button class="brush-style-btn" data-style="letS" title="S"><span>S</span></button>
+                        <button class="brush-style-btn" data-style="letT" title="T"><span>T</span></button>
+                        <button class="brush-style-btn" data-style="letU" title="U"><span>U</span></button>
+                        <button class="brush-style-btn" data-style="letV" title="V"><span>V</span></button>
+                        <button class="brush-style-btn" data-style="letW" title="W"><span>W</span></button>
+                        <button class="brush-style-btn" data-style="letX" title="X"><span>X</span></button>
+                        <button class="brush-style-btn" data-style="letY" title="Y"><span>Y</span></button>
+                        <button class="brush-style-btn" data-style="letZ" title="Z"><span>Z</span></button>
+                    </div>
+                    <div class="stamp-content hidden" data-category="lowercase">
+                        <button class="brush-style-btn" data-style="lowA" title="a"><span>a</span></button>
+                        <button class="brush-style-btn" data-style="lowB" title="b"><span>b</span></button>
+                        <button class="brush-style-btn" data-style="lowC" title="c"><span>c</span></button>
+                        <button class="brush-style-btn" data-style="lowD" title="d"><span>d</span></button>
+                        <button class="brush-style-btn" data-style="lowE" title="e"><span>e</span></button>
+                        <button class="brush-style-btn" data-style="lowF" title="f"><span>f</span></button>
+                        <button class="brush-style-btn" data-style="lowG" title="g"><span>g</span></button>
+                        <button class="brush-style-btn" data-style="lowH" title="h"><span>h</span></button>
+                        <button class="brush-style-btn" data-style="lowI" title="i"><span>i</span></button>
+                        <button class="brush-style-btn" data-style="lowJ" title="j"><span>j</span></button>
+                        <button class="brush-style-btn" data-style="lowK" title="k"><span>k</span></button>
+                        <button class="brush-style-btn" data-style="lowL" title="l"><span>l</span></button>
+                        <button class="brush-style-btn" data-style="lowM" title="m"><span>m</span></button>
+                        <button class="brush-style-btn" data-style="lowN" title="n"><span>n</span></button>
+                        <button class="brush-style-btn" data-style="lowO" title="o"><span>o</span></button>
+                        <button class="brush-style-btn" data-style="lowP" title="p"><span>p</span></button>
+                        <button class="brush-style-btn" data-style="lowQ" title="q"><span>q</span></button>
+                        <button class="brush-style-btn" data-style="lowR" title="r"><span>r</span></button>
+                        <button class="brush-style-btn" data-style="lowS" title="s"><span>s</span></button>
+                        <button class="brush-style-btn" data-style="lowT" title="t"><span>t</span></button>
+                        <button class="brush-style-btn" data-style="lowU" title="u"><span>u</span></button>
+                        <button class="brush-style-btn" data-style="lowV" title="v"><span>v</span></button>
+                        <button class="brush-style-btn" data-style="lowW" title="w"><span>w</span></button>
+                        <button class="brush-style-btn" data-style="lowX" title="x"><span>x</span></button>
+                        <button class="brush-style-btn" data-style="lowY" title="y"><span>y</span></button>
+                        <button class="brush-style-btn" data-style="lowZ" title="z"><span>z</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="draw-actions">
+                <button id="undoBtn" class="draw-action-btn" title="Undo" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 10h10a5 5 0 0 1 5 5v2"/>
+                        <path d="M3 10l5-5"/>
+                        <path d="M3 10l5 5"/>
+                    </svg>
+                </button>
+                <button id="redoBtn" class="draw-action-btn" title="Redo" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10H11a5 5 0 0 0-5 5v2"/>
+                        <path d="M21 10l-5-5"/>
+                        <path d="M21 10l-5 5"/>
+                    </svg>
+                </button>
+                <button id="clearCanvasBtn" class="draw-action-btn" title="Clear">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18"/>
+                        <path d="M8 6V4h8v2"/>
+                        <path d="M5 6v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6"/>
+                        <path d="M10 11v6"/>
+                        <path d="M14 11v6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-black/50 z-60 hidden">

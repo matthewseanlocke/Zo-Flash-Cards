@@ -182,7 +182,15 @@ class FlashCardApp {
         this.letterCaseSection = document.getElementById('letterCaseSection');
 
         // Draw mode controls
-        this.drawControls = document.getElementById('drawControls');
+        this.drawCanvas = document.getElementById('drawCanvas');
+        this.drawCtx = this.drawCanvas ? this.drawCanvas.getContext('2d') : null;
+        this.drawFabGroup = document.getElementById('drawFabGroup');
+        this.drawPaletteBtn = document.getElementById('drawPaletteBtn');
+        this.drawUndoFab = document.getElementById('drawUndoFab');
+        this.drawRedoFab = document.getElementById('drawRedoFab');
+        this.drawClearFab = document.getElementById('drawClearFab');
+        this.drawModal = document.getElementById('drawModal');
+        this.drawModalBackdrop = document.getElementById('drawModalBackdrop');
         this.paletteColors = document.querySelectorAll('.palette-color');
         this.clearCanvasBtn = document.getElementById('clearCanvasBtn');
         this.brushSizeBtns = document.querySelectorAll('.brush-size-btn');
@@ -329,6 +337,15 @@ class FlashCardApp {
             }
         });
 
+        // Draw mode FAB and modal
+        this.drawPaletteBtn.addEventListener('click', () => this.openDrawModal());
+        this.drawModalBackdrop.addEventListener('click', () => this.closeDrawModal());
+
+        // Draw mode FAB buttons (undo/redo/clear)
+        this.drawUndoFab.addEventListener('click', () => this.undo());
+        this.drawRedoFab.addEventListener('click', () => this.redo());
+        this.drawClearFab.addEventListener('click', () => this.clearDrawingCanvas());
+
         // Draw mode controls
         this.paletteColors.forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -434,6 +451,17 @@ class FlashCardApp {
 
         // Click handler as fallback for taps that don't register properly on mobile
         this.coloringCanvas.addEventListener('click', (e) => this.handleCanvasTap(e));
+
+        // Fullscreen draw canvas events
+        this.drawCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+        this.drawCanvas.addEventListener('mousemove', (e) => this.draw(e));
+        this.drawCanvas.addEventListener('mouseup', () => this.stopDrawing());
+        this.drawCanvas.addEventListener('mouseleave', () => this.stopDrawing());
+        this.drawCanvas.addEventListener('touchstart', (e) => this.startDrawing(e), { passive: false });
+        this.drawCanvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
+        this.drawCanvas.addEventListener('touchend', (e) => this.stopDrawing(e));
+        this.drawCanvas.addEventListener('touchcancel', () => this.stopDrawing());
+        this.drawCanvas.addEventListener('click', (e) => this.handleCanvasTap(e));
         
         // Card tap functionality removed - users must use Correct/Wrong buttons
         
@@ -654,22 +682,27 @@ class FlashCardApp {
         this.flashCard.classList.remove('hidden');
         this.cardContainer.classList.add('game-mode');
 
-        // Draw mode: show draw controls instead of game controls
+        // Draw mode: show fullscreen canvas and FAB
         if (this.contentType === 'draw') {
             this.gameControls.classList.add('hidden');
             this.progressContainer.classList.add('hidden');
             this.tapHint.classList.add('hidden');
-            this.drawControls.classList.remove('hidden');
-            this.flashCard.classList.add('draw-mode');
-            this.cardContainer.classList.add('draw-mode');
+            this.flashCard.classList.add('hidden');
+            this.cardContainer.classList.add('hidden');
+            // Show fullscreen canvas and FAB group
+            this.drawCanvas.classList.remove('hidden');
+            this.drawFabGroup.classList.remove('hidden');
             document.body.classList.add('draw-active');
+            // Setup fullscreen canvas
+            this.setupFullscreenCanvas();
+            return;
         } else {
             this.gameControls.classList.remove('hidden');
             this.progressContainer.classList.remove('hidden');
             this.tapHint.classList.remove('hidden');
-            this.drawControls.classList.add('hidden');
-            this.flashCard.classList.remove('draw-mode');
-            this.cardContainer.classList.remove('draw-mode');
+            this.drawCanvas.classList.add('hidden');
+            this.drawFabGroup.classList.add('hidden');
+            this.drawModal.classList.add('hidden');
             document.body.classList.remove('draw-active');
             this.updateProgress();
         }
@@ -1354,9 +1387,16 @@ class FlashCardApp {
         maskCtx.fillText(text, centerX, centerY + verticalOffset + finetuneOffset);
     }
 
+    // Get the active canvas and context based on content type
+    getActiveCanvas() {
+        if (this.contentType === 'draw') {
+            return { canvas: this.drawCanvas, ctx: this.drawCtx };
+        }
+        return { canvas: this.coloringCanvas, ctx: this.coloringCtx };
+    }
+
     getCanvasPos(e) {
-        const dpr = this.canvasDpr || 1;
-        const canvas = this.coloringCanvas;
+        const { canvas } = this.getActiveCanvas();
         const rect = canvas.getBoundingClientRect();
 
         let clientX, clientY;
@@ -1372,8 +1412,13 @@ class FlashCardApp {
         const cssX = clientX - rect.left;
         const cssY = clientY - rect.top;
 
-        // Convert from CSS pixels to canvas pixels
-        // Using the ratio of canvas internal size to CSS size
+        // For fullscreen draw mode, context is already scaled by DPR,
+        // so return CSS coordinates directly
+        if (this.contentType === 'draw') {
+            return { x: cssX, y: cssY };
+        }
+
+        // For coloringCanvas (letters/numbers), scale to canvas coordinates
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
 
@@ -1443,7 +1488,8 @@ class FlashCardApp {
 
     // Save current canvas state to history
     saveDrawState() {
-        if (!this.coloringCanvas || !this.coloringCtx) return;
+        const { canvas, ctx } = this.getActiveCanvas();
+        if (!canvas || !ctx) return;
 
         // If we're not at the end of history, remove future states
         if (this.historyIndex < this.drawHistory.length - 1) {
@@ -1451,9 +1497,7 @@ class FlashCardApp {
         }
 
         // Save current canvas state as ImageData
-        const imageData = this.coloringCtx.getImageData(
-            0, 0, this.coloringCanvas.width, this.coloringCanvas.height
-        );
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         this.drawHistory.push(imageData);
         this.historyIndex = this.drawHistory.length - 1;
 
@@ -1472,7 +1516,8 @@ class FlashCardApp {
 
         this.historyIndex--;
         const imageData = this.drawHistory[this.historyIndex];
-        this.coloringCtx.putImageData(imageData, 0, 0);
+        const { ctx } = this.getActiveCanvas();
+        if (ctx) ctx.putImageData(imageData, 0, 0);
         this.updateUndoRedoButtons();
     }
 
@@ -1482,27 +1527,38 @@ class FlashCardApp {
 
         this.historyIndex++;
         const imageData = this.drawHistory[this.historyIndex];
-        this.coloringCtx.putImageData(imageData, 0, 0);
+        const { ctx } = this.getActiveCanvas();
+        if (ctx) ctx.putImageData(imageData, 0, 0);
         this.updateUndoRedoButtons();
     }
 
-    // Update undo/redo button states
+    // Update undo/redo button states (both modal and FAB buttons)
     updateUndoRedoButtons() {
-        this.undoBtn.disabled = this.historyIndex <= 0;
-        this.redoBtn.disabled = this.historyIndex >= this.drawHistory.length - 1;
+        const undoDisabled = this.historyIndex <= 0;
+        const redoDisabled = this.historyIndex >= this.drawHistory.length - 1;
+
+        // Modal buttons
+        this.undoBtn.disabled = undoDisabled;
+        this.redoBtn.disabled = redoDisabled;
+
+        // FAB buttons
+        this.drawUndoFab.disabled = undoDisabled;
+        this.drawRedoFab.disabled = redoDisabled;
     }
 
     drawBrushStroke(x1, y1, x2, y2) {
-        const ctx = this.coloringCtx;
+        const { ctx } = this.getActiveCanvas();
+        if (!ctx) return;
         const dpr = this.canvasDpr || 1;
 
         // Calculate brush size based on selection
+        // For draw mode, context is already scaled by DPR, so don't multiply again
         let brushSize;
         if (this.contentType === 'draw') {
             const sizes = { small: 10, medium: 25, large: 50, xlarge: 80, xxlarge: 120 };
-            brushSize = (sizes[this.brushSize] || 25) * dpr;
+            brushSize = sizes[this.brushSize] || 25;
         } else {
-            brushSize = 25 * dpr; // Default for letter coloring
+            brushSize = 25 * dpr; // Default for letter coloring (no ctx.scale)
         }
 
         // For draw mode (freeform), draw directly without mask
@@ -1524,9 +1580,10 @@ class FlashCardApp {
             if (this.brushStyle && this.brushStyle !== 'brush' && this.brushStyle !== 'calligraphy') {
                 // Shape stamp mode - draw shape outlines
                 // Use larger sizes for shapes to make them visible
+                // No DPR multiplication - context is already scaled
                 const shapeSizes = { small: 30, medium: 50, large: 80, xlarge: 120, xxlarge: 170 };
-                const shapeSize = (shapeSizes[this.brushSize] || 50) * dpr;
-                ctx.lineWidth = 3 * dpr; // Outline thickness
+                const shapeSize = shapeSizes[this.brushSize] || 50;
+                ctx.lineWidth = 3; // Outline thickness
 
                 // Draw shape at start position (for both tap and drag)
                 this.drawShapeOutline(x1, y1, this.brushStyle, shapeSize);
@@ -1542,7 +1599,7 @@ class FlashCardApp {
             } else if (this.brushStyle === 'calligraphy') {
                 // Calligraphy brush mode - draw tilted ellipses
                 const angle = -Math.PI / 4; // 45 degree tilt
-                ctx.lineWidth = this.fillMode ? 1 : 2 * dpr;
+                ctx.lineWidth = this.fillMode ? 1 : 2; // No DPR - context scaled
 
                 // Draw ellipse at position
                 const drawCalligraphyPoint = (x, y) => {
@@ -1569,8 +1626,8 @@ class FlashCardApp {
                     }
                 }
             } else {
-                // Regular brush mode
-                ctx.lineWidth = this.fillMode ? brushSize : 3 * dpr;
+                // Regular brush mode - no DPR, context is scaled
+                ctx.lineWidth = this.fillMode ? brushSize : 3;
 
                 // For taps (same start/end point), draw a circle
                 if (x1 === x2 && y1 === y2) {
@@ -1723,7 +1780,8 @@ class FlashCardApp {
 
     // Draw a shape outline at the given position
     drawShapeOutline(x, y, shape, size) {
-        const ctx = this.coloringCtx;
+        const { ctx } = this.getActiveCanvas();
+        if (!ctx) return;
         ctx.beginPath();
 
         switch (shape) {
@@ -1841,8 +1899,10 @@ class FlashCardApp {
 
     // Clear the drawing canvas (for draw mode)
     clearDrawingCanvas() {
-        if (this.coloringCanvas && this.coloringCtx) {
-            this.coloringCtx.clearRect(0, 0, this.coloringCanvas.width, this.coloringCanvas.height);
+        const canvas = this.contentType === 'draw' ? this.drawCanvas : this.coloringCanvas;
+        const ctx = this.contentType === 'draw' ? this.drawCtx : this.coloringCtx;
+        if (canvas && ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             // Save blank state to history
             this.saveDrawState();
             // Clear saved drawing from storage
@@ -1855,6 +1915,36 @@ class FlashCardApp {
         this.drawHistory = [];
         this.historyIndex = -1;
         this.updateUndoRedoButtons();
+    }
+
+    // Open draw modal
+    openDrawModal() {
+        this.drawModal.classList.remove('hidden');
+    }
+
+    // Close draw modal
+    closeDrawModal() {
+        this.drawModal.classList.add('hidden');
+    }
+
+    // Setup fullscreen canvas
+    setupFullscreenCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        this.drawCanvas.width = width * dpr;
+        this.drawCanvas.height = height * dpr;
+        this.drawCanvas.style.width = width + 'px';
+        this.drawCanvas.style.height = height + 'px';
+
+        this.drawCtx = this.drawCanvas.getContext('2d');
+        this.drawCtx.scale(dpr, dpr);
+        this.canvasDpr = dpr;
+
+        // Reset history for new session
+        this.resetDrawHistory();
+        this.saveDrawState();
     }
 
     updateProgress() {
@@ -2532,7 +2622,10 @@ class FlashCardApp {
         this.progressContainer.classList.add('hidden');
         this.tapHint.classList.add('hidden');
         this.exitBtn.classList.add('hidden');
-        this.drawControls.classList.add('hidden');
+        // Hide fullscreen draw mode elements
+        this.drawCanvas.classList.add('hidden');
+        this.drawFabGroup.classList.add('hidden');
+        this.drawModal.classList.add('hidden');
         this.tictactoeGame.classList.add('hidden');
         this.cardContainer.classList.remove('game-mode');
         this.cardContainer.classList.remove('draw-mode');
@@ -2957,7 +3050,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.19.6';
+    const version = '1.20.3';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
