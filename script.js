@@ -333,6 +333,10 @@ class FlashCardApp {
                 if (!clickedInsidePicker && !clickedPlayerBtn) {
                     this.tttIconPicker.classList.add('hidden');
                     this.tttIconPickerPlayer = null;
+                    // Remove editing highlight
+                    document.querySelectorAll('.ttt-player-btn').forEach(btn => {
+                        btn.classList.remove('editing');
+                    });
                 }
             }
         });
@@ -2810,8 +2814,23 @@ class FlashCardApp {
     openTTTIconPicker(player) {
         this.tttIconPickerPlayer = player;
 
-        // Populate icon picker
+        // Highlight the active player button
+        document.querySelectorAll('.ttt-player-btn').forEach(btn => {
+            btn.classList.remove('editing');
+            if (parseInt(btn.dataset.player) === player) {
+                btn.classList.add('editing');
+            }
+        });
+
+        // Populate icon picker with header
         this.tttIconPicker.innerHTML = '';
+
+        // Add header showing which player
+        const header = document.createElement('div');
+        header.className = 'ttt-picker-header';
+        header.textContent = `Player ${player}`;
+        this.tttIconPicker.appendChild(header);
+
         this.tttIconOptions.forEach(icon => {
             const btn = document.createElement('button');
             btn.className = 'ttt-icon-option';
@@ -2842,6 +2861,11 @@ class FlashCardApp {
         this.tttPlayerIcons[this.tttIconPickerPlayer] = icon;
         this.tttIconPicker.classList.add('hidden');
         this.tttIconPickerPlayer = null;
+
+        // Remove editing highlight
+        document.querySelectorAll('.ttt-player-btn').forEach(btn => {
+            btn.classList.remove('editing');
+        });
 
         this.updateTTTDisplay();
     }
@@ -3050,7 +3074,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.24.0';
+    const version = '1.24.4';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
