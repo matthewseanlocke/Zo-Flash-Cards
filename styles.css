@@ -2416,28 +2416,32 @@ body.draw-active main {
 
 .draw-modal-content {
     position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(145deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
     border-radius: 1.5rem;
     padding: 1rem;
     max-width: 90vw;
     max-height: 80vh;
-    overflow-y: auto;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    align-items: center;
+    gap: 0.75rem;
+    align-items: stretch;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Draw Mode Controls (inside modal) */
 
 .color-palette {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 0.35rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 1rem;
-    padding: 0.5rem;
+    padding: 0.75rem;
 }
 
 .palette-color {
@@ -2468,6 +2472,10 @@ body.draw-active main {
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
+    padding: 0.5rem 0.75rem;
 }
 
 .draw-actions-spacer {
@@ -2531,6 +2539,7 @@ body.draw-active main {
 /* Brush row container */
 .brush-row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
@@ -2542,8 +2551,8 @@ body.draw-active main {
     justify-content: center;
     align-items: center;
     gap: 0.35rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 1rem;
     padding: 0.4rem 0.5rem;
 }
@@ -2554,8 +2563,8 @@ body.draw-active main {
     justify-content: center;
     align-items: center;
     gap: 0.35rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 1rem;
     padding: 0.4rem 0.5rem;
 }
@@ -2617,11 +2626,11 @@ body.draw-active main {
 
 /* Stamp Panel - unified wrapper */
 .stamp-panel {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(100, 180, 255, 0.5);
-    border-radius: 0.75rem;
-    min-width: 355px;
-    width: 355px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 355px;
 }
 
 /* Stamp Category Tabs */
@@ -3150,5 +3159,534 @@ body.draw-active main {
 .ttt-control-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+/* ===========================================
+   Tablet/iPad Responsive Styles (768px+)
+   =========================================== */
+@media (min-width: 768px) {
+    /* Override Tailwind max-w-md constraint - much wider on tablets */
+    .max-w-md {
+        max-width: 85vw !important;
+        max-width: min(85vw, 700px) !important;
+    }
+
+    /* Navigation - much taller with bigger text */
+    nav {
+        padding: 1.25rem 2rem;
+    }
+
+    nav h1 {
+        font-size: 2.5rem;
+    }
+
+    nav #versionDisplay {
+        font-size: 1.25rem;
+    }
+
+    nav #exitBtn {
+        padding: 1rem;
+    }
+
+    nav #exitBtn svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Main content area */
+    main {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Card container - wider and shorter aspect ratio */
+    #cardContainer {
+        max-width: min(85vw, 700px);
+        max-height: 70vh;
+        aspect-ratio: 3 / 4;
+    }
+
+    /* Welcome panel - wider on tablets */
+    .welcome-panel {
+        padding: 1.5rem 2rem;
+        border-radius: 1.25rem;
+        width: 100%;
+    }
+
+    /* Flash card - constrain height */
+    .flash-card {
+        max-height: 65vh;
+    }
+
+    /* Content type rows - much larger on tablets */
+    .content-type-row-btn {
+        padding: 1.5rem 2rem;
+        min-height: 90px;
+        border-radius: 1rem;
+    }
+
+    .content-type-icon {
+        font-size: 3rem;
+    }
+
+    .content-type-icon .letter-char {
+        font-size: 3rem;
+    }
+
+    .content-type-icon .number-char {
+        font-size: 2.5rem;
+    }
+
+    /* Color bars larger */
+    .icon-colors .color-bar {
+        width: 12px;
+        height: 40px;
+    }
+
+    /* Shape icons larger */
+    .icon-shapes svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Draw icon larger */
+    .icon-draw svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* TTT icon larger */
+    .icon-ttt svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Letter case chips - dramatically larger */
+    .letter-case-chip {
+        padding: 1.5rem 2.5rem;
+        font-size: 2.5rem;
+        border-radius: 1rem;
+    }
+
+    .letter-case-inline-row {
+        gap: 1rem;
+    }
+
+    /* Order and play buttons - dramatically larger */
+    .order-icon-btn {
+        width: 90px;
+        height: 90px;
+        min-width: 90px;
+        min-height: 90px;
+        border-radius: 1rem;
+    }
+
+    .order-icon-btn svg {
+        width: 44px;
+        height: 44px;
+    }
+
+    .play-btn {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        min-height: 100px;
+    }
+
+    .play-btn svg {
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Row options spacing */
+    .row-options {
+        gap: 1.5rem;
+    }
+
+    .order-inline-row {
+        gap: 1rem;
+    }
+
+    /* Game controls - larger buttons */
+    .game-controls button {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.25rem;
+        border-radius: 2rem;
+    }
+
+    /* Navigation arrows */
+    .nav-button {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+    }
+
+    .nav-button svg {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Large tablets and iPad Pro (1024px+) */
+@media (min-width: 1024px) {
+    .max-w-md {
+        max-width: min(80vw, 850px) !important;
+    }
+
+    #cardContainer {
+        max-width: min(80vw, 850px);
+        max-height: 65vh;
+    }
+
+    .flash-card {
+        max-height: 60vh;
+    }
+
+    .content-type-row-btn {
+        padding: 1.75rem 2.5rem;
+        min-height: 100px;
+    }
+
+    .content-type-icon {
+        font-size: 3.5rem;
+    }
+
+    .content-type-icon .letter-char {
+        font-size: 3.5rem;
+    }
+
+    .content-type-icon .number-char {
+        font-size: 3rem;
+    }
+
+    .icon-colors .color-bar {
+        width: 14px;
+        height: 48px;
+    }
+
+    .icon-shapes svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .icon-draw svg,
+    .icon-ttt svg {
+        width: 42px;
+        height: 42px;
+    }
+
+    .letter-case-chip {
+        padding: 1rem 1.75rem;
+        font-size: 1.6rem;
+    }
+
+    .order-icon-btn {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+    }
+
+    .order-icon-btn svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .play-btn {
+        width: 72px;
+        height: 72px;
+        min-width: 72px;
+        min-height: 72px;
+    }
+
+    .play-btn svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .game-controls button {
+        padding: 1.5rem 3rem;
+        font-size: 1.4rem;
+    }
+
+    .nav-button {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+    }
+
+    .nav-button svg {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* ===========================================
+   TTT Tablet Styles
+   =========================================== */
+@media (min-width: 768px) {
+    #tictactoeGame {
+        transform: scale(1.3);
+        transform-origin: top center;
+        margin-top: 2rem;
+    }
+
+    .ttt-board {
+        width: 350px;
+        height: 350px;
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .ttt-cell {
+        font-size: 4rem;
+        border-radius: 16px;
+    }
+
+    .ttt-player-select {
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .ttt-player-btn {
+        width: 70px;
+        height: 70px;
+    }
+
+    .ttt-player-icon-display {
+        font-size: 2.5rem;
+    }
+
+    .ttt-status-card {
+        margin-top: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .ttt-player-icon {
+        font-size: 2rem;
+    }
+
+    .ttt-controls {
+        margin-top: 1.5rem;
+        gap: 1rem;
+    }
+
+    .ttt-control-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    #tictactoeGame {
+        transform: scale(1.5);
+        margin-top: 3rem;
+    }
+
+    .ttt-board {
+        width: 400px;
+        height: 400px;
+    }
+
+    .ttt-cell {
+        font-size: 4.5rem;
+    }
+}
+
+/* ===========================================
+   Draw Mode Tablet Styles
+   =========================================== */
+@media (min-width: 768px) {
+    /* Larger FAB buttons */
+    .draw-fab-group {
+        bottom: 2rem;
+        right: 2rem;
+        gap: 1rem;
+    }
+
+    .draw-fab-mini {
+        width: 56px;
+        height: 56px;
+        min-height: 56px;
+    }
+
+    .draw-fab-mini svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .draw-palette-fab {
+        width: 72px;
+        height: 72px;
+        min-height: 72px;
+    }
+
+    .draw-palette-fab svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Larger exit button in draw mode */
+    body.draw-active #exitBtn {
+        width: 56px !important;
+        height: 56px !important;
+        min-width: 56px !important;
+    }
+
+    body.draw-active #exitBtn svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    body.draw-active nav {
+        top: 1.25rem;
+        right: 1.25rem;
+    }
+
+    /* Larger draw modal */
+    .draw-modal-content {
+        padding: 1.25rem;
+        border-radius: 1.5rem;
+        max-width: 420px;
+    }
+
+    .color-palette {
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .palette-color {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        min-height: 34px;
+    }
+
+    .brush-row {
+        gap: 0.75rem;
+    }
+
+    .brush-sizes {
+        gap: 0.4rem;
+    }
+
+    .brush-size-btn {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .brush-dot.small { width: 8px; height: 8px; }
+    .brush-dot.medium { width: 14px; height: 14px; }
+    .brush-dot.large { width: 20px; height: 20px; }
+    .brush-dot.xlarge { width: 26px; height: 26px; }
+    .brush-dot.xxlarge { width: 32px; height: 32px; }
+
+    .fill-mode-btn {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .stamp-panel {
+        max-width: 380px;
+    }
+
+    .stamp-tab {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .brush-style-btn {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1.1rem;
+    }
+
+    .draw-actions {
+        gap: 0.5rem;
+    }
+
+    .draw-action-btn {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    .draw-action-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .draw-fab-group {
+        bottom: 2.5rem;
+        right: 2.5rem;
+        gap: 1.25rem;
+    }
+
+    .draw-fab-mini {
+        width: 64px;
+        height: 64px;
+        min-height: 64px;
+    }
+
+    .draw-fab-mini svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .draw-palette-fab {
+        width: 80px;
+        height: 80px;
+        min-height: 80px;
+    }
+
+    .draw-palette-fab svg {
+        width: 42px;
+        height: 42px;
+    }
+
+    .draw-modal-content {
+        max-width: 480px;
+        padding: 1.5rem;
+    }
+
+    .palette-color {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        min-height: 38px;
+    }
+
+    .brush-size-btn,
+    .fill-mode-btn {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+
+    .brush-style-btn {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+        font-size: 1.25rem;
+    }
+
+    .stamp-panel {
+        max-width: 420px;
+    }
 }
 
