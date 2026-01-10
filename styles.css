@@ -3209,6 +3209,12 @@ body.draw-active main {
         aspect-ratio: 3 / 4;
     }
 
+    /* Welcome card - no max-height constraint on tablets */
+    #welcomeCard {
+        max-height: none;
+        overflow-y: visible;
+    }
+
     /* Welcome panel - wider on tablets */
     .welcome-panel {
         padding: 1.5rem 2rem;
@@ -3240,28 +3246,28 @@ body.draw-active main {
         font-size: 2.5rem;
     }
 
-    /* Color bars larger */
-    .icon-colors .color-bar {
-        width: 12px;
-        height: 40px;
+    /* Color icon larger - match visual weight of 3rem text */
+    .colors-icon-svg {
+        width: 90px !important;
+        height: 50px !important;
     }
 
-    /* Shape icons larger */
-    .icon-shapes svg {
-        width: 28px;
-        height: 28px;
+    /* Shape icon larger */
+    .shapes-icon-svg {
+        width: 90px !important;
+        height: 36px !important;
     }
 
     /* Draw icon larger */
-    .icon-draw svg {
-        width: 36px;
-        height: 36px;
+    .draw-icon-svg {
+        width: 56px !important;
+        height: 56px !important;
     }
 
     /* TTT icon larger */
-    .icon-ttt svg {
-        width: 36px;
-        height: 36px;
+    .icon-tictactoe svg {
+        width: 56px !important;
+        height: 56px !important;
     }
 
     /* Letter case chips - square like order buttons on tablets */
@@ -3337,6 +3343,77 @@ body.draw-active main {
         width: 30px;
         height: 30px;
     }
+
+    /* Correct/Wrong answer buttons - larger on tablets */
+    #correctBtn,
+    #wrongBtn {
+        padding: 1rem 2rem;
+        font-size: 1.25rem;
+        min-height: 56px;
+    }
+
+    /* History panel - larger on tablets */
+    .history-toggle-btn {
+        padding: 0.75rem;
+    }
+
+    .history-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .history-chevron {
+        width: 28px;
+        height: 28px;
+    }
+
+    .history-list {
+        gap: 0.5rem;
+    }
+
+    .score-card-header {
+        padding: 1.5rem 2rem !important;
+        min-height: 90px !important;
+        border-radius: 1rem !important;
+        border-width: 3px !important;
+    }
+
+    .score-card-header .history-content-icon {
+        min-width: 80px;
+    }
+
+    .score-card-header .history-content-icon span {
+        font-size: 2.5rem !important;
+    }
+
+    .score-card-header .history-content-icon svg {
+        width: 70px !important;
+        height: 40px !important;
+    }
+
+    .score-card-header .text-base {
+        font-size: 1.5rem;
+    }
+
+    .score-card-header .text-xl {
+        font-size: 1.75rem;
+    }
+
+    .accordion-chevron {
+        width: 28px;
+        height: 28px;
+    }
+
+    .delete-btn-red {
+        width: 52px;
+        height: 52px;
+        border-radius: 0.75rem;
+    }
+
+    .delete-btn-red svg {
+        width: 26px;
+        height: 26px;
+    }
 }
 
 /* Large tablets and iPad Pro (1024px+) */
@@ -3388,20 +3465,28 @@ body.draw-active main {
         font-size: 3rem;
     }
 
-    .icon-colors .color-bar {
-        width: 16px;
-        height: 52px;
+    /* Color icon larger - match visual weight of 3.5rem text */
+    .colors-icon-svg {
+        width: 100px !important;
+        height: 56px !important;
     }
 
-    .icon-shapes svg {
-        width: 36px;
-        height: 36px;
+    /* Shape icon larger */
+    .shapes-icon-svg {
+        width: 100px !important;
+        height: 40px !important;
     }
 
-    .icon-draw svg,
-    .icon-ttt svg {
-        width: 48px;
-        height: 48px;
+    /* Draw icon larger */
+    .draw-icon-svg {
+        width: 64px !important;
+        height: 64px !important;
+    }
+
+    /* TTT icon larger */
+    .icon-tictactoe svg {
+        width: 64px !important;
+        height: 64px !important;
     }
 
     /* Letter case chips - square like order buttons on iPad Pro */
@@ -3472,6 +3557,75 @@ body.draw-active main {
     .nav-button svg {
         width: 38px;
         height: 38px;
+    }
+
+    /* Correct/Wrong answer buttons - even larger on iPad Pro */
+    #correctBtn,
+    #wrongBtn {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.5rem;
+        min-height: 68px;
+    }
+
+    /* History panel - even larger on iPad Pro */
+    .history-toggle-btn {
+        padding: 1rem;
+    }
+
+    .history-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .history-chevron {
+        width: 32px;
+        height: 32px;
+    }
+
+    .history-list {
+        gap: 0.625rem;
+    }
+
+    .score-card-header {
+        padding: 1.75rem 2.5rem !important;
+        min-height: 110px !important;
+    }
+
+    .score-card-header .history-content-icon {
+        min-width: 90px;
+    }
+
+    .score-card-header .history-content-icon span {
+        font-size: 3rem !important;
+    }
+
+    .score-card-header .history-content-icon svg {
+        width: 80px !important;
+        height: 48px !important;
+    }
+
+    .score-card-header .text-base {
+        font-size: 1.75rem;
+    }
+
+    .score-card-header .text-xl {
+        font-size: 2rem;
+    }
+
+    .accordion-chevron {
+        width: 32px;
+        height: 32px;
+    }
+
+    .delete-btn-red {
+        width: 64px;
+        height: 64px;
+        border-radius: 1rem;
+    }
+
+    .delete-btn-red svg {
+        width: 32px;
+        height: 32px;
     }
 }
 
@@ -3585,6 +3739,9 @@ body.draw-active main {
         width: 56px !important;
         height: 56px !important;
         min-width: 56px !important;
+        min-height: 56px !important;
+        max-width: 56px !important;
+        max-height: 56px !important;
     }
 
     body.draw-active #exitBtn svg {
@@ -3599,82 +3756,123 @@ body.draw-active main {
 
     /* Larger draw modal */
     .draw-modal-content {
-        padding: 1.25rem;
-        border-radius: 1.5rem;
-        max-width: 420px;
+        padding: 1.75rem;
+        border-radius: 2rem;
+        max-width: 550px;
+        gap: 1rem;
     }
 
     .color-palette {
-        gap: 0.5rem;
-        padding: 0.75rem;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: 1.25rem;
     }
 
     .palette-color {
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
-        min-height: 34px;
-    }
-
-    .brush-row {
-        gap: 0.75rem;
-    }
-
-    .brush-sizes {
-        gap: 0.4rem;
-    }
-
-    .brush-size-btn {
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-        min-height: 44px;
-    }
-
-    .brush-dot.small { width: 8px; height: 8px; }
-    .brush-dot.medium { width: 14px; height: 14px; }
-    .brush-dot.large { width: 20px; height: 20px; }
-    .brush-dot.xlarge { width: 26px; height: 26px; }
-    .brush-dot.xxlarge { width: 32px; height: 32px; }
-
-    .fill-mode-btn {
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-        min-height: 44px;
-    }
-
-    .stamp-panel {
-        max-width: 380px;
-    }
-
-    .stamp-tab {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .brush-style-btn {
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-        min-height: 44px;
-        font-size: 1.1rem;
-    }
-
-    .draw-actions {
-        gap: 0.5rem;
-    }
-
-    .draw-action-btn {
         width: 48px;
         height: 48px;
         min-width: 48px;
         min-height: 48px;
+        border-width: 3px;
+    }
+
+    .palette-color.eraser-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .brush-row {
+        gap: 1rem;
+    }
+
+    .brush-sizes {
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 1rem;
+    }
+
+    .brush-size-btn {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        border-radius: 0.75rem;
+    }
+
+    .brush-dot.small { width: 10px; height: 10px; }
+    .brush-dot.medium { width: 16px; height: 16px; }
+    .brush-dot.large { width: 24px; height: 24px; }
+    .brush-dot.xlarge { width: 32px; height: 32px; }
+    .brush-dot.xxlarge { width: 40px; height: 40px; }
+
+    .fill-mode-btn {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        border-radius: 0.75rem;
+    }
+
+    .stamp-panel {
+        max-width: 500px;
+        padding: 1rem;
+        border-radius: 1.25rem;
+    }
+
+    .stamp-tabs {
+        gap: 0.5rem;
+    }
+
+    .stamp-tab {
+        padding: 0.75rem 1rem;
+        font-size: 1.25rem;
+        border-radius: 0.75rem;
+    }
+
+    .stamp-tab .tab-text {
+        font-size: 1.5rem !important;
+    }
+
+    .stamp-tab .tab-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .brush-style-btn {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        font-size: 1.75rem !important;
+        border-radius: 0.75rem;
+    }
+
+    .brush-style-btn span {
+        font-size: 1.5rem !important;
+    }
+
+    .stamp-content {
+        gap: 0.5rem;
+        max-width: 480px;
+    }
+
+    .draw-actions {
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+    }
+
+    .draw-action-btn {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
+        border-radius: 0.75rem;
     }
 
     .draw-action-btn svg {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
     }
 }
 
@@ -3707,36 +3905,112 @@ body.draw-active main {
         height: 42px;
     }
 
+    /* Larger exit button in draw mode for iPad Pro */
+    body.draw-active #exitBtn {
+        width: 64px !important;
+        height: 64px !important;
+        min-width: 64px !important;
+        min-height: 64px !important;
+        max-width: 64px !important;
+        max-height: 64px !important;
+    }
+
+    body.draw-active #exitBtn svg {
+        width: 30px;
+        height: 30px;
+    }
+
     .draw-modal-content {
-        max-width: 480px;
-        padding: 1.5rem;
+        max-width: 620px;
+        padding: 2rem;
+        gap: 1.25rem;
+    }
+
+    .color-palette {
+        gap: 1rem;
+        padding: 1.25rem;
     }
 
     .palette-color {
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
-        min-height: 38px;
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+    }
+
+    .palette-color.eraser-btn svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .brush-sizes {
+        padding: 1rem;
     }
 
     .brush-size-btn,
     .fill-mode-btn {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        min-height: 50px;
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
     }
 
+    .brush-dot.small { width: 12px; height: 12px; }
+    .brush-dot.medium { width: 20px; height: 20px; }
+    .brush-dot.large { width: 28px; height: 28px; }
+    .brush-dot.xlarge { width: 36px; height: 36px; }
+    .brush-dot.xxlarge { width: 44px; height: 44px; }
+
     .brush-style-btn {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        min-height: 50px;
-        font-size: 1.25rem;
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        font-size: 2rem !important;
+    }
+
+    .brush-style-btn span {
+        font-size: 1.75rem !important;
+    }
+
+    .stamp-content {
+        gap: 0.625rem;
+        max-width: 540px;
     }
 
     .stamp-panel {
-        max-width: 420px;
+        max-width: 580px;
+        padding: 1.25rem;
+    }
+
+    .stamp-tab {
+        padding: 1rem 1.5rem;
+        font-size: 1.4rem;
+    }
+
+    .stamp-tab .tab-text {
+        font-size: 1.75rem !important;
+    }
+
+    .stamp-tab .tab-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .draw-actions {
+        padding: 1rem 1.25rem;
+    }
+
+    .draw-action-btn {
+        width: 68px;
+        height: 68px;
+        min-width: 68px;
+        min-height: 68px;
+    }
+
+    .draw-action-btn svg {
+        width: 32px;
+        height: 32px;
     }
 }
 
