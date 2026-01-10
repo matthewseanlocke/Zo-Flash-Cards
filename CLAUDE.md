@@ -68,11 +68,12 @@ The entire application logic is contained in a single `FlashCardApp` class in `s
 - **Event Handlers**: Bound in `setupEventListeners()` including keyboard shortcuts (arrow keys, spacebar, C/X keys)
 
 ### Content Types
-Five flash card types with different generation logic in `generateCards()`:
+Six content types with different generation logic in `generateCards()`:
 - **Letters**: A-Z with case options (both/uppercase/lowercase)
 - **Numbers**: 0-9
 - **Colors**: 10 basic colors with colored card backgrounds
 - **Shapes**: Basic geometric shapes (triangle, circle, square, etc.)
+- **Draw Mode**: Fullscreen drawing canvas with brush tools, stamps, and FAB controls
 - **Tic-Tac-Toe**: Two-player game with customizable player icons, undo/redo, and winner-goes-first logic
 
 ### Drawing Canvas
@@ -130,3 +131,15 @@ The app tracks card answers using TWO different data structures:
 
 ### Answer Button Highlighting
 When displaying a card that was already answered in this run, call `highlightPreviousAnswer(wasCorrect)` to show which button was previously pressed. This gives visual feedback when navigating back through answered cards.
+
+## Responsive Design
+
+The app uses a mobile-first approach with breakpoints:
+- **Mobile** (`max-width: 480px`): Optimized for phones with larger touch targets
+- **Tablet** (481px - 1024px): Intermediate sizing with iPad-specific adjustments
+- **Desktop** (1025px+): Full-size layout
+
+Key responsive considerations:
+- Card content font sizes scale dramatically between devices (14rem mobile, 17rem tablet/desktop)
+- The nav bar maintains a fixed 52px height across all views
+- Touch targets maintain 44px minimum height (set in global `button` rule)

@@ -3173,15 +3173,16 @@ body.draw-active main {
 
     /* Navigation - much taller with bigger text */
     nav {
+        height: 100px;
         padding: 1.25rem 2rem;
     }
 
     nav h1 {
-        font-size: 2.5rem;
+        font-size: 2.5rem !important;
     }
 
     nav #versionDisplay {
-        font-size: 1.25rem;
+        font-size: 1.25rem !important;
     }
 
     nav #exitBtn {
@@ -3263,41 +3264,49 @@ body.draw-active main {
         height: 36px;
     }
 
-    /* Letter case chips - dramatically larger */
+    /* Letter case chips - square like order buttons on tablets */
     .letter-case-chip {
-        padding: 1.5rem 2.5rem;
-        font-size: 2.5rem;
-        border-radius: 1rem;
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        min-height: 52px;
+        padding: 0;
+        font-size: 1.25rem;
+        border-radius: 0.75rem;
     }
 
     .letter-case-inline-row {
-        gap: 1rem;
+        gap: 0.5rem;
     }
 
-    /* Order and play buttons - dramatically larger */
-    .order-icon-btn {
-        width: 90px;
-        height: 90px;
-        min-width: 90px;
-        min-height: 90px;
-        border-radius: 1rem;
+    /* Order buttons - larger on tablets (need compound selectors for specificity) */
+    .order-icon-btn.sequential-btn,
+    .order-icon-btn.random-btn {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        min-height: 52px;
+        border-radius: 0.75rem;
     }
 
-    .order-icon-btn svg {
-        width: 44px;
-        height: 44px;
+    .order-icon-btn.sequential-btn svg,
+    .order-icon-btn.random-btn svg {
+        width: 26px;
+        height: 26px;
     }
 
-    .play-btn {
-        width: 100px;
-        height: 100px;
-        min-width: 100px;
-        min-height: 100px;
+    /* Play button - larger on tablets */
+    .order-icon-btn.play-btn {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
+        border-radius: 0.875rem;
     }
 
-    .play-btn svg {
-        width: 50px;
-        height: 50px;
+    .order-icon-btn.play-btn svg {
+        width: 30px;
+        height: 30px;
     }
 
     /* Row options spacing */
@@ -3336,6 +3345,23 @@ body.draw-active main {
         max-width: min(80vw, 850px) !important;
     }
 
+    nav {
+        height: 120px;
+    }
+
+    nav h1 {
+        font-size: 3rem !important;
+    }
+
+    nav #versionDisplay {
+        font-size: 1.5rem !important;
+    }
+
+    nav #exitBtn svg {
+        width: 48px;
+        height: 48px;
+    }
+
     #cardContainer {
         max-width: min(80vw, 850px);
         max-height: 65vh;
@@ -3347,7 +3373,7 @@ body.draw-active main {
 
     .content-type-row-btn {
         padding: 1.75rem 2.5rem;
-        min-height: 100px;
+        min-height: 110px;
     }
 
     .content-type-icon {
@@ -3363,65 +3389,89 @@ body.draw-active main {
     }
 
     .icon-colors .color-bar {
-        width: 14px;
-        height: 48px;
+        width: 16px;
+        height: 52px;
     }
 
     .icon-shapes svg {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
     }
 
     .icon-draw svg,
     .icon-ttt svg {
-        width: 42px;
-        height: 42px;
+        width: 48px;
+        height: 48px;
     }
 
+    /* Letter case chips - square like order buttons on iPad Pro */
     .letter-case-chip {
-        padding: 1rem 1.75rem;
-        font-size: 1.6rem;
-    }
-
-    .order-icon-btn {
         width: 64px;
         height: 64px;
         min-width: 64px;
         min-height: 64px;
+        padding: 0;
+        font-size: 1.5rem;
+        border-radius: 1rem;
     }
 
-    .order-icon-btn svg {
+    .letter-case-inline-row {
+        gap: 0.625rem;
+    }
+
+    /* Order buttons - larger on iPad Pro (compound selectors for specificity) */
+    .order-icon-btn.sequential-btn,
+    .order-icon-btn.random-btn {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        border-radius: 1rem;
+    }
+
+    .order-icon-btn.sequential-btn svg,
+    .order-icon-btn.random-btn svg {
         width: 32px;
         height: 32px;
     }
 
-    .play-btn {
+    /* Play button - larger on iPad Pro */
+    .order-icon-btn.play-btn {
+        width: 72px;
+        height: 72px;
+        min-width: 72px;
+        min-height: 72px;
+        border-radius: 1rem;
+    }
+
+    .order-icon-btn.play-btn svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .row-options {
+        gap: 2rem;
+    }
+
+    .order-inline-row {
+        gap: 1rem;
+    }
+
+    .game-controls button {
+        padding: 1.5rem 3rem;
+        font-size: 1.5rem;
+    }
+
+    .nav-button {
         width: 72px;
         height: 72px;
         min-width: 72px;
         min-height: 72px;
     }
 
-    .play-btn svg {
-        width: 36px;
-        height: 36px;
-    }
-
-    .game-controls button {
-        padding: 1.5rem 3rem;
-        font-size: 1.4rem;
-    }
-
-    .nav-button {
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-        min-height: 64px;
-    }
-
     .nav-button svg {
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
     }
 }
 
