@@ -68,11 +68,19 @@ The entire application logic is contained in a single `FlashCardApp` class in `s
 - **Event Handlers**: Bound in `setupEventListeners()` including keyboard shortcuts (arrow keys, spacebar, C/X keys)
 
 ### Content Types
-Four flash card types with different generation logic in `generateCards()`:
+Five flash card types with different generation logic in `generateCards()`:
 - **Letters**: A-Z with case options (both/uppercase/lowercase)
 - **Numbers**: 0-9
 - **Colors**: 10 basic colors with colored card backgrounds
 - **Shapes**: Basic geometric shapes (triangle, circle, square, etc.)
+- **Tic-Tac-Toe**: Two-player game with customizable player icons, undo/redo, and winner-goes-first logic
+
+### Drawing Canvas
+Cards include an optional drawing canvas overlay with:
+- Multiple brush sizes and styles (brush, circle, square, triangle, etc.)
+- Fill/outline modes and eraser
+- Undo/redo history (`drawHistory`, `historyIndex`)
+- Drawings are not persisted between sessions
 
 ### Data Persistence
 Session scores saved to localStorage under `flashCardScores` key. Limited to last 50 sessions. Each session stores date, settings, scores, and per-card results.
