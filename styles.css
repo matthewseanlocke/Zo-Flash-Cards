@@ -2881,7 +2881,7 @@ body.draw-active main > *:first-child {
 }
 
 .ttt-cell.winner {
-    background: #fef08a;
+    background: #86efac;
     animation: ttt-pulse 0.6s ease-in-out;
 }
 
@@ -2931,5 +2931,95 @@ body.draw-active main > *:first-child {
 .ttt-play-again:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.02);
+}
+
+/* Black X and O icons - SVG style matching each other */
+.black-x,
+.black-o {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.black-x::after,
+.black-o::after {
+    content: '';
+    display: block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Black X - two crossed lines with rounded ends */
+.black-x::after {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='20' y1='20' x2='80' y2='80' stroke='%23000' stroke-width='18' stroke-linecap='round'/%3E%3Cline x1='80' y1='20' x2='20' y2='80' stroke='%23000' stroke-width='18' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Black O - circle with thick rounded stroke */
+.black-o::after {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='35' fill='none' stroke='%23000' stroke-width='18' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Different sizes for different contexts - match emoji sizes */
+.ttt-cell.black-x::after,
+.ttt-cell.black-o::after {
+    width: 4rem;
+    height: 4rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ttt-player-icon.black-x::after,
+.ttt-player-icon.black-o::after {
+    width: 2.75rem;
+    height: 2.75rem;
+}
+
+.ttt-player-icon-display.black-x::after,
+.ttt-player-icon-display.black-o::after {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.ttt-icon-option.black-x::after,
+.ttt-icon-option.black-o::after {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+/* TTT Controls (undo/redo/clear) */
+.ttt-controls {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.ttt-control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ttt-control-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.ttt-control-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 

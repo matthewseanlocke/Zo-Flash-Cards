@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.18.4</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.19.0</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -518,7 +518,7 @@
                     <span class="ttt-player-icon-display" id="tttPlayer1Icon">❌</span>
                 </button>
                 <button class="ttt-player-btn" data-player="2">
-                    <span class="ttt-player-icon-display" id="tttPlayer2Icon">⭕</span>
+                    <span class="ttt-player-icon-display black-o" id="tttPlayer2Icon"></span>
                 </button>
             </div>
             <div class="ttt-turn-row">
@@ -535,6 +535,23 @@
                 <button class="ttt-cell" data-cell="6"></button>
                 <button class="ttt-cell" data-cell="7"></button>
                 <button class="ttt-cell" data-cell="8"></button>
+            </div>
+            <div class="ttt-controls">
+                <button class="ttt-control-btn" id="tttUndoBtn" title="Undo">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2M3 10l4-4m-4 4l4 4"/>
+                    </svg>
+                </button>
+                <button class="ttt-control-btn" id="tttRedoBtn" title="Redo">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a5 5 0 00-5 5v2M21 10l-4-4m4 4l-4 4"/>
+                    </svg>
+                </button>
+                <button class="ttt-control-btn" id="tttClearBtn" title="Clear">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </button>
             </div>
             <div class="ttt-icon-picker hidden" id="tttIconPicker">
                 <!-- Icons will be populated by JS -->
