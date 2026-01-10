@@ -43,7 +43,7 @@ class FlashCardApp {
         // TTT icon options for players to choose from
         // 'O' is special - rendered as black SVG circle
         this.tttIconOptions = [
-            '❌', 'O', '⭕', '⭐', '❤️', '💙', '🔵', '🟢', '🟡', '🔺', '🔷', '🌙', '☀️', '🌸', '🍀', '⚡', '🎯',
+            '❌', 'O', '⭐', '❤️', '💙', '🔵', '🟢', '🟡', '🔺', '🔷', '🌙', '☀️', '🌸', '🍀', '⚡', '🎯',
             '🦋', '🐱', '🐶', '🦊', '🐼', '🐸', '🐝', '🌈', '🔥', '💎', '🎈', '🎀', '🍎', '🍓', '🌻', '🚀', '✨',
             '🦄', '🐰', '🐻', '🦁', '🐧', '🦆', '🦜', '🍕', '🍩', '🎵', '🎨', '🏆', '👑', '💜', '💚', '🧡', '🩷', '🍄'
         ];
@@ -3050,7 +3050,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.23.0';
+    const version = '1.24.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

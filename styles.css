@@ -3671,7 +3671,13 @@ body.draw-active main {
     }
 
     .ttt-player-icon {
-        font-size: 2rem;
+        font-size: 3.5rem;
+    }
+
+    /* Scale O to match the larger X on the Turn card */
+    .ttt-player-icon.black-o::after {
+        width: 4.5rem !important;
+        height: 4.5rem !important;
     }
 
     .ttt-controls {
@@ -3680,8 +3686,26 @@ body.draw-active main {
     }
 
     .ttt-control-btn {
-        padding: 0.75rem 1.25rem;
-        font-size: 1rem;
+        width: 56px;
+        height: 56px;
+        min-height: 56px;
+    }
+
+    .ttt-control-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Scale black O to match X emoji size on tablets */
+    /* O needs to be larger than X font-size due to SVG stroke width */
+    .ttt-player-icon-display.black-o::after {
+        width: 3.2rem !important;
+        height: 3.2rem !important;
+    }
+
+    .ttt-cell.black-o::after {
+        width: 5rem !important;
+        height: 5rem !important;
     }
 }
 
