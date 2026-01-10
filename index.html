@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.19.0</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.19.6</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -521,9 +521,17 @@
                     <span class="ttt-player-icon-display black-o" id="tttPlayer2Icon"></span>
                 </button>
             </div>
-            <div class="ttt-turn-row">
-                <span class="ttt-turn-label">Turn:</span>
-                <button class="ttt-player-icon" id="tttCurrentIcon">❌</button>
+            <div class="ttt-status-card" id="tttStatusCard">
+                <div class="ttt-status-card-inner">
+                    <div class="ttt-status-front">
+                        <span class="ttt-turn-label" id="tttFrontLabel">Turn:</span>
+                        <span class="ttt-player-icon" id="tttFrontIcon">❌</span>
+                    </div>
+                    <div class="ttt-status-back">
+                        <span class="ttt-turn-label" id="tttBackLabel">Turn:</span>
+                        <span class="ttt-player-icon" id="tttBackIcon">⭕</span>
+                    </div>
+                </div>
             </div>
             <div class="ttt-board">
                 <button class="ttt-cell" data-cell="0"></button>
@@ -557,7 +565,6 @@
                 <!-- Icons will be populated by JS -->
             </div>
             <div class="ttt-result hidden">
-                <span class="ttt-winner-text"></span>
                 <button class="ttt-play-again">Play Again</button>
             </div>
         </div>

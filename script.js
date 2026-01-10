@@ -42,7 +42,11 @@ class FlashCardApp {
 
         // TTT icon options for players to choose from
         // 'O' is special - rendered as black SVG circle
-        this.tttIconOptions = ['❌', 'O', '⭕', '⭐', '❤️', '💙', '🔵', '🟢', '🟡', '🔺', '🔷', '🌙', '☀️', '🌸', '🍀', '⚡', '🎯'];
+        this.tttIconOptions = [
+            '❌', 'O', '⭕', '⭐', '❤️', '💙', '🔵', '🟢', '🟡', '🔺', '🔷', '🌙', '☀️', '🌸', '🍀', '⚡', '🎯',
+            '🦋', '🐱', '🐶', '🦊', '🐼', '🐸', '🐝', '🌈', '🔥', '💎', '🎈', '🎀', '🍎', '🍓', '🌻', '🚀', '✨',
+            '🦄', '🐰', '🐻', '🦁', '🐧', '🦆', '🦜', '🍕', '🍩', '🎵', '🎨', '🏆', '👑', '💜', '💚', '🧡', '🩷', '🍄'
+        ];
         this.tttPlayerIcons = {
             1: '❌',  // Player 1 default (red X emoji)
             2: 'O'    // Player 2 default (black O - SVG)
@@ -193,13 +197,17 @@ class FlashCardApp {
         this.tictactoeBtn = document.getElementById('tictactoeBtn');
         this.tictactoeGame = document.getElementById('tictactoeGame');
         this.tttCells = document.querySelectorAll('.ttt-cell');
-        this.tttCurrentIcon = document.getElementById('tttCurrentIcon');
+        this.tttStatusCard = document.getElementById('tttStatusCard');
+        this.tttFrontLabel = document.getElementById('tttFrontLabel');
+        this.tttFrontIcon = document.getElementById('tttFrontIcon');
+        this.tttBackLabel = document.getElementById('tttBackLabel');
+        this.tttBackIcon = document.getElementById('tttBackIcon');
+        this.tttCardFlipped = false; // Track current flip state
         this.tttPlayer1Icon = document.getElementById('tttPlayer1Icon');
         this.tttPlayer2Icon = document.getElementById('tttPlayer2Icon');
         this.tttPlayerBtns = document.querySelectorAll('.ttt-player-btn');
         this.tttIconPicker = document.getElementById('tttIconPicker');
         this.tttResult = document.querySelector('.ttt-result');
-        this.tttWinnerText = document.querySelector('.ttt-winner-text');
         this.tttPlayAgainBtn = document.querySelector('.ttt-play-again');
         this.tttUndoBtn = document.getElementById('tttUndoBtn');
         this.tttRedoBtn = document.getElementById('tttRedoBtn');
@@ -306,6 +314,19 @@ class FlashCardApp {
                 const player = parseInt(btn.dataset.player);
                 this.openTTTIconPicker(player);
             });
+        });
+
+        // Close TTT icon picker when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.tttIconPicker.classList.contains('hidden')) {
+                // Check if click is outside the picker and outside player buttons
+                const clickedInsidePicker = this.tttIconPicker.contains(e.target);
+                const clickedPlayerBtn = Array.from(this.tttPlayerBtns).some(btn => btn.contains(e.target));
+                if (!clickedInsidePicker && !clickedPlayerBtn) {
+                    this.tttIconPicker.classList.add('hidden');
+                    this.tttIconPickerPlayer = null;
+                }
+            }
         });
 
         // Draw mode controls
@@ -2624,17 +2645,25 @@ class FlashCardApp {
             cell.disabled = false;
         });
 
+        // Reset the status card to front (not flipped)
+        this.tttCardFlipped = false;
+        this.tttStatusCard.classList.remove('flipped');
+
+        // Initialize both sides of the card
+        this.tttFrontLabel.textContent = 'Turn:';
+        this.setTTTIconContent(this.tttFrontIcon, this.tttPlayerIcons[this.tttCurrentPlayer]);
+        this.tttBackLabel.textContent = 'Turn:';
+        const nextPlayer = this.tttCurrentPlayer === 1 ? 2 : 1;
+        this.setTTTIconContent(this.tttBackIcon, this.tttPlayerIcons[nextPlayer]);
+
         this.updateTTTDisplay();
         this.updateTTTControlButtons();
         this.tttResult.classList.add('hidden');
         this.tttIconPicker.classList.add('hidden');
     }
 
-    updateTTTDisplay() {
-        // Update current turn icon
-        this.setTTTIconContent(this.tttCurrentIcon, this.tttPlayerIcons[this.tttCurrentPlayer]);
-
-        // Update player icon displays
+    updateTTTDisplay(flipCard = false) {
+        // Update player icon displays in corners
         this.setTTTIconContent(this.tttPlayer1Icon, this.tttPlayerIcons[1]);
         this.setTTTIconContent(this.tttPlayer2Icon, this.tttPlayerIcons[2]);
 
@@ -2655,6 +2684,34 @@ class FlashCardApp {
                 this.setTTTIconContent(cell, this.tttPlayerIcons[player]);
             }
         });
+
+        // Update status card - determine which side is visible and update
+        const currentIcon = this.tttPlayerIcons[this.tttCurrentPlayer];
+
+        if (flipCard) {
+            // Set the back side (about to become visible) with current player
+            if (this.tttCardFlipped) {
+                // Back is showing, so update front for next flip
+                this.tttFrontLabel.textContent = 'Turn:';
+                this.setTTTIconContent(this.tttFrontIcon, currentIcon);
+            } else {
+                // Front is showing, so update back for next flip
+                this.tttBackLabel.textContent = 'Turn:';
+                this.setTTTIconContent(this.tttBackIcon, currentIcon);
+            }
+            // Toggle flip
+            this.tttCardFlipped = !this.tttCardFlipped;
+            this.tttStatusCard.classList.toggle('flipped');
+        } else {
+            // No flip - just update the visible side
+            if (this.tttCardFlipped) {
+                this.tttBackLabel.textContent = 'Turn:';
+                this.setTTTIconContent(this.tttBackIcon, currentIcon);
+            } else {
+                this.tttFrontLabel.textContent = 'Turn:';
+                this.setTTTIconContent(this.tttFrontIcon, currentIcon);
+            }
+        }
     }
 
     openTTTIconPicker(player) {
@@ -2727,9 +2784,9 @@ class FlashCardApp {
             return;
         }
 
-        // Switch player
+        // Switch player and flip the status card
         this.tttCurrentPlayer = this.tttCurrentPlayer === 1 ? 2 : 1;
-        this.updateTTTDisplay();
+        this.updateTTTDisplay(true);
         this.updateTTTControlButtons();
     }
 
@@ -2761,13 +2818,46 @@ class FlashCardApp {
         // Clear active highlight
         this.tttPlayerBtns.forEach(btn => btn.classList.remove('active'));
 
+        // Determine win message
+        let winText;
+        let winIcon;
         if (result === 'draw') {
-            this.tttWinnerText.textContent = "It's a Draw!";
+            winText = "It's a Draw!";
+            winIcon = null;
             // On draw, keep last winner (or stay with current starter)
         } else {
-            this.tttWinnerText.textContent = `${this.tttPlayerIcons[result]} Wins!`;
+            winText = 'Wins!';
+            winIcon = this.tttPlayerIcons[result];
             this.tttLastWinner = result; // Winner goes first next game
         }
+
+        // Update the hidden side with win message and flip to it
+        if (this.tttCardFlipped) {
+            // Back is showing, update front with win message
+            if (winIcon) {
+                this.setTTTIconContent(this.tttFrontIcon, winIcon);
+                this.tttFrontLabel.textContent = winText;
+            } else {
+                this.tttFrontIcon.textContent = '';
+                this.tttFrontIcon.classList.remove('black-x', 'black-o');
+                this.tttFrontLabel.textContent = winText;
+            }
+        } else {
+            // Front is showing, update back with win message
+            if (winIcon) {
+                this.setTTTIconContent(this.tttBackIcon, winIcon);
+                this.tttBackLabel.textContent = winText;
+            } else {
+                this.tttBackIcon.textContent = '';
+                this.tttBackIcon.classList.remove('black-x', 'black-o');
+                this.tttBackLabel.textContent = winText;
+            }
+        }
+
+        // Flip to show win message
+        this.tttCardFlipped = !this.tttCardFlipped;
+        this.tttStatusCard.classList.toggle('flipped');
+
         this.tttResult.classList.remove('hidden');
         this.updateTTTControlButtons();
     }
@@ -2844,6 +2934,17 @@ class FlashCardApp {
             cell.disabled = false;
         });
 
+        // Reset the status card to front (not flipped)
+        this.tttCardFlipped = false;
+        this.tttStatusCard.classList.remove('flipped');
+
+        // Initialize both sides of the card
+        this.tttFrontLabel.textContent = 'Turn:';
+        this.setTTTIconContent(this.tttFrontIcon, this.tttPlayerIcons[this.tttCurrentPlayer]);
+        this.tttBackLabel.textContent = 'Turn:';
+        const nextPlayer = this.tttCurrentPlayer === 1 ? 2 : 1;
+        this.setTTTIconContent(this.tttBackIcon, this.tttPlayerIcons[nextPlayer]);
+
         this.updateTTTDisplay();
         this.updateTTTControlButtons();
         this.tttResult.classList.add('hidden');
@@ -2856,7 +2957,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.19.0';
+    const version = '1.19.6';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
