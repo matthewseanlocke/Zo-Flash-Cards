@@ -19,3 +19,5 @@ This project does not require a build process. To run the application, simply op
 *   **Versioning:** The project follows a semantic versioning scheme, with the version number prefixed with a `v` (e.g., `v1.6.3`).
 *   **Documentation:** The `README.md` file is the primary source of documentation and is very comprehensive.
 *   **Data Persistence:** User progress and session history are saved in the browser's local storage.
+
+
