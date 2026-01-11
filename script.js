@@ -307,9 +307,30 @@ class FlashCardApp {
         this.drawBtn.addEventListener('click', () => this.selectContentType('draw'));
         this.tictactoeBtn.addEventListener('click', () => this.selectContentType('tictactoe'));
 
-        // Tic Tac Toe controls
+        // Tic Tac Toe controls - use touch events for reliable mobile taps
+        this.tttLastCellClick = 0;
         this.tttCells.forEach(cell => {
-            cell.addEventListener('click', () => this.handleTTTCellClick(cell));
+            // Track touch start cell for drag-and-release on same cell
+            cell.addEventListener('touchstart', (e) => {
+                this.tttTouchStartCell = cell;
+            }, { passive: true });
+
+            cell.addEventListener('touchend', (e) => {
+                // If touch ended on the same cell it started, trigger click
+                if (this.tttTouchStartCell === cell) {
+                    e.preventDefault();
+                    this.tttLastCellClick = Date.now();
+                    this.handleTTTCellClick(cell);
+                }
+                this.tttTouchStartCell = null;
+            });
+
+            // Fallback for non-touch devices (desktop)
+            cell.addEventListener('click', () => {
+                // Skip if touchend just fired (within 300ms)
+                if (Date.now() - this.tttLastCellClick < 300) return;
+                this.handleTTTCellClick(cell);
+            });
         });
         this.tttPlayAgainBtn.addEventListener('click', () => this.resetTTTGame());
         this.tttUndoBtn.addEventListener('click', () => this.tttUndo());
@@ -3109,7 +3130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.27.5';
+    const version = '1.27.6';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
