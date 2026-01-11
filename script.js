@@ -1801,11 +1801,35 @@ class FlashCardApp {
                 ctx.lineTo(x - size / 2, y + size / 2);
                 ctx.closePath();
                 break;
+            case 'triangle-down':
+                ctx.moveTo(x, y + size / 2);
+                ctx.lineTo(x + size / 2, y - size / 2);
+                ctx.lineTo(x - size / 2, y - size / 2);
+                ctx.closePath();
+                break;
+            case 'triangle-left':
+                ctx.moveTo(x - size / 2, y);
+                ctx.lineTo(x + size / 2, y - size / 2);
+                ctx.lineTo(x + size / 2, y + size / 2);
+                ctx.closePath();
+                break;
+            case 'triangle-right':
+                ctx.moveTo(x + size / 2, y);
+                ctx.lineTo(x - size / 2, y - size / 2);
+                ctx.lineTo(x - size / 2, y + size / 2);
+                ctx.closePath();
+                break;
             case 'rectangle':
                 ctx.rect(x - size / 2, y - size / 3, size, size * 0.66);
                 break;
             case 'star':
-                this.drawStar(ctx, x, y, 5, size / 2, size / 4);
+                this.drawStar(ctx, x, y, 5, size / 2, size / 4, 0);
+                break;
+            case 'star-r1':
+                this.drawStar(ctx, x, y, 5, size / 2, size / 4, Math.PI * 2 / 5);
+                break;
+            case 'star-r2':
+                this.drawStar(ctx, x, y, 5, size / 2, size / 4, Math.PI * 4 / 5);
                 break;
             case 'heart':
                 this.drawHeart(ctx, x, y, size);
@@ -1815,16 +1839,25 @@ class FlashCardApp {
                 break;
             case 'diamond':
                 ctx.moveTo(x, y - size / 2);
-                ctx.lineTo(x + size / 3, y);
+                ctx.lineTo(x + size / 2, y);
                 ctx.lineTo(x, y + size / 2);
-                ctx.lineTo(x - size / 3, y);
+                ctx.lineTo(x - size / 2, y);
                 ctx.closePath();
                 break;
             case 'pentagon':
-                this.drawPolygon(ctx, x, y, 5, size / 2);
+                this.drawPolygon(ctx, x, y, 5, size / 2, 0);
+                break;
+            case 'pentagon-r1':
+                this.drawPolygon(ctx, x, y, 5, size / 2, Math.PI * 2 / 5);
+                break;
+            case 'pentagon-r2':
+                this.drawPolygon(ctx, x, y, 5, size / 2, Math.PI * 4 / 5);
+                break;
+            case 'pentagon-r3':
+                this.drawPolygon(ctx, x, y, 5, size / 2, Math.PI * 6 / 5);
                 break;
             case 'hexagon':
-                this.drawPolygon(ctx, x, y, 6, size / 2);
+                this.drawPolygon(ctx, x, y, 6, size / 2, 0);
                 break;
             default:
                 // Check if it's a number stamp (num0-num9) or letter stamp (letA-letZ)
@@ -1865,18 +1898,19 @@ class FlashCardApp {
         }
     }
 
-    // Helper to draw a star
-    drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
-        let rot = Math.PI / 2 * 3;
+    // Helper to draw a star with optional rotation
+    drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius, rotation = 0) {
+        let rot = Math.PI / 2 * 3 + rotation;
         let step = Math.PI / spikes;
-        ctx.moveTo(cx, cy - outerRadius);
+        const startX = cx + Math.cos(rot) * outerRadius;
+        const startY = cy + Math.sin(rot) * outerRadius;
+        ctx.moveTo(startX, startY);
         for (let i = 0; i < spikes; i++) {
             ctx.lineTo(cx + Math.cos(rot) * outerRadius, cy + Math.sin(rot) * outerRadius);
             rot += step;
             ctx.lineTo(cx + Math.cos(rot) * innerRadius, cy + Math.sin(rot) * innerRadius);
             rot += step;
         }
-        ctx.lineTo(cx, cy - outerRadius);
         ctx.closePath();
     }
 
@@ -1891,11 +1925,12 @@ class FlashCardApp {
         ctx.bezierCurveTo(x + width / 2, y, x, y, x, y + height / 4);
     }
 
-    // Helper to draw a regular polygon
-    drawPolygon(ctx, cx, cy, sides, radius) {
-        ctx.moveTo(cx + radius * Math.cos(-Math.PI / 2), cy + radius * Math.sin(-Math.PI / 2));
+    // Helper to draw a regular polygon with optional rotation
+    drawPolygon(ctx, cx, cy, sides, radius, rotation = 0) {
+        const startAngle = -Math.PI / 2 + rotation;
+        ctx.moveTo(cx + radius * Math.cos(startAngle), cy + radius * Math.sin(startAngle));
         for (let i = 1; i <= sides; i++) {
-            const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+            const angle = (i * 2 * Math.PI / sides) + startAngle;
             ctx.lineTo(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
         }
         ctx.closePath();
@@ -3074,7 +3109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.25.1';
+    const version = '1.26.0';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
