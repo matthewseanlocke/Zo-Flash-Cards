@@ -3112,6 +3112,10 @@ body.ttt-active nav #versionDisplay {
     min-height: auto;
     height: auto;
     aspect-ratio: 1;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .ttt-cell:hover:not(:disabled):not(.player1):not(.player2) {
