@@ -1825,12 +1825,6 @@ class FlashCardApp {
             case 'star':
                 this.drawStar(ctx, x, y, 5, size / 2, size / 4, 0);
                 break;
-            case 'star-r1':
-                this.drawStar(ctx, x, y, 5, size / 2, size / 4, Math.PI * 2 / 5);
-                break;
-            case 'star-r2':
-                this.drawStar(ctx, x, y, 5, size / 2, size / 4, Math.PI * 4 / 5);
-                break;
             case 'heart':
                 this.drawHeart(ctx, x, y, size);
                 break;
@@ -1846,15 +1840,6 @@ class FlashCardApp {
                 break;
             case 'pentagon':
                 this.drawPolygon(ctx, x, y, 5, size / 2, 0);
-                break;
-            case 'pentagon-r1':
-                this.drawPolygon(ctx, x, y, 5, size / 2, Math.PI * 2 / 5);
-                break;
-            case 'pentagon-r2':
-                this.drawPolygon(ctx, x, y, 5, size / 2, Math.PI * 4 / 5);
-                break;
-            case 'pentagon-r3':
-                this.drawPolygon(ctx, x, y, 5, size / 2, Math.PI * 6 / 5);
                 break;
             case 'hexagon':
                 this.drawPolygon(ctx, x, y, 6, size / 2, 0);
@@ -2777,6 +2762,9 @@ class FlashCardApp {
             cell.disabled = false;
         });
 
+        // Clear winner highlight from player buttons
+        this.tttPlayerBtns.forEach(btn => btn.classList.remove('winner'));
+
         // Reset the status card to front (not flipped)
         this.tttCardFlipped = false;
         this.tttStatusCard.classList.remove('flipped');
@@ -2967,8 +2955,17 @@ class FlashCardApp {
         this.tttGameOver = true;
         this.tttCells.forEach(cell => cell.disabled = true);
 
-        // Clear active highlight
-        this.tttPlayerBtns.forEach(btn => btn.classList.remove('active'));
+        // Clear active highlight and winner highlight
+        this.tttPlayerBtns.forEach(btn => btn.classList.remove('active', 'winner'));
+
+        // Highlight winning player's icon
+        if (result !== 'draw') {
+            this.tttPlayerBtns.forEach(btn => {
+                if (parseInt(btn.dataset.player) === result) {
+                    btn.classList.add('winner');
+                }
+            });
+        }
 
         // Determine win message
         let winText;
@@ -3086,6 +3083,9 @@ class FlashCardApp {
             cell.disabled = false;
         });
 
+        // Clear winner highlight from player buttons
+        this.tttPlayerBtns.forEach(btn => btn.classList.remove('winner'));
+
         // Reset the status card to front (not flipped)
         this.tttCardFlipped = false;
         this.tttStatusCard.classList.remove('flipped');
@@ -3109,7 +3109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.26.1';
+    const version = '1.26.7';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

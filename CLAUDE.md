@@ -10,8 +10,10 @@ Zo Flash Cards is a mobile-optimized flash card app for early childhood educatio
 
 **Always increment the version number** when making changes to the app. The version must be updated in **TWO places**:
 
-1. **`script.js`** (search for `const version =`) - this is the source of truth
+1. **`script.js`** (search for `const version =`, near bottom of file ~line 3097) - this is the source of truth
 2. **`index.html`** (line 19, `versionDisplay` span) - fallback display
+
+**Note:** Ignore the legacy version comment at the top of `script.js` (line 2) - it's outdated and not used.
 
 The JavaScript version overwrites the HTML on page load, so `script.js` is the authoritative source.
 

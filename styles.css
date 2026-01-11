@@ -2895,13 +2895,22 @@ body.draw-active main {
 /* Player selection buttons - positioned in corners */
 .ttt-player-select {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    padding: 0.75rem;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
     pointer-events: none;
+}
+
+.ttt-player-btn[data-player="1"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.ttt-player-btn[data-player="2"] {
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .ttt-player-btn {
@@ -2914,9 +2923,19 @@ body.draw-active main {
     width: 72px;
     height: 72px;
     min-height: 72px;
+    min-width: 72px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     pointer-events: auto;
+    box-shadow: 0 0 0 4px transparent;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    flex-shrink: 0;
+}
+
+.ttt-player-btn:active {
+    transform: none;
 }
 
 .ttt-player-btn:hover {
@@ -2927,7 +2946,6 @@ body.draw-active main {
 .ttt-player-btn.active {
     background: rgba(255, 255, 255, 0.9);
     border-color: white;
-    transform: scale(1.1);
 }
 
 .ttt-player-icon-display {
@@ -2941,15 +2959,22 @@ body.draw-active main {
     flex-wrap: wrap;
     gap: 0.875rem;
     justify-content: center;
+    align-content: flex-start;
     background: rgba(255, 255, 255, 0.95);
     padding: 1.25rem;
-    border-radius: 1.25rem;
-    margin-top: 1rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    border-radius: 1.25rem 1.25rem 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: calc(100% - 1rem);
     max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    max-height: 80vh;
+    overflow-y: auto;
     box-sizing: border-box;
+    z-index: 50;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .ttt-icon-picker.hidden {
@@ -2968,8 +2993,23 @@ body.draw-active main {
 }
 
 .ttt-player-btn.editing {
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.6);
-    border-color: #3b82f6;
+    animation: editing-glow 1.5s ease-in-out infinite;
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+@keyframes editing-glow {
+    0%, 100% {
+        box-shadow: 0 0 15px 8px rgba(255, 255, 255, 0.6), 0 0 30px 15px rgba(236, 72, 153, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 20px 12px rgba(255, 255, 255, 0.8), 0 0 40px 20px rgba(168, 85, 247, 0.5);
+    }
+}
+
+.ttt-player-btn.winner {
+    background: #86efac;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.5), 0 0 15px rgba(34, 197, 94, 0.4);
 }
 
 .ttt-icon-option {
