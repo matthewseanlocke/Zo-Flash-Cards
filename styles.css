@@ -143,7 +143,7 @@ nav > div {
         min-height: calc(100dvh - 60px);
         min-height: calc(100vh - 60px); /* Fallback for older browsers */
         padding: 0.5rem;
-        padding-bottom: 1rem;
+        padding-bottom: 4rem;
     }
     
     #cardContainer {
@@ -1598,7 +1598,7 @@ body {
     max-height: 2000px;
     opacity: 1;
     padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 3rem;
 }
 
 /* History session card icons - no background */
@@ -2820,6 +2820,7 @@ body.draw-active main {
     padding-top: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    padding-bottom: 4rem;
 }
 
 #tictactoeGame:not(.hidden) {
