@@ -3765,6 +3765,17 @@ body.draw-active main {
         width: 5rem !important;
         height: 5rem !important;
     }
+
+    /* Icon picker positioned below player icons on tablets */
+    .ttt-icon-picker {
+        bottom: auto;
+        top: 105px;
+        transform: translateX(-50%);
+        max-height: calc(100vh - 130px);
+        max-width: 450px;
+        border-radius: 1.25rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
 }
 
 @media (min-width: 1024px) {
