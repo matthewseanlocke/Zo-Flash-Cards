@@ -78,6 +78,12 @@ Six content types with different generation logic in `generateCards()`:
 - **Draw Mode**: Fullscreen drawing canvas with brush tools, stamps, and FAB controls
 - **Tic-Tac-Toe**: Two-player game with customizable player icons, undo/redo, and winner-goes-first logic
 
+### Tic-Tac-Toe Icon Picker
+The TTT icon picker (`.ttt-icon-picker` in styles.css) is a scrollable panel for selecting player icons. Important notes:
+- **Bottom padding**: The panel requires generous bottom padding (`padding-bottom: 6rem`) so users can scroll to see all icons on mobile devices. If icons get cut off at the bottom, increase this padding.
+- **Sticky header**: The "Player X" header uses `position: sticky` to stay visible while scrolling.
+- **Icon list**: Located in `script.js` at `this.tttIconOptions` array (~line 45). Add new emoji icons here to expand choices.
+
 ### Drawing Canvas
 Cards include an optional drawing canvas overlay with:
 - Multiple brush sizes and styles (brush, circle, square, triangle, etc.)
