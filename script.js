@@ -90,7 +90,7 @@ class FlashCardApp {
             'F': ['🐸', '🐟', '🦩', '🔥', '🍟'],  // Frog, Fish, Flamingo, Fire, Fries
             'G': ['🍇', '🦒', '👻', '🎸', '🦍'],  // Grapes, Giraffe, Ghost, Guitar, Gorilla
             'H': ['🏠', '🐴', '❤️', '🦔', '🍯'],  // House, Horse, Heart, Hedgehog, Honey
-            'I': ['🍦', '🦎', '🧊', '🪱', '🏝️'],  // Ice cream, Iguana, Ice, Inchworm, Island
+            'I': ['🍦', '🧊', '🏝️', '🪲'],  // Ice cream, Ice, Island, Insect
             'J': ['🪼', '🤹', '👖', '🃏', '🧃'],  // Jellyfish, Juggler, Jeans, Joker, Juice
             'K': ['🪁', '🔑', '🦘', '👑', '🥝'],  // Kite, Key, Kangaroo, King, Kiwi
             'L': ['🦁', '🍋', '🐞', '🦎', '🍃'],  // Lion, Lemon, Ladybug, Lizard, Leaf
@@ -98,16 +98,16 @@ class FlashCardApp {
             'N': ['👃', '🥜', '📰', '🪺', '🎵'],  // Nose, Nut, Newspaper, Nest, Note
             'O': ['🐙', '🍊', '🦉', '🧅', '🦦'],  // Octopus, Orange, Owl, Onion, Otter
             'P': ['🐷', '🍕', '🐧', '🎃', '🍑'],  // Pig, Pizza, Penguin, Pumpkin, Peach
-            'Q': ['👸', '❓', '🦆', '🎯', '🛏️'],  // Queen, Question, Quack (duck), Quoits, Quilt (bed)
+            'Q': ['👸', '❓'],  // Queen, Question (Q words are rare in emoji)
             'R': ['🌈', '🐰', '🤖', '🚀', '🦏'],  // Rainbow, Rabbit, Robot, Rocket, Rhino
             'S': ['🐍', '⭐', '🐌', '☀️', '🍓'],  // Snake, Star, Snail, Sun, Strawberry
             'T': ['🐢', '🌳', '🐯', '🍅', '🚂'],  // Turtle, Tree, Tiger, Tomato, Train
-            'U': ['☂️', '🦄', '🎸', '👆', '🔮'],  // Umbrella, Unicorn, Ukulele, Up, UFO (crystal ball)
-            'V': ['🎻', '🌋', '🧛', '💜', '🥦'],  // Violin, Volcano, Vampire, Violet, Vegetable
+            'U': ['☂️', '🦄', '👆'],  // Umbrella, Unicorn, Up
+            'V': ['🎻', '🌋', '🧛', '🏐'],  // Violin, Volcano, Vampire, Volleyball
             'W': ['🐋', '🐺', '🍉', '⌚', '🪱'],  // Whale, Wolf, Watermelon, Watch, Worm
-            'X': ['🩻', '❌', '🎄', '✖️', '🔨'],  // X-ray, X mark, Xmas tree, Multiply, (a)Xe
-            'Y': ['🪀', '😋', '🧶', '☯️', '🍳'],  // Yo-yo, Yum, Yarn, Yin-yang, Yolk
-            'Z': ['🦓', '⚡', '🧟', '🤐', '💤'],  // Zebra, Zap, Zombie, Zipper, Zzz
+            'X': ['🩻', '❌', '🎄'],  // X-ray, X mark, Xmas tree
+            'Y': ['🪀', '🧶', '🍳'],  // Yo-yo, Yarn, Yolk
+            'Z': ['🦓', '🧟', '🤐', '💤'],  // Zebra, Zombie, Zipper, Zzz
         };
 
         this.initializeElements();
@@ -3138,7 +3138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.28.0';
+    const version = '1.28.1';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
