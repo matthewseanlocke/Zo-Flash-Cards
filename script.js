@@ -3138,46 +3138,59 @@ class FlashCardApp {
         this.tttWinRain.classList.remove('hidden');
 
         const lanes = 16;
-        const waves = 3;
-        const maxDelay = 1.2;
-        const minDuration = 2.4;
-        const maxDuration = 4.2;
+        const waves = 5;
+        const waveGap = 0.45;
+        const spawnJitter = 0.25;
+        const minDuration = 2.1;
+        const maxDuration = 4.6;
         const laneWidth = 100 / lanes;
         const extraSpan = 18;
         const minLeft = -extraSpan;
         const maxLeft = 100 + extraSpan;
         const spanWidth = maxLeft - minLeft;
         const laneSpan = spanWidth / lanes;
+        const rainToken = (this.tttWinRainToken || 0) + 1;
+
+        this.tttWinRainToken = rainToken;
 
         for (let wave = 0; wave < waves; wave++) {
+            const waveDelay = wave * waveGap * 1000;
             for (let lane = 0; lane < lanes; lane++) {
-                const drop = document.createElement('span');
-                drop.className = 'ttt-win-icon';
-                this.setTTTIconContent(drop, icon);
+                const jitterDelay = Math.random() * spawnJitter * 1000;
+                setTimeout(() => {
+                    if (this.tttWinRainToken !== rainToken || !this.tttWinRain) return;
 
-                const laneCenter = minLeft + (lane + 0.5) * laneSpan;
-                const offset = (Math.random() - 0.5) * laneWidth * 0.6;
-                const left = Math.max(minLeft, Math.min(maxLeft, laneCenter + offset));
-                const size = 1.4 + Math.random() * 2.2;
-                const duration = minDuration + Math.random() * (maxDuration - minDuration);
-                const delay = Math.random() * maxDelay + wave * 0.3;
+                    const drop = document.createElement('span');
+                    drop.className = 'ttt-win-icon';
+                    this.setTTTIconContent(drop, icon);
 
-                drop.style.left = `${left}vw`;
-                drop.style.fontSize = `${size}rem`;
-                drop.style.animationDuration = `${duration}s`;
-                drop.style.animationDelay = `${delay}s`;
+                    const laneCenter = minLeft + (lane + 0.5) * laneSpan;
+                    const offset = (Math.random() - 0.5) * laneWidth * 0.6;
+                    const left = Math.max(minLeft, Math.min(maxLeft, laneCenter + offset));
+                    const sizeRoll = Math.random();
+                    let size = 1.4 + Math.random() * 2.2;
+                    if (sizeRoll > 0.85) {
+                        size = 3.8 + Math.random() * 1.4;
+                    }
+                    const duration = minDuration + Math.random() * (maxDuration - minDuration);
 
-                this.tttWinRain.appendChild(drop);
+                    drop.style.left = `${left}vw`;
+                    drop.style.fontSize = `${size}rem`;
+                    drop.style.animationDuration = `${duration}s`;
+
+                    this.tttWinRain.appendChild(drop);
+                }, waveDelay + jitterDelay);
             }
         }
 
-        const cleanupDelay = (maxDuration + maxDelay + (waves - 1) * 0.3) * 1000;
+        const cleanupDelay = ((waves - 1) * waveGap + maxDuration + spawnJitter) * 1000;
         clearTimeout(this.tttWinRainTimer);
         this.tttWinRainTimer = setTimeout(() => this.clearTTTWinRain(), cleanupDelay);
     }
 
     clearTTTWinRain() {
         if (!this.tttWinRain) return;
+        this.tttWinRainToken = (this.tttWinRainToken || 0) + 1;
         this.tttWinRain.classList.add('hidden');
         this.tttWinRain.innerHTML = '';
     }
@@ -3280,7 +3293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.29.13';
+    const version = '1.29.18';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
