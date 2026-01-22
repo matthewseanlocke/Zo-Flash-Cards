@@ -9,6 +9,7 @@ class FlashCardApp {
         this.isSequential = true;
         this.contentType = 'letters'; // 'letters', 'numbers', or 'colors'
         this.letterCase = 'both'; // 'both', 'uppercase', 'lowercase'
+        this.numbersMode = 'ones'; // 'ones', 'tens', 'mixed'
         this.gameStarted = false;
         this.scores = {
             correct: 0,
@@ -184,6 +185,8 @@ class FlashCardApp {
         // Settings elements (inline on welcome screen)
         this.lettersBtn = document.getElementById('lettersBtn');
         this.numbersBtn = document.getElementById('numbersBtn');
+        this.numbersModeRadios = document.querySelectorAll('input[name="numbersMode"]');
+        this.numbersModeRow = document.querySelector('.numbers-mode-inline-row');
         this.colorsBtn = document.getElementById('colorsBtn');
         this.shapesBtn = document.getElementById('shapesBtn');
         this.drawBtn = document.getElementById('drawBtn');
@@ -443,6 +446,24 @@ class FlashCardApp {
                 this.letterCase = e.target.value;
             });
         });
+
+        if (this.numbersModeRow) {
+            this.numbersModeRow.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+
+        this.numbersModeRadios.forEach(radio => {
+            radio.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            radio.addEventListener('change', (e) => {
+                this.numbersMode = e.target.value;
+            });
+        });
+
+        this.updateNumbersModeUI();
+
         
         // Game controls
         this.prevBtn.addEventListener('click', () => this.previousCard());
@@ -570,10 +591,7 @@ class FlashCardApp {
                 }
             });
         } else if (this.contentType === 'numbers') {
-            // Numbers 0-9
-            for (let i = 0; i <= 9; i++) {
-                this.cards.push(i.toString());
-            }
+            this.cards = this.getNumberCardsForMode(this.numbersMode);
         } else if (this.contentType === 'colors') {
             // Basic colors
             const colors = [
@@ -599,6 +617,34 @@ class FlashCardApp {
         // Create shuffled version for random mode
         this.shuffledCards = [...this.cards];
         this.shuffleArray(this.shuffledCards);
+    }
+
+    getNumberCardsForMode(mode) {
+        if (mode === 'tens') {
+            return Array.from({ length: 10 }, (_, i) => ((i + 1) * 10).toString());
+        }
+        if (mode === 'mixed') {
+            return Array.from({ length: 100 }, (_, i) => (i + 1).toString());
+        }
+        return Array.from({ length: 10 }, (_, i) => (i + 1).toString());
+    }
+
+    updateNumbersModeUI() {
+        if (!this.numbersModeRadios || this.numbersModeRadios.length === 0) return;
+
+        this.numbersModeRadios.forEach(radio => {
+            radio.checked = radio.value === this.numbersMode;
+        });
+    }
+
+    getNumbersModeLabel(mode) {
+        if (mode === 'tens') {
+            return '10s';
+        }
+        if (mode === 'mixed') {
+            return '1-100';
+        }
+        return '1-10';
     }
 
     shuffleArray(array) {
@@ -646,6 +692,9 @@ class FlashCardApp {
             this.letterCaseSection.classList.add('hidden');
             selectedBtn = this.tictactoeBtn;
         }
+
+        this.updateNumbersModeUI();
+
 
         // Trigger play button animation after icon animation
         if (selectedBtn) {
@@ -1025,8 +1074,8 @@ class FlashCardApp {
             // For numbers, spell out the name
             let displayName = currentCard;
             if (this.contentType === 'numbers') {
-                const numberNames = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-                displayName = numberNames[parseInt(currentCard)] || currentCard;
+                const numberValue = parseInt(currentCard, 10);
+                displayName = this.numberToWords(numberValue);
             }
             cardContent.innerHTML = `<div class="feedback-text">${feedbackSymbol}</div><div class="feedback-label">${displayName}</div>`;
             cardContent.className = 'feedback-container';
@@ -1041,6 +1090,26 @@ class FlashCardApp {
             cardContent.innerHTML = originalHTML;
             cardContent.className = originalClassName;
         }, 700);
+    }
+
+    numberToWords(value) {
+        if (Number.isNaN(value)) return '';
+
+        const ones = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        if (value < 0) return value.toString();
+        if (value < 10) return ones[value];
+        if (value < 20) return teens[value - 10];
+        if (value < 100) {
+            const tensValue = Math.floor(value / 10);
+            const onesValue = value % 10;
+            return onesValue === 0 ? tens[tensValue] : `${tens[tensValue]}-${ones[onesValue]}`;
+        }
+        if (value === 100) return 'One Hundred';
+
+        return value.toString();
     }
 
     // Get similar letter hint data for the current card (if any)
@@ -2195,6 +2264,7 @@ class FlashCardApp {
             date: new Date().toISOString(),
             contentType: this.contentType,
             letterCase: this.letterCase,
+            numbersMode: this.numbersMode,
             isSequential: this.isSequential,
             scores: { ...this.scores },
             accuracy: this.scores.total > 0 ?
@@ -2347,6 +2417,12 @@ class FlashCardApp {
                 <div class="accordion-content" style="border-color: ${borderColor}; background-color: ${bgColor};">
                     <div class="accordion-inner">
                         <div class="session-details-table">
+                            ${score.contentType === 'numbers' ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Mode:</span>
+                                <span class="detail-value">${this.getNumbersModeLabel(score.numbersMode || 'ones')}</span>
+                            </div>
+                            ` : ''}
                             <div class="detail-row">
                                 <span class="detail-label">Total Cards:</span>
                                 <span class="detail-value">${score.scores.total}</span>
@@ -2423,7 +2499,8 @@ class FlashCardApp {
                 }
             });
         } else if (scoreData.contentType === 'numbers') {
-            allCards = Array.from({length: 10}, (_, i) => i.toString());
+            const mode = scoreData.numbersMode || 'ones';
+            allCards = this.getNumberCardsForMode(mode);
         } else if (scoreData.contentType === 'colors') {
             allCards = ['Red', 'Blue', 'Yellow', 'Green', 'Orange', 'Purple', 'Pink', 'Brown', 'Black', 'White'];
         } else if (scoreData.contentType === 'shapes') {
@@ -2572,7 +2649,8 @@ class FlashCardApp {
                     }
                 });
             } else if (scoreData.contentType === 'numbers') {
-                allCards = Array.from({length: 10}, (_, i) => i.toString());
+                const mode = scoreData.numbersMode || 'ones';
+                allCards = this.getNumberCardsForMode(mode);
             } else if (scoreData.contentType === 'colors') {
                 allCards = ['Red', 'Blue', 'Yellow', 'Green', 'Orange', 'Purple', 'Pink', 'Brown', 'Black', 'White'];
             } else if (scoreData.contentType === 'shapes') {
@@ -3138,7 +3216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.28.2';
+    const version = '1.29.2';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav

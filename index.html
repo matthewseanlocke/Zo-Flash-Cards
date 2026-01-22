@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.28.2</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.29.2</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,6 +93,20 @@
                             </span>
                             <!-- Options appear when selected -->
                             <div class="row-options">
+                                <div class="numbers-mode-inline-row">
+                                    <label class="numbers-mode-option">
+                                        <input type="radio" name="numbersMode" value="ones" checked>
+                                        <span class="numbers-mode-chip">1-10</span>
+                                    </label>
+                                    <label class="numbers-mode-option">
+                                        <input type="radio" name="numbersMode" value="tens">
+                                        <span class="numbers-mode-chip">10s</span>
+                                    </label>
+                                    <label class="numbers-mode-option">
+                                        <input type="radio" name="numbersMode" value="mixed">
+                                        <span class="numbers-mode-chip">1-100</span>
+                                    </label>
+                                </div>
                                 <div class="order-inline-row">
                                     <button class="order-icon-btn sequential-btn selected" title="In Order">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
