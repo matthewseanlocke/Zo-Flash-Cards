@@ -1885,6 +1885,47 @@ body {
     gap: 4px;
 }
 
+.numbers-mode-inline-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.numbers-mode-option {
+    cursor: pointer;
+}
+
+.numbers-mode-option input[type="radio"] {
+    display: none;
+}
+
+.numbers-mode-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    width: auto;
+    height: 28px;
+    min-height: 28px;
+    padding: 0 6px;
+    background: white;
+    border: 2px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-family: 'Andika', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.numbers-mode-option input[type="radio"]:checked + .numbers-mode-chip {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+
 /* Sequential and Random buttons */
 .order-icon-btn.sequential-btn,
 .order-icon-btn.random-btn {
@@ -2212,6 +2253,9 @@ body {
     border-color: #3b82f6;
     color: white;
 }
+
+
+
 
 /* Order Row - Two buttons side by side */
 .order-row {
@@ -3421,7 +3465,7 @@ body.ttt-active nav #versionDisplay {
     }
 
     /* Letter case chips - square like order buttons on tablets */
-    .letter-case-chip {
+.letter-case-chip {
         width: 52px;
         height: 52px;
         min-width: 52px;
@@ -3434,6 +3478,21 @@ body.ttt-active nav #versionDisplay {
     .letter-case-inline-row {
         gap: 0.5rem;
     }
+
+    .numbers-mode-chip {
+        width: 64px;
+        height: 52px;
+        min-width: 64px;
+        min-height: 52px;
+        padding: 0;
+        font-size: 1rem;
+        border-radius: 0.75rem;
+    }
+
+    .numbers-mode-inline-row {
+        gap: 0.5rem;
+    }
+
 
     /* Order buttons - larger on tablets (need compound selectors for specificity) */
     .order-icon-btn.sequential-btn,
