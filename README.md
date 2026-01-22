@@ -139,6 +139,10 @@ Potential features for future versions:
 
 This is a personal learning project, but suggestions and improvements are welcome!
 
+### Troubleshooting Screenshots
+
+If you capture bug screenshots, keep them local and do not commit `.png` files in the repo.
+
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
