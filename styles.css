@@ -2953,6 +2953,11 @@ body.ttt-active nav #versionDisplay {
     gap: 0.75rem;
 }
 
+.ttt-status-card.ttt-win .ttt-status-front,
+.ttt-status-card.ttt-win .ttt-status-back {
+    flex-direction: row-reverse;
+}
+
 .ttt-status-back {
     transform: rotateX(180deg);
 }

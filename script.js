@@ -2876,6 +2876,7 @@ class FlashCardApp {
         // Reset the status card to front (not flipped)
         this.tttCardFlipped = false;
         this.tttStatusCard.classList.remove('flipped');
+        this.tttStatusCard.classList.remove('ttt-win');
 
         // Initialize both sides of the card
         this.tttFrontLabel.textContent = 'Turn:';
@@ -3080,13 +3081,19 @@ class FlashCardApp {
         let winText;
         let winIcon;
         if (result === 'draw') {
-            winText = "It's a Draw!";
+            winText = 'Draw';
             winIcon = null;
             // On draw, keep last winner (or stay with current starter)
         } else {
             winText = 'Wins!';
             winIcon = this.tttPlayerIcons[result];
             this.tttLastWinner = result; // Winner goes first next game
+        }
+
+        if (winIcon) {
+            this.tttStatusCard.classList.add('ttt-win');
+        } else {
+            this.tttStatusCard.classList.remove('ttt-win');
         }
 
         // Update the hidden side with win message and flip to it
@@ -3273,7 +3280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.29.11';
+    const version = '1.29.13';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
