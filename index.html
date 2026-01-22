@@ -16,7 +16,7 @@
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-baseline gap-2">
                 <h1 class="text-white text-xl font-bold">Zo Flash Cards</h1>
-                <span id="versionDisplay" class="text-white/50 text-xs">v1.29.2</span>
+                <span id="versionDisplay" class="text-white/50 text-xs">v1.29.11</span>
             </div>
             <button id="exitBtn" class="text-white p-2 hidden" title="Exit Test">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,6 +320,7 @@
 
         <!-- Tic Tac Toe Game -->
         <div id="tictactoeGame" class="hidden">
+            <div id="tttWinRain" class="ttt-win-rain hidden"></div>
             <div class="ttt-player-select">
                 <button class="ttt-player-btn" data-player="1">
                     <span class="ttt-player-icon-display" id="tttPlayer1Icon">❌</span>
@@ -373,8 +374,9 @@
             </div>
             <div class="ttt-result hidden">
                 <button class="ttt-play-again" title="Play Again">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.5-6.36L20 4M20 15a9 9 0 01-15.5 6.36L4 20"/>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 3-6.708"/>
+                        <path d="M3 4v5h5"/>
                     </svg>
                 </button>
             </div>

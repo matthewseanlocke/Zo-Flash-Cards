@@ -231,6 +231,7 @@ class FlashCardApp {
         this.tttUndoBtn = document.getElementById('tttUndoBtn');
         this.tttRedoBtn = document.getElementById('tttRedoBtn');
         this.tttClearBtn = document.getElementById('tttClearBtn');
+        this.tttWinRain = document.getElementById('tttWinRain');
 
         // Order buttons (all of them across all rows)
         this.sequentialBtns = document.querySelectorAll('.sequential-btn');
@@ -2887,6 +2888,7 @@ class FlashCardApp {
         this.updateTTTControlButtons();
         this.tttResult.classList.add('hidden');
         this.tttIconPicker.classList.add('hidden');
+        this.clearTTTWinRain();
     }
 
     updateTTTDisplay(flipCard = false) {
@@ -3116,6 +3118,61 @@ class FlashCardApp {
 
         this.tttResult.classList.remove('hidden');
         this.updateTTTControlButtons();
+
+        if (winIcon) {
+            this.launchTTTWinRain(winIcon);
+        }
+    }
+
+    launchTTTWinRain(icon) {
+        if (!this.tttWinRain) return;
+
+        this.tttWinRain.innerHTML = '';
+        this.tttWinRain.classList.remove('hidden');
+
+        const lanes = 16;
+        const waves = 3;
+        const maxDelay = 1.2;
+        const minDuration = 2.4;
+        const maxDuration = 4.2;
+        const laneWidth = 100 / lanes;
+        const extraSpan = 18;
+        const minLeft = -extraSpan;
+        const maxLeft = 100 + extraSpan;
+        const spanWidth = maxLeft - minLeft;
+        const laneSpan = spanWidth / lanes;
+
+        for (let wave = 0; wave < waves; wave++) {
+            for (let lane = 0; lane < lanes; lane++) {
+                const drop = document.createElement('span');
+                drop.className = 'ttt-win-icon';
+                this.setTTTIconContent(drop, icon);
+
+                const laneCenter = minLeft + (lane + 0.5) * laneSpan;
+                const offset = (Math.random() - 0.5) * laneWidth * 0.6;
+                const left = Math.max(minLeft, Math.min(maxLeft, laneCenter + offset));
+                const size = 1.4 + Math.random() * 2.2;
+                const duration = minDuration + Math.random() * (maxDuration - minDuration);
+                const delay = Math.random() * maxDelay + wave * 0.3;
+
+                drop.style.left = `${left}vw`;
+                drop.style.fontSize = `${size}rem`;
+                drop.style.animationDuration = `${duration}s`;
+                drop.style.animationDelay = `${delay}s`;
+
+                this.tttWinRain.appendChild(drop);
+            }
+        }
+
+        const cleanupDelay = (maxDuration + maxDelay + (waves - 1) * 0.3) * 1000;
+        clearTimeout(this.tttWinRainTimer);
+        this.tttWinRainTimer = setTimeout(() => this.clearTTTWinRain(), cleanupDelay);
+    }
+
+    clearTTTWinRain() {
+        if (!this.tttWinRain) return;
+        this.tttWinRain.classList.add('hidden');
+        this.tttWinRain.innerHTML = '';
     }
 
     updateTTTControlButtons() {
@@ -3216,7 +3273,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.flashCardApp = new FlashCardApp();
     
     // Add version info to console and window
-    const version = '1.29.2';
+    const version = '1.29.11';
     const buildDate = new Date().toISOString().split('T')[0];
 
     // Update version display in nav
